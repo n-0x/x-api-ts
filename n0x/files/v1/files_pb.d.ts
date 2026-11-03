@@ -907,6 +907,13 @@ export declare type InferenceProcessConfig = Message<"n0x.files.v1.InferenceProc
    * @generated from field: string human_trust_issuer = 17;
    */
   humanTrustIssuer: string;
+
+  /**
+   * Allowed effective models after alias resolution; empty preserves passthrough.
+   *
+   * @generated from field: repeated string allowed_models = 18;
+   */
+  allowedModels: string[];
 };
 
 /**
