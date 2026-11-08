@@ -2,8 +2,9 @@
 // @generated from file n0x/auth/v1/auth.proto (package n0x.auth.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
+import type { Duration, Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file n0x/auth/v1/auth.proto.
@@ -408,4 +409,934 @@ export declare type HumanTrustKey = Message<"n0x.auth.v1.HumanTrustKey"> & {
  * Use `create(HumanTrustKeySchema)` to create a new message.
  */
 export declare const HumanTrustKeySchema: GenMessage<HumanTrustKey>;
+
+/**
+ * Metadata only. Private passkey material and TOTP seeds are never listed.
+ *
+ * @generated from message n0x.auth.v1.Authenticator
+ */
+export declare type Authenticator = Message<"n0x.auth.v1.Authenticator"> & {
+  /**
+   * @generated from field: string authenticator_id = 1;
+   */
+  authenticatorId: string;
+
+  /**
+   * @generated from field: string identity_id = 2;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: n0x.auth.v1.AuthenticatorType type = 3;
+   */
+  type: AuthenticatorType;
+
+  /**
+   * @generated from field: string name = 4;
+   */
+  name: string;
+
+  /**
+   * @generated from field: bool confirmed = 5;
+   */
+  confirmed: boolean;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 6;
+   */
+  createdAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp last_used_at = 7;
+   */
+  lastUsedAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.Authenticator.
+ * Use `create(AuthenticatorSchema)` to create a new message.
+ */
+export declare const AuthenticatorSchema: GenMessage<Authenticator>;
+
+/**
+ * Authentication session, distinct from an observed workload connection.
+ * ADR 0025 D5: human activity moves idle_expires_at forward; there is no short
+ * absolute lifetime. mfa_at records verification, never ordinary activity.
+ * Inactivity does not interrupt node/service-account traffic or certificate
+ * rotation. Permission withdrawal and quarantine are checked independently.
+ *
+ * @generated from message n0x.auth.v1.SlidingSession
+ */
+export declare type SlidingSession = Message<"n0x.auth.v1.SlidingSession"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string account_id = 2;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 3;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 4;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: n0x.auth.v1.SessionSubjectType subject_type = 5;
+   */
+  subjectType: SessionSubjectType;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 6;
+   */
+  createdAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp last_activity_at = 7;
+   */
+  lastActivityAt?: Timestamp | undefined;
+
+  /**
+   * Effective tenant policy. Zero disables idle expiration for this subject.
+   *
+   * @generated from field: google.protobuf.Duration inactivity_timeout = 8;
+   */
+  inactivityTimeout?: Duration | undefined;
+
+  /**
+   * Absent when disabled; otherwise last_activity_at + inactivity_timeout.
+   *
+   * @generated from field: google.protobuf.Timestamp idle_expires_at = 9;
+   */
+  idleExpiresAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp mfa_at = 10;
+   */
+  mfaAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.SlidingSession.
+ * Use `create(SlidingSessionSchema)` to create a new message.
+ */
+export declare const SlidingSessionSchema: GenMessage<SlidingSession>;
+
+/**
+ * Internal login/proxy integration input, not a public client-controlled clock.
+ * Only authenticated, server-observed activity before idle_expires_at can renew
+ * a session; expired/revoked/quarantined sessions require authentication again.
+ *
+ * @generated from message n0x.auth.v1.SessionActivity
+ */
+export declare type SessionActivity = Message<"n0x.auth.v1.SessionActivity"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string session_id = 3;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp observed_at = 4;
+   */
+  observedAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.SessionActivity.
+ * Use `create(SessionActivitySchema)` to create a new message.
+ */
+export declare const SessionActivitySchema: GenMessage<SessionActivity>;
+
+/**
+ * Result for the session store and activity event producer. Out-of-order
+ * activity cannot move last_activity_at backwards or refresh mfa_at.
+ *
+ * @generated from message n0x.auth.v1.SessionRenewal
+ */
+export declare type SessionRenewal = Message<"n0x.auth.v1.SessionRenewal"> & {
+  /**
+   * @generated from field: n0x.auth.v1.SlidingSession session = 1;
+   */
+  session?: SlidingSession | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp previous_idle_expires_at = 2;
+   */
+  previousIdleExpiresAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp renewed_at = 3;
+   */
+  renewedAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.SessionRenewal.
+ * Use `create(SessionRenewalSchema)` to create a new message.
+ */
+export declare const SessionRenewalSchema: GenMessage<SessionRenewal>;
+
+/**
+ * @generated from message n0x.auth.v1.ListAuthenticatorsRequest
+ */
+export declare type ListAuthenticatorsRequest = Message<"n0x.auth.v1.ListAuthenticatorsRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string page_token = 4;
+   */
+  pageToken: string;
+
+  /**
+   * @generated from field: int32 page_size = 5;
+   */
+  pageSize: number;
+};
+
+/**
+ * Describes the message n0x.auth.v1.ListAuthenticatorsRequest.
+ * Use `create(ListAuthenticatorsRequestSchema)` to create a new message.
+ */
+export declare const ListAuthenticatorsRequestSchema: GenMessage<ListAuthenticatorsRequest>;
+
+/**
+ * @generated from message n0x.auth.v1.ListAuthenticatorsResponse
+ */
+export declare type ListAuthenticatorsResponse = Message<"n0x.auth.v1.ListAuthenticatorsResponse"> & {
+  /**
+   * @generated from field: repeated n0x.auth.v1.Authenticator authenticators = 1;
+   */
+  authenticators: Authenticator[];
+
+  /**
+   * @generated from field: string next_page_token = 2;
+   */
+  nextPageToken: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.ListAuthenticatorsResponse.
+ * Use `create(ListAuthenticatorsResponseSchema)` to create a new message.
+ */
+export declare const ListAuthenticatorsResponseSchema: GenMessage<ListAuthenticatorsResponse>;
+
+/**
+ * @generated from message n0x.auth.v1.BeginPasskeyRegistrationRequest
+ */
+export declare type BeginPasskeyRegistrationRequest = Message<"n0x.auth.v1.BeginPasskeyRegistrationRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string session_id = 4;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string name = 5;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string request_id = 6;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string reason = 7;
+   */
+  reason: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.BeginPasskeyRegistrationRequest.
+ * Use `create(BeginPasskeyRegistrationRequestSchema)` to create a new message.
+ */
+export declare const BeginPasskeyRegistrationRequestSchema: GenMessage<BeginPasskeyRegistrationRequest>;
+
+/**
+ * @generated from message n0x.auth.v1.BeginPasskeyRegistrationResponse
+ */
+export declare type BeginPasskeyRegistrationResponse = Message<"n0x.auth.v1.BeginPasskeyRegistrationResponse"> & {
+  /**
+   * @generated from field: string challenge_id = 1;
+   */
+  challengeId: string;
+
+  /**
+   * UTF-8 WebAuthn PublicKeyCredentialCreationOptions JSON; binary values use
+   * base64url as in PublicKeyCredential.parseCreationOptionsFromJSON().
+   *
+   * @generated from field: bytes public_key_options_json = 2;
+   */
+  publicKeyOptionsJson: Uint8Array;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 3;
+   */
+  expiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.BeginPasskeyRegistrationResponse.
+ * Use `create(BeginPasskeyRegistrationResponseSchema)` to create a new message.
+ */
+export declare const BeginPasskeyRegistrationResponseSchema: GenMessage<BeginPasskeyRegistrationResponse>;
+
+/**
+ * @generated from message n0x.auth.v1.FinishPasskeyRegistrationRequest
+ */
+export declare type FinishPasskeyRegistrationRequest = Message<"n0x.auth.v1.FinishPasskeyRegistrationRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string session_id = 4;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string challenge_id = 5;
+   */
+  challengeId: string;
+
+  /**
+   * UTF-8 PublicKeyCredential.toJSON() registration response, including
+   * clientDataJSON and attestationObject; preserve bytes for verification.
+   *
+   * @generated from field: bytes credential_json = 6;
+   */
+  credentialJson: Uint8Array;
+
+  /**
+   * @generated from field: string request_id = 7;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string reason = 8;
+   */
+  reason: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.FinishPasskeyRegistrationRequest.
+ * Use `create(FinishPasskeyRegistrationRequestSchema)` to create a new message.
+ */
+export declare const FinishPasskeyRegistrationRequestSchema: GenMessage<FinishPasskeyRegistrationRequest>;
+
+/**
+ * @generated from message n0x.auth.v1.FinishPasskeyRegistrationResponse
+ */
+export declare type FinishPasskeyRegistrationResponse = Message<"n0x.auth.v1.FinishPasskeyRegistrationResponse"> & {
+  /**
+   * @generated from field: n0x.auth.v1.Authenticator authenticator = 1;
+   */
+  authenticator?: Authenticator | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.FinishPasskeyRegistrationResponse.
+ * Use `create(FinishPasskeyRegistrationResponseSchema)` to create a new message.
+ */
+export declare const FinishPasskeyRegistrationResponseSchema: GenMessage<FinishPasskeyRegistrationResponse>;
+
+/**
+ * @generated from message n0x.auth.v1.BeginPasskeyAssertionRequest
+ */
+export declare type BeginPasskeyAssertionRequest = Message<"n0x.auth.v1.BeginPasskeyAssertionRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * Session established by primary login, or the session needing step-up MFA.
+   *
+   * @generated from field: string session_id = 4;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string request_id = 5;
+   */
+  requestId: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.BeginPasskeyAssertionRequest.
+ * Use `create(BeginPasskeyAssertionRequestSchema)` to create a new message.
+ */
+export declare const BeginPasskeyAssertionRequestSchema: GenMessage<BeginPasskeyAssertionRequest>;
+
+/**
+ * @generated from message n0x.auth.v1.BeginPasskeyAssertionResponse
+ */
+export declare type BeginPasskeyAssertionResponse = Message<"n0x.auth.v1.BeginPasskeyAssertionResponse"> & {
+  /**
+   * @generated from field: string challenge_id = 1;
+   */
+  challengeId: string;
+
+  /**
+   * UTF-8 WebAuthn PublicKeyCredentialRequestOptions JSON with base64url values.
+   *
+   * @generated from field: bytes public_key_options_json = 2;
+   */
+  publicKeyOptionsJson: Uint8Array;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 3;
+   */
+  expiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.BeginPasskeyAssertionResponse.
+ * Use `create(BeginPasskeyAssertionResponseSchema)` to create a new message.
+ */
+export declare const BeginPasskeyAssertionResponseSchema: GenMessage<BeginPasskeyAssertionResponse>;
+
+/**
+ * @generated from message n0x.auth.v1.FinishPasskeyAssertionRequest
+ */
+export declare type FinishPasskeyAssertionRequest = Message<"n0x.auth.v1.FinishPasskeyAssertionRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string session_id = 4;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string challenge_id = 5;
+   */
+  challengeId: string;
+
+  /**
+   * UTF-8 PublicKeyCredential.toJSON() assertion response, including
+   * clientDataJSON, authenticatorData and signature. Never a trusted MFA flag.
+   *
+   * @generated from field: bytes credential_json = 6;
+   */
+  credentialJson: Uint8Array;
+
+  /**
+   * @generated from field: string request_id = 7;
+   */
+  requestId: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.FinishPasskeyAssertionRequest.
+ * Use `create(FinishPasskeyAssertionRequestSchema)` to create a new message.
+ */
+export declare const FinishPasskeyAssertionRequestSchema: GenMessage<FinishPasskeyAssertionRequest>;
+
+/**
+ * @generated from message n0x.auth.v1.FinishPasskeyAssertionResponse
+ */
+export declare type FinishPasskeyAssertionResponse = Message<"n0x.auth.v1.FinishPasskeyAssertionResponse"> & {
+  /**
+   * @generated from field: n0x.auth.v1.SlidingSession session = 1;
+   */
+  session?: SlidingSession | undefined;
+
+  /**
+   * @generated from field: string authenticator_id = 2;
+   */
+  authenticatorId: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.FinishPasskeyAssertionResponse.
+ * Use `create(FinishPasskeyAssertionResponseSchema)` to create a new message.
+ */
+export declare const FinishPasskeyAssertionResponseSchema: GenMessage<FinishPasskeyAssertionResponse>;
+
+/**
+ * @generated from message n0x.auth.v1.EnrollTotpRequest
+ */
+export declare type EnrollTotpRequest = Message<"n0x.auth.v1.EnrollTotpRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string session_id = 4;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string name = 5;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string request_id = 6;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string reason = 7;
+   */
+  reason: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.EnrollTotpRequest.
+ * Use `create(EnrollTotpRequestSchema)` to create a new message.
+ */
+export declare const EnrollTotpRequestSchema: GenMessage<EnrollTotpRequest>;
+
+/**
+ * @generated from message n0x.auth.v1.EnrollTotpResponse
+ */
+export declare type EnrollTotpResponse = Message<"n0x.auth.v1.EnrollTotpResponse"> & {
+  /**
+   * @generated from field: n0x.auth.v1.Authenticator authenticator = 1;
+   */
+  authenticator?: Authenticator | undefined;
+
+  /**
+   * Shown once only, never returned by list or idempotent replay; do not log.
+   *
+   * @generated from field: string provisioning_uri = 2;
+   */
+  provisioningUri: string;
+
+  /**
+   * Enrollment must be confirmed before this deadline or it is discarded.
+   *
+   * @generated from field: google.protobuf.Timestamp expires_at = 3;
+   */
+  expiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.EnrollTotpResponse.
+ * Use `create(EnrollTotpResponseSchema)` to create a new message.
+ */
+export declare const EnrollTotpResponseSchema: GenMessage<EnrollTotpResponse>;
+
+/**
+ * @generated from message n0x.auth.v1.ConfirmTotpRequest
+ */
+export declare type ConfirmTotpRequest = Message<"n0x.auth.v1.ConfirmTotpRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string session_id = 4;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string authenticator_id = 5;
+   */
+  authenticatorId: string;
+
+  /**
+   * Preserve leading zeroes. Never log codes; rate-limit and reject step replay.
+   *
+   * @generated from field: string code = 6;
+   */
+  code: string;
+
+  /**
+   * @generated from field: string request_id = 7;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string reason = 8;
+   */
+  reason: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.ConfirmTotpRequest.
+ * Use `create(ConfirmTotpRequestSchema)` to create a new message.
+ */
+export declare const ConfirmTotpRequestSchema: GenMessage<ConfirmTotpRequest>;
+
+/**
+ * @generated from message n0x.auth.v1.ConfirmTotpResponse
+ */
+export declare type ConfirmTotpResponse = Message<"n0x.auth.v1.ConfirmTotpResponse"> & {
+  /**
+   * @generated from field: n0x.auth.v1.Authenticator authenticator = 1;
+   */
+  authenticator?: Authenticator | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.ConfirmTotpResponse.
+ * Use `create(ConfirmTotpResponseSchema)` to create a new message.
+ */
+export declare const ConfirmTotpResponseSchema: GenMessage<ConfirmTotpResponse>;
+
+/**
+ * @generated from message n0x.auth.v1.VerifyTotpRequest
+ */
+export declare type VerifyTotpRequest = Message<"n0x.auth.v1.VerifyTotpRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string session_id = 4;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string authenticator_id = 5;
+   */
+  authenticatorId: string;
+
+  /**
+   * Confirmed backup factor only; rate-limited, with used time steps rejected.
+   *
+   * @generated from field: string code = 6;
+   */
+  code: string;
+
+  /**
+   * @generated from field: string request_id = 7;
+   */
+  requestId: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.VerifyTotpRequest.
+ * Use `create(VerifyTotpRequestSchema)` to create a new message.
+ */
+export declare const VerifyTotpRequestSchema: GenMessage<VerifyTotpRequest>;
+
+/**
+ * @generated from message n0x.auth.v1.VerifyTotpResponse
+ */
+export declare type VerifyTotpResponse = Message<"n0x.auth.v1.VerifyTotpResponse"> & {
+  /**
+   * @generated from field: n0x.auth.v1.SlidingSession session = 1;
+   */
+  session?: SlidingSession | undefined;
+};
+
+/**
+ * Describes the message n0x.auth.v1.VerifyTotpResponse.
+ * Use `create(VerifyTotpResponseSchema)` to create a new message.
+ */
+export declare const VerifyTotpResponseSchema: GenMessage<VerifyTotpResponse>;
+
+/**
+ * @generated from message n0x.auth.v1.RemoveAuthenticatorRequest
+ */
+export declare type RemoveAuthenticatorRequest = Message<"n0x.auth.v1.RemoveAuthenticatorRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string session_id = 4;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string authenticator_id = 5;
+   */
+  authenticatorId: string;
+
+  /**
+   * @generated from field: string request_id = 6;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string reason = 7;
+   */
+  reason: string;
+};
+
+/**
+ * Describes the message n0x.auth.v1.RemoveAuthenticatorRequest.
+ * Use `create(RemoveAuthenticatorRequestSchema)` to create a new message.
+ */
+export declare const RemoveAuthenticatorRequestSchema: GenMessage<RemoveAuthenticatorRequest>;
+
+/**
+ * @generated from message n0x.auth.v1.RemoveAuthenticatorResponse
+ */
+export declare type RemoveAuthenticatorResponse = Message<"n0x.auth.v1.RemoveAuthenticatorResponse"> & {
+};
+
+/**
+ * Describes the message n0x.auth.v1.RemoveAuthenticatorResponse.
+ * Use `create(RemoveAuthenticatorResponseSchema)` to create a new message.
+ */
+export declare const RemoveAuthenticatorResponseSchema: GenMessage<RemoveAuthenticatorResponse>;
+
+/**
+ * @generated from enum n0x.auth.v1.AuthenticatorType
+ */
+export enum AuthenticatorType {
+  /**
+   * @generated from enum value: AUTHENTICATOR_TYPE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: AUTHENTICATOR_TYPE_PASSKEY = 1;
+   */
+  PASSKEY = 1,
+
+  /**
+   * @generated from enum value: AUTHENTICATOR_TYPE_TOTP = 2;
+   */
+  TOTP = 2,
+}
+
+/**
+ * Describes the enum n0x.auth.v1.AuthenticatorType.
+ */
+export declare const AuthenticatorTypeSchema: GenEnum<AuthenticatorType>;
+
+/**
+ * Local copy of subject types; auth does not import identities/v1.
+ *
+ * @generated from enum n0x.auth.v1.SessionSubjectType
+ */
+export enum SessionSubjectType {
+  /**
+   * @generated from enum value: SESSION_SUBJECT_TYPE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: SESSION_SUBJECT_TYPE_PERSON = 1;
+   */
+  PERSON = 1,
+
+  /**
+   * @generated from enum value: SESSION_SUBJECT_TYPE_NODE = 2;
+   */
+  NODE = 2,
+
+  /**
+   * @generated from enum value: SESSION_SUBJECT_TYPE_SERVICE_ACCOUNT = 3;
+   */
+  SERVICE_ACCOUNT = 3,
+}
+
+/**
+ * Describes the enum n0x.auth.v1.SessionSubjectType.
+ */
+export declare const SessionSubjectTypeSchema: GenEnum<SessionSubjectType>;
+
+/**
+ * Passkeys (WebAuthn) are primary, TOTP is the backup. All operations are scoped
+ * to the authenticated person and tenant; identity_id is never proof of access.
+ * Registration/removal require recent authentication and a nonempty reason.
+ * Challenges are short-lived, single-use and bound to account, tenant, person,
+ * session, purpose, RP ID and allowed origin. Finish validates browser data and
+ * sets mfa_at server-side. Security operations are audited, not tenant revisions.
+ *
+ * @generated from service n0x.auth.v1.MfaService
+ */
+export declare const MfaService: GenService<{
+  /**
+   * @generated from rpc n0x.auth.v1.MfaService.ListAuthenticators
+   */
+  listAuthenticators: {
+    methodKind: "unary";
+    input: typeof ListAuthenticatorsRequestSchema;
+    output: typeof ListAuthenticatorsResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.auth.v1.MfaService.BeginPasskeyRegistration
+   */
+  beginPasskeyRegistration: {
+    methodKind: "unary";
+    input: typeof BeginPasskeyRegistrationRequestSchema;
+    output: typeof BeginPasskeyRegistrationResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.auth.v1.MfaService.FinishPasskeyRegistration
+   */
+  finishPasskeyRegistration: {
+    methodKind: "unary";
+    input: typeof FinishPasskeyRegistrationRequestSchema;
+    output: typeof FinishPasskeyRegistrationResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.auth.v1.MfaService.BeginPasskeyAssertion
+   */
+  beginPasskeyAssertion: {
+    methodKind: "unary";
+    input: typeof BeginPasskeyAssertionRequestSchema;
+    output: typeof BeginPasskeyAssertionResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.auth.v1.MfaService.FinishPasskeyAssertion
+   */
+  finishPasskeyAssertion: {
+    methodKind: "unary";
+    input: typeof FinishPasskeyAssertionRequestSchema;
+    output: typeof FinishPasskeyAssertionResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.auth.v1.MfaService.EnrollTotp
+   */
+  enrollTotp: {
+    methodKind: "unary";
+    input: typeof EnrollTotpRequestSchema;
+    output: typeof EnrollTotpResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.auth.v1.MfaService.ConfirmTotp
+   */
+  confirmTotp: {
+    methodKind: "unary";
+    input: typeof ConfirmTotpRequestSchema;
+    output: typeof ConfirmTotpResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.auth.v1.MfaService.VerifyTotp
+   */
+  verifyTotp: {
+    methodKind: "unary";
+    input: typeof VerifyTotpRequestSchema;
+    output: typeof VerifyTotpResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.auth.v1.MfaService.RemoveAuthenticator
+   */
+  removeAuthenticator: {
+    methodKind: "unary";
+    input: typeof RemoveAuthenticatorRequestSchema;
+    output: typeof RemoveAuthenticatorResponseSchema;
+  },
+}>;
 

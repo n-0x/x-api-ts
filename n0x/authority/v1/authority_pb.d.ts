@@ -6,6 +6,7 @@ import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegen
 import type { Message } from "@bufbuild/protobuf";
 import type { FlowTelemetry } from "../../control/v1/control_pb.js";
 import type { Rule } from "../../signed/v1/signed_pb.js";
+import type { Duration } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file n0x/authority/v1/authority.proto.
@@ -637,6 +638,34 @@ export declare type Tenant = Message<"n0x.authority.v1.Tenant"> & {
    * @generated from field: string version = 8;
    */
   version: string;
+
+  /**
+   * Canonical IPv4 CIDR. cidr (field 5) remains a legacy alias: responses
+   * populate both equally. New tenants default to 10.2.0.0/16, configurable
+   * to avoid customer network collisions; existing tenant prefixes stay intact.
+   *
+   * @generated from field: optional string addressing_v4 = 9;
+   */
+  addressingV4?: string | undefined;
+
+  /**
+   * IPv6 ULA CIDR, generated as a per-tenant /48 when omitted at creation.
+   *
+   * @generated from field: optional string addressing_v6 = 10;
+   */
+  addressingV6?: string | undefined;
+
+  /**
+   * @generated from field: n0x.authority.v1.TenantInactivityTimeouts inactivity_timeouts = 11;
+   */
+  inactivityTimeouts?: TenantInactivityTimeouts | undefined;
+
+  /**
+   * Last governed tenant settings revision; distinct from legacy version.
+   *
+   * @generated from field: optional uint64 revision_number = 12;
+   */
+  revisionNumber?: bigint | undefined;
 };
 
 /**
@@ -644,6 +673,38 @@ export declare type Tenant = Message<"n0x.authority.v1.Tenant"> & {
  * Use `create(TenantSchema)` to create a new message.
  */
 export declare const TenantSchema: GenMessage<Tenant>;
+
+/**
+ * Effective idle policy by subject. Durations must be nonnegative; zero disables
+ * idle expiration. New tenants default to 30 minutes for persons and zero for
+ * nodes/service accounts. This never imposes an absolute session lifetime or
+ * interrupts active node/service-account traffic or automatic SVID rotation.
+ * On update, missing durations leave that subject's current setting unchanged.
+ *
+ * @generated from message n0x.authority.v1.TenantInactivityTimeouts
+ */
+export declare type TenantInactivityTimeouts = Message<"n0x.authority.v1.TenantInactivityTimeouts"> & {
+  /**
+   * @generated from field: google.protobuf.Duration person = 1;
+   */
+  person?: Duration | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Duration node = 2;
+   */
+  node?: Duration | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Duration service_account = 3;
+   */
+  serviceAccount?: Duration | undefined;
+};
+
+/**
+ * Describes the message n0x.authority.v1.TenantInactivityTimeouts.
+ * Use `create(TenantInactivityTimeoutsSchema)` to create a new message.
+ */
+export declare const TenantInactivityTimeoutsSchema: GenMessage<TenantInactivityTimeouts>;
 
 /**
  * @generated from message n0x.authority.v1.Role
@@ -1389,6 +1450,36 @@ export declare type CreateTenantRequest = Message<"n0x.authority.v1.CreateTenant
    * @generated from field: string cidr = 4;
    */
   cidr: string;
+
+  /**
+   * Canonical setting; cidr (field 4) remains accepted as the legacy IPv4
+   * alias. Reject conflicting nonempty values. If neither is set, use /16
+   * default documented on Tenant.addressing_v4; never reinterpret old cidr.
+   *
+   * @generated from field: optional string addressing_v4 = 5;
+   */
+  addressingV4?: string | undefined;
+
+  /**
+   * Optional explicit ULA prefix; omission generates a tenant-specific /48.
+   *
+   * @generated from field: optional string addressing_v6 = 6;
+   */
+  addressingV6?: string | undefined;
+
+  /**
+   * Missing subject durations use the defaults documented above.
+   *
+   * @generated from field: n0x.authority.v1.TenantInactivityTimeouts inactivity_timeouts = 7;
+   */
+  inactivityTimeouts?: TenantInactivityTimeouts | undefined;
+
+  /**
+   * Required for new settings-aware clients; legacy requests remain accepted.
+   *
+   * @generated from field: optional string reason = 8;
+   */
+  reason?: string | undefined;
 };
 
 /**
@@ -1412,6 +1503,86 @@ export declare type CreateTenantResponse = Message<"n0x.authority.v1.CreateTenan
  * Use `create(CreateTenantResponseSchema)` to create a new message.
  */
 export declare const CreateTenantResponseSchema: GenMessage<CreateTenantResponse>;
+
+/**
+ * A governed settings change. Missing fields preserve the current settings;
+ * present empty CIDRs are invalid, and CIDRs must be canonical private IPv4/ULA
+ * IPv6 prefixes. Address changes must account for existing node allocations.
+ *
+ * @generated from message n0x.authority.v1.UpdateTenantSettingsRequest
+ */
+export declare type UpdateTenantSettingsRequest = Message<"n0x.authority.v1.UpdateTenantSettingsRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: optional string addressing_v4 = 3;
+   */
+  addressingV4?: string | undefined;
+
+  /**
+   * @generated from field: optional string addressing_v6 = 4;
+   */
+  addressingV6?: string | undefined;
+
+  /**
+   * @generated from field: n0x.authority.v1.TenantInactivityTimeouts inactivity_timeouts = 5;
+   */
+  inactivityTimeouts?: TenantInactivityTimeouts | undefined;
+
+  /**
+   * @generated from field: string request_id = 6;
+   */
+  requestId: string;
+
+  /**
+   * Required, nonempty; server derives the author from authentication.
+   *
+   * @generated from field: string reason = 7;
+   */
+  reason: string;
+
+  /**
+   * Present stages only; absent publishes a new revision immediately.
+   *
+   * @generated from field: optional uint64 draft_revision_number = 8;
+   */
+  draftRevisionNumber?: bigint | undefined;
+};
+
+/**
+ * Describes the message n0x.authority.v1.UpdateTenantSettingsRequest.
+ * Use `create(UpdateTenantSettingsRequestSchema)` to create a new message.
+ */
+export declare const UpdateTenantSettingsRequestSchema: GenMessage<UpdateTenantSettingsRequest>;
+
+/**
+ * @generated from message n0x.authority.v1.UpdateTenantSettingsResponse
+ */
+export declare type UpdateTenantSettingsResponse = Message<"n0x.authority.v1.UpdateTenantSettingsResponse"> & {
+  /**
+   * @generated from field: n0x.authority.v1.Tenant tenant = 1;
+   */
+  tenant?: Tenant | undefined;
+
+  /**
+   * @generated from field: uint64 revision_number = 2;
+   */
+  revisionNumber: bigint;
+};
+
+/**
+ * Describes the message n0x.authority.v1.UpdateTenantSettingsResponse.
+ * Use `create(UpdateTenantSettingsResponseSchema)` to create a new message.
+ */
+export declare const UpdateTenantSettingsResponseSchema: GenMessage<UpdateTenantSettingsResponse>;
 
 /**
  * @generated from message n0x.authority.v1.ListPermissionsRequest
@@ -2388,6 +2559,14 @@ export declare const TenantService: GenService<{
     methodKind: "unary";
     input: typeof CreateTenantRequestSchema;
     output: typeof CreateTenantResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.authority.v1.TenantService.UpdateTenantSettings
+   */
+  updateTenantSettings: {
+    methodKind: "unary";
+    input: typeof UpdateTenantSettingsRequestSchema;
+    output: typeof UpdateTenantSettingsResponseSchema;
   },
 }>;
 

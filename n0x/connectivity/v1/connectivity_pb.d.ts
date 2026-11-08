@@ -2,9 +2,10 @@
 // @generated from file n0x/connectivity/v1/connectivity.proto (package n0x.connectivity.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
 import type { Scope } from "../../signed/v1/signed_pb.js";
+import type { Duration, Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file n0x/connectivity/v1/connectivity.proto.
@@ -733,6 +734,1119 @@ export declare type JoinResponse = Message<"n0x.connectivity.v1.JoinResponse"> &
 export declare const JoinResponseSchema: GenMessage<JoinResponse>;
 
 /**
+ * @generated from message n0x.connectivity.v1.ProxyNodeTarget
+ */
+export declare type ProxyNodeTarget = Message<"n0x.connectivity.v1.ProxyNodeTarget"> & {
+  /**
+   * @generated from field: string identity_id = 1;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string spiffe_id = 2;
+   */
+  spiffeId: string;
+
+  /**
+   * @generated from field: string incarnation_id = 3;
+   */
+  incarnationId: string;
+
+  /**
+   * Local IPv4 or IPv6 literal; loopback is valid on the offering node.
+   *
+   * @generated from field: string local_address = 4;
+   */
+  localAddress: string;
+
+  /**
+   * @generated from field: uint32 local_port = 5;
+   */
+  localPort: number;
+
+  /**
+   * @generated from field: n0x.connectivity.v1.WorkloadOfferBudget budget = 6;
+   */
+  budget?: WorkloadOfferBudget | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ProxyNodeTarget.
+ * Use `create(ProxyNodeTargetSchema)` to create a new message.
+ */
+export declare const ProxyNodeTargetSchema: GenMessage<ProxyNodeTarget>;
+
+/**
+ * @generated from message n0x.connectivity.v1.ProxyNodeTargets
+ */
+export declare type ProxyNodeTargets = Message<"n0x.connectivity.v1.ProxyNodeTargets"> & {
+  /**
+   * @generated from field: repeated n0x.connectivity.v1.ProxyNodeTarget nodes = 1;
+   */
+  nodes: ProxyNodeTarget[];
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ProxyNodeTargets.
+ * Use `create(ProxyNodeTargetsSchema)` to create a new message.
+ */
+export declare const ProxyNodeTargetsSchema: GenMessage<ProxyNodeTargets>;
+
+/**
+ * Only publicly routable destinations are allowed. For names, all resolved
+ * addresses must be checked and pinned before dialing, including on refresh.
+ * The original hostname remains available for TLS SNI and certificate checks.
+ * Loopback, private/ULA, link-local, cloud metadata and platform infrastructure
+ * ranges are rejected for both IPv4 and IPv6, including mapped IPv4 addresses.
+ * Supplied pinned addresses undergo the same checks; they cannot bypass them.
+ *
+ * @generated from message n0x.connectivity.v1.ProxyDirectTarget
+ */
+export declare type ProxyDirectTarget = Message<"n0x.connectivity.v1.ProxyDirectTarget"> & {
+  /**
+   * @generated from oneof n0x.connectivity.v1.ProxyDirectTarget.address
+   */
+  address: {
+    /**
+     * @generated from field: string hostname = 1;
+     */
+    value: string;
+    case: "hostname";
+  } | {
+    /**
+     * @generated from field: string ipv4 = 2;
+     */
+    value: string;
+    case: "ipv4";
+  } | {
+    /**
+     * @generated from field: string ipv6 = 3;
+     */
+    value: string;
+    case: "ipv6";
+  } | { case: undefined; value?: undefined };
+
+  /**
+   * @generated from field: uint32 port = 4;
+   */
+  port: number;
+
+  /**
+   * Validated IP literals only, never caller-controlled dial overrides.
+   *
+   * @generated from field: repeated string pinned_ip_addresses = 5;
+   */
+  pinnedIpAddresses: string[];
+
+  /**
+   * @generated from field: google.protobuf.Timestamp resolution_expires_at = 6;
+   */
+  resolutionExpiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ProxyDirectTarget.
+ * Use `create(ProxyDirectTargetSchema)` to create a new message.
+ */
+export declare const ProxyDirectTargetSchema: GenMessage<ProxyDirectTarget>;
+
+/**
+ * @generated from message n0x.connectivity.v1.ProxyWorkloadTarget
+ */
+export declare type ProxyWorkloadTarget = Message<"n0x.connectivity.v1.ProxyWorkloadTarget"> & {
+  /**
+   * @generated from field: string workload_id = 1;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: n0x.connectivity.v1.ProxyWorkloadType type = 2;
+   */
+  type: ProxyWorkloadType;
+
+  /**
+   * @generated from field: string public_address = 3;
+   */
+  publicAddress: string;
+
+  /**
+   * @generated from oneof n0x.connectivity.v1.ProxyWorkloadTarget.destination
+   */
+  destination: {
+    /**
+     * @generated from field: n0x.connectivity.v1.ProxyNodeTargets serving_nodes = 4;
+     */
+    value: ProxyNodeTargets;
+    case: "servingNodes";
+  } | {
+    /**
+     * @generated from field: n0x.connectivity.v1.ProxyDirectTarget direct_destination = 5;
+     */
+    value: ProxyDirectTarget;
+    case: "directDestination";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ProxyWorkloadTarget.
+ * Use `create(ProxyWorkloadTargetSchema)` to create a new message.
+ */
+export declare const ProxyWorkloadTargetSchema: GenMessage<ProxyWorkloadTarget>;
+
+/**
+ * A compiled application grant, with groups expanded to concrete identities.
+ * Absence of a matching grant means deny; quarantine overrides every grant.
+ *
+ * @generated from message n0x.connectivity.v1.ProxyApplicationGrant
+ */
+export declare type ProxyApplicationGrant = Message<"n0x.connectivity.v1.ProxyApplicationGrant"> & {
+  /**
+   * @generated from field: string permission_id = 1;
+   */
+  permissionId: string;
+
+  /**
+   * @generated from field: string identity_id = 2;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string workload_id = 3;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: n0x.connectivity.v1.ProxyAccessMechanism mechanism = 4;
+   */
+  mechanism: ProxyAccessMechanism;
+
+  /**
+   * @generated from field: bool require_mfa = 5;
+   */
+  requireMfa: boolean;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 6;
+   */
+  expiresAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: string ssh_host_user = 7;
+   */
+  sshHostUser: string;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ProxyApplicationGrant.
+ * Use `create(ProxyApplicationGrantSchema)` to create a new message.
+ */
+export declare const ProxyApplicationGrantSchema: GenMessage<ProxyApplicationGrant>;
+
+/**
+ * @generated from message n0x.connectivity.v1.ProxyTable
+ */
+export declare type ProxyTable = Message<"n0x.connectivity.v1.ProxyTable"> & {
+  /**
+   * Same tenant revision as the compiled node firewall documents.
+   *
+   * @generated from field: uint64 revision_number = 1;
+   */
+  revisionNumber: bigint;
+
+  /**
+   * Monotonic delivery generation also changes for quarantine, which is not
+   * a revision. Older generations must never overwrite newer applied state.
+   *
+   * @generated from field: uint64 generation = 2;
+   */
+  generation: bigint;
+
+  /**
+   * @generated from field: repeated n0x.connectivity.v1.ProxyWorkloadTarget workloads = 3;
+   */
+  workloads: ProxyWorkloadTarget[];
+
+  /**
+   * @generated from field: repeated n0x.connectivity.v1.ProxyApplicationGrant application_grants = 4;
+   */
+  applicationGrants: ProxyApplicationGrant[];
+
+  /**
+   * @generated from field: repeated string quarantined_identity_ids = 5;
+   */
+  quarantinedIdentityIds: string[];
+
+  /**
+   * @generated from field: google.protobuf.Timestamp generated_at = 6;
+   */
+  generatedAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ProxyTable.
+ * Use `create(ProxyTableSchema)` to create a new message.
+ */
+export declare const ProxyTableSchema: GenMessage<ProxyTable>;
+
+/**
+ * @generated from message n0x.connectivity.v1.PublishProxyTableRequest
+ */
+export declare type PublishProxyTableRequest = Message<"n0x.connectivity.v1.PublishProxyTableRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string request_id = 3;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string service_id = 4;
+   */
+  serviceId: string;
+
+  /**
+   * Complete replacement, including empty lists to withdraw all targets.
+   *
+   * @generated from field: n0x.connectivity.v1.ProxyTable table = 5;
+   */
+  table?: ProxyTable | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.PublishProxyTableRequest.
+ * Use `create(PublishProxyTableRequestSchema)` to create a new message.
+ */
+export declare const PublishProxyTableRequestSchema: GenMessage<PublishProxyTableRequest>;
+
+/**
+ * @generated from message n0x.connectivity.v1.PublishProxyTableResponse
+ */
+export declare type PublishProxyTableResponse = Message<"n0x.connectivity.v1.PublishProxyTableResponse"> & {
+  /**
+   * @generated from field: uint64 revision_number = 1;
+   */
+  revisionNumber: bigint;
+
+  /**
+   * @generated from field: uint64 applied_generation = 2;
+   */
+  appliedGeneration: bigint;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp applied_at = 3;
+   */
+  appliedAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.PublishProxyTableResponse.
+ * Use `create(PublishProxyTableResponseSchema)` to create a new message.
+ */
+export declare const PublishProxyTableResponseSchema: GenMessage<PublishProxyTableResponse>;
+
+/**
+ * Quotas are scoped to one workload and one serving node, not the legacy
+ * fixed relay rate. The control plane sets them; agents cannot raise them.
+ *
+ * @generated from message n0x.connectivity.v1.WorkloadOfferBudget
+ */
+export declare type WorkloadOfferBudget = Message<"n0x.connectivity.v1.WorkloadOfferBudget"> & {
+  /**
+   * Grants for a positive window; zero is no allowance, never unlimited.
+   *
+   * @generated from field: uint64 bytes = 1;
+   */
+  bytes: bigint;
+
+  /**
+   * @generated from field: uint64 opens = 2;
+   */
+  opens: bigint;
+
+  /**
+   * @generated from field: uint32 concurrent_streams = 3;
+   */
+  concurrentStreams: number;
+
+  /**
+   * @generated from field: google.protobuf.Duration window = 4;
+   */
+  window?: Duration | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadOfferBudget.
+ * Use `create(WorkloadOfferBudgetSchema)` to create a new message.
+ */
+export declare const WorkloadOfferBudgetSchema: GenMessage<WorkloadOfferBudget>;
+
+/**
+ * @generated from message n0x.connectivity.v1.WorkloadOfferLease
+ */
+export declare type WorkloadOfferLease = Message<"n0x.connectivity.v1.WorkloadOfferLease"> & {
+  /**
+   * @generated from field: string lease_id = 1;
+   */
+  leaseId: string;
+
+  /**
+   * @generated from field: string workload_id = 2;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string service_id = 4;
+   */
+  serviceId: string;
+
+  /**
+   * @generated from field: string runtime_id = 5;
+   */
+  runtimeId: string;
+
+  /**
+   * @generated from field: string fence = 6;
+   */
+  fence: string;
+
+  /**
+   * @generated from field: uint64 revision_number = 7;
+   */
+  revisionNumber: bigint;
+
+  /**
+   * @generated from field: uint64 table_generation = 8;
+   */
+  tableGeneration: bigint;
+
+  /**
+   * @generated from field: n0x.connectivity.v1.WorkloadOfferBudget budget = 9;
+   */
+  budget?: WorkloadOfferBudget | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp window_start = 10;
+   */
+  windowStart?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 11;
+   */
+  expiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadOfferLease.
+ * Use `create(WorkloadOfferLeaseSchema)` to create a new message.
+ */
+export declare const WorkloadOfferLeaseSchema: GenMessage<WorkloadOfferLease>;
+
+/**
+ * Binary JWS payload for an outbound offer of a workload, never permission to
+ * dial an arbitrary target. Service, node SVID, incarnation, revision, lease
+ * and fence are verified against the applied proxy table and ledger.
+ *
+ * @generated from message n0x.connectivity.v1.WorkloadOfferTicket
+ */
+export declare type WorkloadOfferTicket = Message<"n0x.connectivity.v1.WorkloadOfferTicket"> & {
+  /**
+   * @generated from field: int32 version = 1;
+   */
+  version: number;
+
+  /**
+   * @generated from field: string id = 2;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string issuer = 3;
+   */
+  issuer: string;
+
+  /**
+   * @generated from field: string audience = 4;
+   */
+  audience: string;
+
+  /**
+   * @generated from field: string account_id = 5;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 6;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string service_id = 7;
+   */
+  serviceId: string;
+
+  /**
+   * @generated from field: string runtime_id = 8;
+   */
+  runtimeId: string;
+
+  /**
+   * @generated from field: string workload_id = 9;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: string identity_id = 10;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string subject_spiffe_id = 11;
+   */
+  subjectSpiffeId: string;
+
+  /**
+   * @generated from field: string subject_incarnation = 12;
+   */
+  subjectIncarnation: string;
+
+  /**
+   * @generated from field: string lease_id = 13;
+   */
+  leaseId: string;
+
+  /**
+   * @generated from field: string fence = 14;
+   */
+  fence: string;
+
+  /**
+   * @generated from field: uint64 revision_number = 15;
+   */
+  revisionNumber: bigint;
+
+  /**
+   * @generated from field: uint64 table_generation = 16;
+   */
+  tableGeneration: bigint;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp issued_at = 17;
+   */
+  issuedAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp not_before = 18;
+   */
+  notBefore?: Timestamp | undefined;
+
+  /**
+   * No later than the lease and either peer's certificate expiration.
+   *
+   * @generated from field: google.protobuf.Timestamp expires_at = 19;
+   */
+  expiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadOfferTicket.
+ * Use `create(WorkloadOfferTicketSchema)` to create a new message.
+ */
+export declare const WorkloadOfferTicketSchema: GenMessage<WorkloadOfferTicket>;
+
+/**
+ * Forward the signed bytes intact, without reserializing the ticket payload.
+ *
+ * @generated from message n0x.connectivity.v1.SignedWorkloadOfferTicket
+ */
+export declare type SignedWorkloadOfferTicket = Message<"n0x.connectivity.v1.SignedWorkloadOfferTicket"> & {
+  /**
+   * @generated from field: bytes jws = 1;
+   */
+  jws: Uint8Array;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.SignedWorkloadOfferTicket.
+ * Use `create(SignedWorkloadOfferTicketSchema)` to create a new message.
+ */
+export declare const SignedWorkloadOfferTicketSchema: GenMessage<SignedWorkloadOfferTicket>;
+
+/**
+ * @generated from message n0x.connectivity.v1.WorkloadOfferAdmission
+ */
+export declare type WorkloadOfferAdmission = Message<"n0x.connectivity.v1.WorkloadOfferAdmission"> & {
+  /**
+   * @generated from field: n0x.connectivity.v1.WorkloadOfferLease lease = 1;
+   */
+  lease?: WorkloadOfferLease | undefined;
+
+  /**
+   * @generated from field: n0x.connectivity.v1.SignedWorkloadOfferTicket ticket = 2;
+   */
+  ticket?: SignedWorkloadOfferTicket | undefined;
+
+  /**
+   * @generated from field: n0x.connectivity.v1.ConnectivityServiceInfo service = 3;
+   */
+  service?: ConnectivityServiceInfo | undefined;
+
+  /**
+   * The agent renews proactively before ticket/lease/certificate expiry.
+   * Successful renewal keeps the offer and active streams alive. This instant
+   * must leave enough overlap to finish renewal before expires_at.
+   *
+   * @generated from field: google.protobuf.Timestamp renew_after = 4;
+   */
+  renewAfter?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadOfferAdmission.
+ * Use `create(WorkloadOfferAdmissionSchema)` to create a new message.
+ */
+export declare const WorkloadOfferAdmissionSchema: GenMessage<WorkloadOfferAdmission>;
+
+/**
+ * Sent by an authenticated node agent. No destination address is accepted:
+ * the workload/node pair must exist in the control-plane table.
+ *
+ * @generated from message n0x.connectivity.v1.AdmitWorkloadOfferRequest
+ */
+export declare type AdmitWorkloadOfferRequest = Message<"n0x.connectivity.v1.AdmitWorkloadOfferRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string request_id = 3;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string workload_id = 4;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: string identity_id = 5;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string service_id = 6;
+   */
+  serviceId: string;
+
+  /**
+   * @generated from field: repeated bytes subject_chain = 7;
+   */
+  subjectChain: Uint8Array[];
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.AdmitWorkloadOfferRequest.
+ * Use `create(AdmitWorkloadOfferRequestSchema)` to create a new message.
+ */
+export declare const AdmitWorkloadOfferRequestSchema: GenMessage<AdmitWorkloadOfferRequest>;
+
+/**
+ * @generated from message n0x.connectivity.v1.AdmitWorkloadOfferResponse
+ */
+export declare type AdmitWorkloadOfferResponse = Message<"n0x.connectivity.v1.AdmitWorkloadOfferResponse"> & {
+  /**
+   * @generated from field: n0x.connectivity.v1.WorkloadOfferAdmission admission = 1;
+   */
+  admission?: WorkloadOfferAdmission | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.AdmitWorkloadOfferResponse.
+ * Use `create(AdmitWorkloadOfferResponseSchema)` to create a new message.
+ */
+export declare const AdmitWorkloadOfferResponseSchema: GenMessage<AdmitWorkloadOfferResponse>;
+
+/**
+ * Proxy-side single-owner ledger claim after verifying the agent's mTLS
+ * identity and ticket. A mismatched or already claimed lease is rejected.
+ *
+ * @generated from message n0x.connectivity.v1.ClaimWorkloadOfferRequest
+ */
+export declare type ClaimWorkloadOfferRequest = Message<"n0x.connectivity.v1.ClaimWorkloadOfferRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string request_id = 3;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: n0x.connectivity.v1.SignedWorkloadOfferTicket ticket = 4;
+   */
+  ticket?: SignedWorkloadOfferTicket | undefined;
+
+  /**
+   * @generated from field: string service_id = 5;
+   */
+  serviceId: string;
+
+  /**
+   * @generated from field: string runtime_id = 6;
+   */
+  runtimeId: string;
+
+  /**
+   * @generated from field: repeated bytes subject_chain = 7;
+   */
+  subjectChain: Uint8Array[];
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ClaimWorkloadOfferRequest.
+ * Use `create(ClaimWorkloadOfferRequestSchema)` to create a new message.
+ */
+export declare const ClaimWorkloadOfferRequestSchema: GenMessage<ClaimWorkloadOfferRequest>;
+
+/**
+ * @generated from message n0x.connectivity.v1.ClaimWorkloadOfferResponse
+ */
+export declare type ClaimWorkloadOfferResponse = Message<"n0x.connectivity.v1.ClaimWorkloadOfferResponse"> & {
+  /**
+   * @generated from field: n0x.connectivity.v1.WorkloadOfferLease lease = 1;
+   */
+  lease?: WorkloadOfferLease | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ClaimWorkloadOfferResponse.
+ * Use `create(ClaimWorkloadOfferResponseSchema)` to create a new message.
+ */
+export declare const ClaimWorkloadOfferResponseSchema: GenMessage<ClaimWorkloadOfferResponse>;
+
+/**
+ * Agent-side early renewal rechecks the latest table, node membership and
+ * quarantine. Permitted streams survive revision/credential changes; removed
+ * grants or quarantine cut affected streams. Renewal cannot widen a budget.
+ *
+ * @generated from message n0x.connectivity.v1.RenewWorkloadOfferRequest
+ */
+export declare type RenewWorkloadOfferRequest = Message<"n0x.connectivity.v1.RenewWorkloadOfferRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string request_id = 3;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string lease_id = 4;
+   */
+  leaseId: string;
+
+  /**
+   * @generated from field: string workload_id = 5;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: string identity_id = 6;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: string fence = 7;
+   */
+  fence: string;
+
+  /**
+   * @generated from field: repeated bytes subject_chain = 8;
+   */
+  subjectChain: Uint8Array[];
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.RenewWorkloadOfferRequest.
+ * Use `create(RenewWorkloadOfferRequestSchema)` to create a new message.
+ */
+export declare const RenewWorkloadOfferRequestSchema: GenMessage<RenewWorkloadOfferRequest>;
+
+/**
+ * @generated from message n0x.connectivity.v1.RenewWorkloadOfferResponse
+ */
+export declare type RenewWorkloadOfferResponse = Message<"n0x.connectivity.v1.RenewWorkloadOfferResponse"> & {
+  /**
+   * @generated from field: n0x.connectivity.v1.WorkloadOfferAdmission admission = 1;
+   */
+  admission?: WorkloadOfferAdmission | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.RenewWorkloadOfferResponse.
+ * Use `create(RenewWorkloadOfferResponseSchema)` to create a new message.
+ */
+export declare const RenewWorkloadOfferResponseSchema: GenMessage<RenewWorkloadOfferResponse>;
+
+/**
+ * The owning proxy runtime refills against the per-workload/node ledger.
+ *
+ * @generated from message n0x.connectivity.v1.RefillWorkloadOfferRequest
+ */
+export declare type RefillWorkloadOfferRequest = Message<"n0x.connectivity.v1.RefillWorkloadOfferRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string request_id = 3;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string lease_id = 4;
+   */
+  leaseId: string;
+
+  /**
+   * @generated from field: string runtime_id = 5;
+   */
+  runtimeId: string;
+
+  /**
+   * @generated from field: string fence = 6;
+   */
+  fence: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp window_start = 7;
+   */
+  windowStart?: Timestamp | undefined;
+
+  /**
+   * @generated from field: uint64 bytes = 8;
+   */
+  bytes: bigint;
+
+  /**
+   * @generated from field: uint64 opens = 9;
+   */
+  opens: bigint;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.RefillWorkloadOfferRequest.
+ * Use `create(RefillWorkloadOfferRequestSchema)` to create a new message.
+ */
+export declare const RefillWorkloadOfferRequestSchema: GenMessage<RefillWorkloadOfferRequest>;
+
+/**
+ * @generated from message n0x.connectivity.v1.RefillWorkloadOfferResponse
+ */
+export declare type RefillWorkloadOfferResponse = Message<"n0x.connectivity.v1.RefillWorkloadOfferResponse"> & {
+  /**
+   * @generated from field: n0x.connectivity.v1.WorkloadOfferLease lease = 1;
+   */
+  lease?: WorkloadOfferLease | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.RefillWorkloadOfferResponse.
+ * Use `create(RefillWorkloadOfferResponseSchema)` to create a new message.
+ */
+export declare const RefillWorkloadOfferResponseSchema: GenMessage<RefillWorkloadOfferResponse>;
+
+/**
+ * Internal lifecycle operation, not a console API for terminating sessions.
+ *
+ * @generated from message n0x.connectivity.v1.CloseWorkloadOfferRequest
+ */
+export declare type CloseWorkloadOfferRequest = Message<"n0x.connectivity.v1.CloseWorkloadOfferRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string request_id = 3;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string lease_id = 4;
+   */
+  leaseId: string;
+
+  /**
+   * @generated from field: string runtime_id = 5;
+   */
+  runtimeId: string;
+
+  /**
+   * @generated from field: string fence = 6;
+   */
+  fence: string;
+
+  /**
+   * @generated from field: string reason = 7;
+   */
+  reason: string;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.CloseWorkloadOfferRequest.
+ * Use `create(CloseWorkloadOfferRequestSchema)` to create a new message.
+ */
+export declare const CloseWorkloadOfferRequestSchema: GenMessage<CloseWorkloadOfferRequest>;
+
+/**
+ * @generated from message n0x.connectivity.v1.CloseWorkloadOfferResponse
+ */
+export declare type CloseWorkloadOfferResponse = Message<"n0x.connectivity.v1.CloseWorkloadOfferResponse"> & {
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.CloseWorkloadOfferResponse.
+ * Use `create(CloseWorkloadOfferResponseSchema)` to create a new message.
+ */
+export declare const CloseWorkloadOfferResponseSchema: GenMessage<CloseWorkloadOfferResponse>;
+
+/**
+ * Agent-to-proxy association preface on the outbound QUIC mTLS connection.
+ * The proxy claims its lease before dispatching any multiplexed traffic.
+ *
+ * @generated from message n0x.connectivity.v1.WorkloadOfferHello
+ */
+export declare type WorkloadOfferHello = Message<"n0x.connectivity.v1.WorkloadOfferHello"> & {
+  /**
+   * @generated from field: n0x.connectivity.v1.SignedWorkloadOfferTicket ticket = 1;
+   */
+  ticket?: SignedWorkloadOfferTicket | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadOfferHello.
+ * Use `create(WorkloadOfferHelloSchema)` to create a new message.
+ */
+export declare const WorkloadOfferHelloSchema: GenMessage<WorkloadOfferHello>;
+
+/**
+ * @generated from message n0x.connectivity.v1.WorkloadOfferReady
+ */
+export declare type WorkloadOfferReady = Message<"n0x.connectivity.v1.WorkloadOfferReady"> & {
+  /**
+   * @generated from field: string lease_id = 1;
+   */
+  leaseId: string;
+
+  /**
+   * @generated from field: string workload_id = 2;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadOfferReady.
+ * Use `create(WorkloadOfferReadySchema)` to create a new message.
+ */
+export declare const WorkloadOfferReadySchema: GenMessage<WorkloadOfferReady>;
+
+/**
+ * Sent by the agent on the existing association after RenewWorkloadOffer.
+ * The proxy verifies the new ticket and its ledger binding before expiry,
+ * retaining the same owner, lease and streams without a second ledger claim.
+ * New credentials must prove the same node identity; rollover is authenticated
+ * before the old credentials expire, including when transport migration is
+ * needed. Failed reauthorization cannot extend the association's validity.
+ *
+ * @generated from message n0x.connectivity.v1.WorkloadOfferRenewal
+ */
+export declare type WorkloadOfferRenewal = Message<"n0x.connectivity.v1.WorkloadOfferRenewal"> & {
+  /**
+   * @generated from field: n0x.connectivity.v1.SignedWorkloadOfferTicket ticket = 1;
+   */
+  ticket?: SignedWorkloadOfferTicket | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadOfferRenewal.
+ * Use `create(WorkloadOfferRenewalSchema)` to create a new message.
+ */
+export declare const WorkloadOfferRenewalSchema: GenMessage<WorkloadOfferRenewal>;
+
+/**
+ * @generated from message n0x.connectivity.v1.WorkloadOfferRenewed
+ */
+export declare type WorkloadOfferRenewed = Message<"n0x.connectivity.v1.WorkloadOfferRenewed"> & {
+  /**
+   * @generated from field: string lease_id = 1;
+   */
+  leaseId: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 2;
+   */
+  expiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadOfferRenewed.
+ * Use `create(WorkloadOfferRenewedSchema)` to create a new message.
+ */
+export declare const WorkloadOfferRenewedSchema: GenMessage<WorkloadOfferRenewed>;
+
+/**
+ * Prefix of a proxy-to-agent stream on the established outbound association.
+ * The agent checks the workload against its offer and uses only its registered
+ * local endpoint; Internet callers cannot choose the local address or port.
+ *
+ * @generated from message n0x.connectivity.v1.WorkloadStreamOpen
+ */
+export declare type WorkloadStreamOpen = Message<"n0x.connectivity.v1.WorkloadStreamOpen"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string workload_id = 2;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: string permission_id = 3;
+   */
+  permissionId: string;
+
+  /**
+   * @generated from field: string identity_id = 4;
+   */
+  identityId: string;
+
+  /**
+   * Short-lived ES256 JWS from the proxy, binding identity, workload,
+   * permission and expiration; never an unsigned identity header.
+   *
+   * @generated from field: bytes backend_identity_jws = 5;
+   */
+  backendIdentityJws: Uint8Array;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadStreamOpen.
+ * Use `create(WorkloadStreamOpenSchema)` to create a new message.
+ */
+export declare const WorkloadStreamOpenSchema: GenMessage<WorkloadStreamOpen>;
+
+/**
+ * @generated from enum n0x.connectivity.v1.ProxyWorkloadType
+ */
+export enum ProxyWorkloadType {
+  /**
+   * @generated from enum value: PROXY_WORKLOAD_TYPE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: PROXY_WORKLOAD_TYPE_HTTPS = 1;
+   */
+  HTTPS = 1,
+
+  /**
+   * @generated from enum value: PROXY_WORKLOAD_TYPE_SSH = 2;
+   */
+  SSH = 2,
+
+  /**
+   * @generated from enum value: PROXY_WORKLOAD_TYPE_TCP = 3;
+   */
+  TCP = 3,
+}
+
+/**
+ * Describes the enum n0x.connectivity.v1.ProxyWorkloadType.
+ */
+export declare const ProxyWorkloadTypeSchema: GenEnum<ProxyWorkloadType>;
+
+/**
+ * @generated from enum n0x.connectivity.v1.ProxyAccessMechanism
+ */
+export enum ProxyAccessMechanism {
+  /**
+   * @generated from enum value: PROXY_ACCESS_MECHANISM_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: PROXY_ACCESS_MECHANISM_LOGIN = 1;
+   */
+  LOGIN = 1,
+
+  /**
+   * @generated from enum value: PROXY_ACCESS_MECHANISM_SSH_CERTIFICATE = 2;
+   */
+  SSH_CERTIFICATE = 2,
+
+  /**
+   * @generated from enum value: PROXY_ACCESS_MECHANISM_SHORT_LIVED_CREDENTIAL = 3;
+   */
+  SHORT_LIVED_CREDENTIAL = 3,
+}
+
+/**
+ * Describes the enum n0x.connectivity.v1.ProxyAccessMechanism.
+ */
+export declare const ProxyAccessMechanismSchema: GenEnum<ProxyAccessMechanism>;
+
+/**
  * @generated from service n0x.connectivity.v1.ForwardStatusService
  */
 export declare const ForwardStatusService: GenService<{
@@ -789,6 +1903,70 @@ export declare const AdmissionService: GenService<{
     methodKind: "unary";
     input: typeof JoinRequestSchema;
     output: typeof JoinResponseSchema;
+  },
+  /**
+   * Workload offers use separate tickets and leases; existing relay admission
+   * and Ticket payloads retain their original meaning.
+   *
+   * @generated from rpc n0x.connectivity.v1.AdmissionService.AdmitWorkloadOffer
+   */
+  admitWorkloadOffer: {
+    methodKind: "unary";
+    input: typeof AdmitWorkloadOfferRequestSchema;
+    output: typeof AdmitWorkloadOfferResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.connectivity.v1.AdmissionService.ClaimWorkloadOffer
+   */
+  claimWorkloadOffer: {
+    methodKind: "unary";
+    input: typeof ClaimWorkloadOfferRequestSchema;
+    output: typeof ClaimWorkloadOfferResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.connectivity.v1.AdmissionService.RenewWorkloadOffer
+   */
+  renewWorkloadOffer: {
+    methodKind: "unary";
+    input: typeof RenewWorkloadOfferRequestSchema;
+    output: typeof RenewWorkloadOfferResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.connectivity.v1.AdmissionService.RefillWorkloadOffer
+   */
+  refillWorkloadOffer: {
+    methodKind: "unary";
+    input: typeof RefillWorkloadOfferRequestSchema;
+    output: typeof RefillWorkloadOfferResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.connectivity.v1.AdmissionService.CloseWorkloadOffer
+   */
+  closeWorkloadOffer: {
+    methodKind: "unary";
+    input: typeof CloseWorkloadOfferRequestSchema;
+    output: typeof CloseWorkloadOfferResponseSchema;
+  },
+}>;
+
+/**
+ * The control plane atomically replaces a tenant's proxy table. It is the sole
+ * source of targets, replacing static TargetStore configuration (ADR 0024 D7).
+ * This is delivery of compiled state, not creation of a governed revision.
+ * Only the authenticated control plane may publish. Applying a table rechecks
+ * open sessions immediately: retain those still allowed and cut those revoked
+ * or quarantined, without waiting for ticket renewal.
+ *
+ * @generated from service n0x.connectivity.v1.ProxyControlService
+ */
+export declare const ProxyControlService: GenService<{
+  /**
+   * @generated from rpc n0x.connectivity.v1.ProxyControlService.PublishProxyTable
+   */
+  publishProxyTable: {
+    methodKind: "unary";
+    input: typeof PublishProxyTableRequestSchema;
+    output: typeof PublishProxyTableResponseSchema;
   },
 }>;
 
