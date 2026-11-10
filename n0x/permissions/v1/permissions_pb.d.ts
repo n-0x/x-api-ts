@@ -102,6 +102,15 @@ export declare type NodeTarget = Message<"n0x.permissions.v1.NodeTarget"> & {
     value: boolean;
     case: "allPorts";
   } | { case: undefined; value?: undefined };
+
+  /**
+   * Valores del documento firmado: tcp, udp, icmp o any. Ausente conserva
+   * tcp para puerto/rango y any para all_ports. tcp/udp requieren puerto o
+   * rango; icmp/any requieren all_ports=true y no llevan puertos al compilar.
+   *
+   * @generated from field: optional string protocol = 5;
+   */
+  protocol?: string | undefined;
 };
 
 /**

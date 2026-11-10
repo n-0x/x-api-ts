@@ -113,6 +113,14 @@ export declare type ClientBootstrap = Message<"n0x.files.v1.ClientBootstrap"> & 
    * @generated from field: string trust_domain = 20;
    */
   trustDomain: string;
+
+  /**
+   * Ausente o false conserva el agente de malla; true expone solo la carga
+   * mediante una conexion saliente, sin TUN ni direccion de malla.
+   *
+   * @generated from field: optional bool expose_only = 21;
+   */
+  exposeOnly?: boolean | undefined;
 };
 
 /**
@@ -516,6 +524,27 @@ export declare type ResourcesProcessConfig = Message<"n0x.files.v1.ResourcesProc
    * @generated from field: repeated string federated_trust_domains = 35;
    */
   federatedTrustDomains: string[];
+
+  /**
+   * Destino autenticado de PublishProxyTable, leido por resources. Ausente
+   * conserva la publicacion sin entrega al proxy (publisher_not_configured).
+   *
+   * @generated from field: n0x.files.v1.ProxyTablePublisher proxy_table_publisher = 36;
+   */
+  proxyTablePublisher?: ProxyTablePublisher | undefined;
+
+  /**
+   * Rutas de la clave privada de firma y de la confianza publica del token
+   * corto de instancia. No son la confianza de asignacion de cuenta/regional.
+   *
+   * @generated from field: optional string assignment_instance_signing_key_file = 37;
+   */
+  assignmentInstanceSigningKeyFile?: string | undefined;
+
+  /**
+   * @generated from field: optional string assignment_instance_trust_file = 38;
+   */
+  assignmentInstanceTrustFile?: string | undefined;
 };
 
 /**
@@ -662,6 +691,25 @@ export declare type ManagerProcessConfig = Message<"n0x.files.v1.ManagerProcessC
    * @generated from field: n0x.files.v1.ManagerProcessConfig.PlaybooksConfig playbooks = 27;
    */
   playbooks?: ManagerProcessConfig_PlaybooksConfig | undefined;
+
+  /**
+   * Clave privada ES256 solo por ruta de fichero, nunca PEM en linea.
+   *
+   * @generated from field: optional string proxy_return_signing_key_file = 28;
+   */
+  proxyReturnSigningKeyFile?: string | undefined;
+
+  /**
+   * @generated from field: optional string proxy_return_key_id = 29;
+   */
+  proxyReturnKeyId?: string | undefined;
+
+  /**
+   * Dominio publico explicito contra el que se valida el host de vuelta.
+   *
+   * @generated from field: optional string proxy_public_domain = 30;
+   */
+  proxyPublicDomain?: string | undefined;
 };
 
 /**
@@ -983,6 +1031,8 @@ export declare type ConnectivityProcessConfig = Message<"n0x.files.v1.Connectivi
   socket: string;
 
   /**
+   * Listener QUIC de ofertas salientes de los nodos en el rol proxy de cargas.
+   *
    * @generated from field: string listen = 8;
    */
   listen: string;
@@ -1026,6 +1076,61 @@ export declare type ConnectivityProcessConfig = Message<"n0x.files.v1.Connectivi
    * @generated from field: repeated string federated_trust_domains = 16;
    */
   federatedTrustDomains: string[];
+
+  /**
+   * Allowlist de SPIFFE ID fijados para publicar la tabla y autorizar la lectura
+   * GetWorkloadNodeStatus de authority/resources para NodeConnectionSource;
+   * no son los emisores de admision de issuer_ids. Ausente o vacia deniega.
+   *
+   * @generated from field: repeated string control_plane_ids = 17;
+   */
+  controlPlaneIds: string[];
+
+  /**
+   * Listener mTLS de ProxyControlService y de la lectura GetWorkloadNodeStatus
+   * para authority/resources, autorizados con control_plane_ids;
+   * ausente no habilita este listener.
+   *
+   * @generated from field: optional string control_listen = 18;
+   */
+  controlListen?: string | undefined;
+
+  /**
+   * @generated from field: repeated n0x.files.v1.WorkloadPublicListener workload_public_listeners = 19;
+   */
+  workloadPublicListeners: WorkloadPublicListener[];
+
+  /**
+   * @generated from field: optional string https_listen = 20;
+   */
+  httpsListen?: string | undefined;
+
+  /**
+   * @generated from field: optional string console_url = 21;
+   */
+  consoleUrl?: string | undefined;
+
+  /**
+   * @generated from field: optional string public_domain = 22;
+   */
+  publicDomain?: string | undefined;
+
+  /**
+   * @generated from field: repeated n0x.files.v1.ProxyReturnPublicKey proxy_return_public_keys = 23;
+   */
+  proxyReturnPublicKeys: ProxyReturnPublicKey[];
+
+  /**
+   * Clave privada de sellado de cookies solo por ruta de fichero.
+   *
+   * @generated from field: optional string session_key_file = 24;
+   */
+  sessionKeyFile?: string | undefined;
+
+  /**
+   * @generated from field: repeated n0x.files.v1.TenantCertificate tenant_certificates = 25;
+   */
+  tenantCertificates: TenantCertificate[];
 };
 
 /**
@@ -1033,6 +1138,62 @@ export declare type ConnectivityProcessConfig = Message<"n0x.files.v1.Connectivi
  * Use `create(ConnectivityProcessConfigSchema)` to create a new message.
  */
 export declare const ConnectivityProcessConfigSchema: GenMessage<ConnectivityProcessConfig>;
+
+/**
+ * Configuracion explicita del publicador, nunca un destino aportado por el cliente.
+ *
+ * @generated from message n0x.files.v1.ProxyTablePublisher
+ */
+export declare type ProxyTablePublisher = Message<"n0x.files.v1.ProxyTablePublisher"> & {
+  /**
+   * @generated from field: optional string service_id = 1;
+   */
+  serviceId?: string | undefined;
+
+  /**
+   * @generated from field: optional string endpoint = 2;
+   */
+  endpoint?: string | undefined;
+
+  /**
+   * @generated from field: optional string spiffe_id = 3;
+   */
+  spiffeId?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.files.v1.ProxyTablePublisher.
+ * Use `create(ProxyTablePublisherSchema)` to create a new message.
+ */
+export declare const ProxyTablePublisherSchema: GenMessage<ProxyTablePublisher>;
+
+/**
+ * Listener publico ligado a una carga y un binding del proceso.
+ *
+ * @generated from message n0x.files.v1.WorkloadPublicListener
+ */
+export declare type WorkloadPublicListener = Message<"n0x.files.v1.WorkloadPublicListener"> & {
+  /**
+   * @generated from field: n0x.files.v1.Binding binding = 1;
+   */
+  binding?: Binding | undefined;
+
+  /**
+   * @generated from field: optional string workload_id = 2;
+   */
+  workloadId?: string | undefined;
+
+  /**
+   * @generated from field: optional string address = 3;
+   */
+  address?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.files.v1.WorkloadPublicListener.
+ * Use `create(WorkloadPublicListenerSchema)` to create a new message.
+ */
+export declare const WorkloadPublicListenerSchema: GenMessage<WorkloadPublicListener>;
 
 /**
  * @generated from message n0x.files.v1.CliConfig
@@ -1093,6 +1254,13 @@ export declare type CliSession = Message<"n0x.files.v1.CliSession"> & {
    * @generated from field: uint32 expires_at = 3;
    */
   expiresAt: number;
+
+  /**
+   * Segundos Unix, como expires_at; ausente no acredita MFA.
+   *
+   * @generated from field: optional uint32 mfa_at = 4;
+   */
+  mfaAt?: number | undefined;
 };
 
 /**
@@ -2326,4 +2494,120 @@ export declare type OverlaydRule = Message<"n0x.files.v1.OverlaydRule"> & {
  * Use `create(OverlaydRuleSchema)` to create a new message.
  */
 export declare const OverlaydRuleSchema: GenMessage<OverlaydRule>;
+
+/**
+ * Solo material publico de verificacion del aserto de retorno del manager.
+ *
+ * @generated from message n0x.files.v1.ProxyReturnPublicKey
+ */
+export declare type ProxyReturnPublicKey = Message<"n0x.files.v1.ProxyReturnPublicKey"> & {
+  /**
+   * @generated from field: optional string kid = 1;
+   */
+  kid?: string | undefined;
+
+  /**
+   * @generated from field: optional string public_key_pem = 2;
+   */
+  publicKeyPem?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.files.v1.ProxyReturnPublicKey.
+ * Use `create(ProxyReturnPublicKeySchema)` to create a new message.
+ */
+export declare const ProxyReturnPublicKeySchema: GenMessage<ProxyReturnPublicKey>;
+
+/**
+ * Certificado comodin de tenant; material privado siempre fuera del JSON.
+ *
+ * @generated from message n0x.files.v1.TenantCertificate
+ */
+export declare type TenantCertificate = Message<"n0x.files.v1.TenantCertificate"> & {
+  /**
+   * @generated from field: optional string tenant_label = 1;
+   */
+  tenantLabel?: string | undefined;
+
+  /**
+   * @generated from field: n0x.files.v1.Binding binding = 2;
+   */
+  binding?: Binding | undefined;
+
+  /**
+   * @generated from field: optional string cert_file = 3;
+   */
+  certFile?: string | undefined;
+
+  /**
+   * @generated from field: optional string key_file = 4;
+   */
+  keyFile?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.files.v1.TenantCertificate.
+ * Use `create(TenantCertificateSchema)` to create a new message.
+ */
+export declare const TenantCertificateSchema: GenMessage<TenantCertificate>;
+
+/**
+ * Runtime de assignments sin acceso directo a Mongo.
+ *
+ * @generated from message n0x.files.v1.AssignmentsProcessConfig
+ */
+export declare type AssignmentsProcessConfig = Message<"n0x.files.v1.AssignmentsProcessConfig"> & {
+  /**
+   * @generated from field: optional string authority_url = 1;
+   */
+  authorityUrl?: string | undefined;
+
+  /**
+   * @generated from field: optional string authority_spiffe_id = 2;
+   */
+  authoritySpiffeId?: string | undefined;
+
+  /**
+   * @generated from field: optional string svid_cert_file = 3;
+   */
+  svidCertFile?: string | undefined;
+
+  /**
+   * @generated from field: optional string svid_key_file = 4;
+   */
+  svidKeyFile?: string | undefined;
+
+  /**
+   * @generated from field: optional string bundle_file = 5;
+   */
+  bundleFile?: string | undefined;
+
+  /**
+   * @generated from field: optional string inference_url = 6;
+   */
+  inferenceUrl?: string | undefined;
+
+  /**
+   * @generated from field: optional string inference_spiffe_id = 7;
+   */
+  inferenceSpiffeId?: string | undefined;
+
+  /**
+   * @generated from field: optional string model = 8;
+   */
+  model?: string | undefined;
+
+  /**
+   * Intervalo de sondeo en segundos; ausente conserva el valor del runtime.
+   *
+   * @generated from field: optional uint32 poll_seconds = 9;
+   */
+  pollSeconds?: number | undefined;
+};
+
+/**
+ * Describes the message n0x.files.v1.AssignmentsProcessConfig.
+ * Use `create(AssignmentsProcessConfigSchema)` to create a new message.
+ */
+export declare const AssignmentsProcessConfigSchema: GenMessage<AssignmentsProcessConfig>;
 

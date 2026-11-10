@@ -5,7 +5,8 @@
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
 import type { NodeReport } from "../../signed/v1/signed_pb.js";
-import type { AdmitResult } from "../../connectivity/v1/connectivity_pb.js";
+import type { ListeningPort, RegisterWorkloadFromHostRequest as RegisterWorkloadFromHostRequest$1, RegisterWorkloadFromHostResponse as RegisterWorkloadFromHostResponse$1 } from "../../workloads/v1/workloads_pb.js";
+import type { AdmitResult, AdmitWorkloadOfferRequest as AdmitWorkloadOfferRequest$1, AdmitWorkloadOfferResponse as AdmitWorkloadOfferResponse$1, RenewWorkloadOfferRequest as RenewWorkloadOfferRequest$1, RenewWorkloadOfferResponse as RenewWorkloadOfferResponse$1 } from "../../connectivity/v1/connectivity_pb.js";
 import type { Alert, Rule } from "../../alerts/v1/alerts_pb.js";
 
 /**
@@ -1045,6 +1046,28 @@ export declare type HostTelemetry = Message<"n0x.control.v1.HostTelemetry"> & {
 export declare const HostTelemetrySchema: GenMessage<HostTelemetry>;
 
 /**
+ * Observacion orientativa del agente: no publica cargas, no concede acceso
+ * y no sustituye a la publicacion ni al permiso.
+ * Cada informe sustituye al anterior del mismo nodo y viaja por ReportFlows;
+ * authority lo lee por ReadProjection en ObservationView.telemetry para servir
+ * ListListeningPorts.
+ *
+ * @generated from message n0x.control.v1.ListeningPortsObservation
+ */
+export declare type ListeningPortsObservation = Message<"n0x.control.v1.ListeningPortsObservation"> & {
+  /**
+   * @generated from field: repeated n0x.workloads.v1.ListeningPort listening_ports = 1;
+   */
+  listeningPorts: ListeningPort[];
+};
+
+/**
+ * Describes the message n0x.control.v1.ListeningPortsObservation.
+ * Use `create(ListeningPortsObservationSchema)` to create a new message.
+ */
+export declare const ListeningPortsObservationSchema: GenMessage<ListeningPortsObservation>;
+
+/**
  * @generated from message n0x.control.v1.FlowTelemetry
  */
 export declare type FlowTelemetry = Message<"n0x.control.v1.FlowTelemetry"> & {
@@ -1082,6 +1105,14 @@ export declare type FlowTelemetry = Message<"n0x.control.v1.FlowTelemetry"> & {
    * @generated from field: n0x.control.v1.HostTelemetry host = 7;
    */
   host?: HostTelemetry | undefined;
+
+  /**
+   * Ausente: el agente no informo; dato no disponible, no acredita que no haya
+   * puertos. Presente con lista vacia: no se observo ninguno.
+   *
+   * @generated from field: n0x.control.v1.ListeningPortsObservation listening_ports = 8;
+   */
+  listeningPorts?: ListeningPortsObservation | undefined;
 };
 
 /**
@@ -2436,6 +2467,222 @@ export declare type RecordAlertTransitionsResponse = Message<"n0x.control.v1.Rec
 export declare const RecordAlertTransitionsResponseSchema: GenMessage<RecordAlertTransitionsResponse>;
 
 /**
+ * @generated from message n0x.control.v1.AdmitWorkloadOfferRequest
+ */
+export declare type AdmitWorkloadOfferRequest = Message<"n0x.control.v1.AdmitWorkloadOfferRequest"> & {
+  /**
+   * @generated from field: n0x.control.v1.RenewLeaseRequest session = 1;
+   */
+  session?: RenewLeaseRequest | undefined;
+
+  /**
+   * @generated from field: n0x.connectivity.v1.AdmitWorkloadOfferRequest request = 2;
+   */
+  request?: AdmitWorkloadOfferRequest$1 | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.AdmitWorkloadOfferRequest.
+ * Use `create(AdmitWorkloadOfferRequestSchema)` to create a new message.
+ */
+export declare const AdmitWorkloadOfferRequestSchema: GenMessage<AdmitWorkloadOfferRequest>;
+
+/**
+ * @generated from message n0x.control.v1.RenewWorkloadOfferRequest
+ */
+export declare type RenewWorkloadOfferRequest = Message<"n0x.control.v1.RenewWorkloadOfferRequest"> & {
+  /**
+   * @generated from field: n0x.control.v1.RenewLeaseRequest session = 1;
+   */
+  session?: RenewLeaseRequest | undefined;
+
+  /**
+   * @generated from field: n0x.connectivity.v1.RenewWorkloadOfferRequest request = 2;
+   */
+  request?: RenewWorkloadOfferRequest$1 | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.RenewWorkloadOfferRequest.
+ * Use `create(RenewWorkloadOfferRequestSchema)` to create a new message.
+ */
+export declare const RenewWorkloadOfferRequestSchema: GenMessage<RenewWorkloadOfferRequest>;
+
+/**
+ * @generated from message n0x.control.v1.RegisterWorkloadFromHostRequest
+ */
+export declare type RegisterWorkloadFromHostRequest = Message<"n0x.control.v1.RegisterWorkloadFromHostRequest"> & {
+  /**
+   * @generated from field: n0x.control.v1.RenewLeaseRequest session = 1;
+   */
+  session?: RenewLeaseRequest | undefined;
+
+  /**
+   * @generated from field: n0x.workloads.v1.RegisterWorkloadFromHostRequest request = 2;
+   */
+  request?: RegisterWorkloadFromHostRequest$1 | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.RegisterWorkloadFromHostRequest.
+ * Use `create(RegisterWorkloadFromHostRequestSchema)` to create a new message.
+ */
+export declare const RegisterWorkloadFromHostRequestSchema: GenMessage<RegisterWorkloadFromHostRequest>;
+
+/**
+ * El scope se autoriza igual que en ReadProjection; no se aceptan ambitos
+ * de cuenta o tenant independientes que puedan contradecirlo.
+ *
+ * @generated from message n0x.control.v1.ReadFlowEventsRequest
+ */
+export declare type ReadFlowEventsRequest = Message<"n0x.control.v1.ReadFlowEventsRequest"> & {
+  /**
+   * @generated from field: n0x.control.v1.Scope scope = 1;
+   */
+  scope?: Scope | undefined;
+
+  /**
+   * Cursor opaco exclusivo ligado al scope y a la epoca del anillo. Vacio
+   * inicia en el evento mas antiguo retenido, no en la frontera en vivo.
+   *
+   * @generated from field: optional string cursor = 2;
+   */
+  cursor?: string | undefined;
+
+  /**
+   * Cero usa 100; maximo 1000; valores negativos no son validos.
+   *
+   * @generated from field: optional int32 page_size = 3;
+   */
+  pageSize?: number | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.ReadFlowEventsRequest.
+ * Use `create(ReadFlowEventsRequestSchema)` to create a new message.
+ */
+export declare const ReadFlowEventsRequestSchema: GenMessage<ReadFlowEventsRequest>;
+
+/**
+ * Conserva el origen del flujo para que authority normalice sesiones por
+ * encarnacion/boot y 5-tupla, sin mover esa logica al controller.
+ *
+ * @generated from message n0x.control.v1.FlowEventEntry
+ */
+export declare type FlowEventEntry = Message<"n0x.control.v1.FlowEventEntry"> & {
+  /**
+   * @generated from field: optional string incarnation_id = 1;
+   */
+  incarnationId?: string | undefined;
+
+  /**
+   * @generated from field: optional string boot_id = 2;
+   */
+  bootId?: string | undefined;
+
+  /**
+   * @generated from field: n0x.control.v1.FlowEvent event = 3;
+   */
+  event?: FlowEvent | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.FlowEventEntry.
+ * Use `create(FlowEventEntrySchema)` to create a new message.
+ */
+export declare const FlowEventEntrySchema: GenMessage<FlowEventEntry>;
+
+/**
+ * @generated from message n0x.control.v1.ReadFlowEventsResponse
+ */
+export declare type ReadFlowEventsResponse = Message<"n0x.control.v1.ReadFlowEventsResponse"> & {
+  /**
+   * Orden estable del anillo; FlowEvent.cursor sigue siendo local al nodo/boot.
+   *
+   * @generated from field: repeated n0x.control.v1.FlowEventEntry entries = 1;
+   */
+  entries: FlowEventEntry[];
+
+  /**
+   * Limite seguro tras esta pagina, tambien vacia. Persistirlo para la siguiente
+   * lectura; deduplicar por encarnacion, boot y FlowEvent.cursor tras retry.
+   *
+   * @generated from field: optional string cursor = 2;
+   */
+  cursor?: string | undefined;
+
+  /**
+   * @generated from field: optional bool has_more = 3;
+   */
+  hasMore?: boolean | undefined;
+
+  /**
+   * Expulsion por capacidad/edad o reinicio: nunca certificar continuidad
+   * silenciosamente. Se devuelve lo retenido y un nuevo cursor utilizable.
+   * Retencion maxima de 24 h en memoria; no garantiza 24 h tras un reinicio.
+   *
+   * @generated from field: optional bool history_lost = 4;
+   */
+  historyLost?: boolean | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.ReadFlowEventsResponse.
+ * Use `create(ReadFlowEventsResponseSchema)` to create a new message.
+ */
+export declare const ReadFlowEventsResponseSchema: GenMessage<ReadFlowEventsResponse>;
+
+/**
+ * Envolturas propias de la ruta de control; conservan los mensajes de dominio.
+ *
+ * @generated from message n0x.control.v1.AdmitWorkloadOfferResponse
+ */
+export declare type AdmitWorkloadOfferResponse = Message<"n0x.control.v1.AdmitWorkloadOfferResponse"> & {
+  /**
+   * @generated from field: n0x.connectivity.v1.AdmitWorkloadOfferResponse response = 1;
+   */
+  response?: AdmitWorkloadOfferResponse$1 | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.AdmitWorkloadOfferResponse.
+ * Use `create(AdmitWorkloadOfferResponseSchema)` to create a new message.
+ */
+export declare const AdmitWorkloadOfferResponseSchema: GenMessage<AdmitWorkloadOfferResponse>;
+
+/**
+ * @generated from message n0x.control.v1.RenewWorkloadOfferResponse
+ */
+export declare type RenewWorkloadOfferResponse = Message<"n0x.control.v1.RenewWorkloadOfferResponse"> & {
+  /**
+   * @generated from field: n0x.connectivity.v1.RenewWorkloadOfferResponse response = 1;
+   */
+  response?: RenewWorkloadOfferResponse$1 | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.RenewWorkloadOfferResponse.
+ * Use `create(RenewWorkloadOfferResponseSchema)` to create a new message.
+ */
+export declare const RenewWorkloadOfferResponseSchema: GenMessage<RenewWorkloadOfferResponse>;
+
+/**
+ * @generated from message n0x.control.v1.RegisterWorkloadFromHostResponse
+ */
+export declare type RegisterWorkloadFromHostResponse = Message<"n0x.control.v1.RegisterWorkloadFromHostResponse"> & {
+  /**
+   * @generated from field: n0x.workloads.v1.RegisterWorkloadFromHostResponse response = 1;
+   */
+  response?: RegisterWorkloadFromHostResponse$1 | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.RegisterWorkloadFromHostResponse.
+ * Use `create(RegisterWorkloadFromHostResponseSchema)` to create a new message.
+ */
+export declare const RegisterWorkloadFromHostResponseSchema: GenMessage<RegisterWorkloadFromHostResponse>;
+
+/**
  * @generated from service n0x.control.v1.NodeControlService
  */
 export declare const NodeControlService: GenService<{
@@ -2494,6 +2741,17 @@ export declare const NodeControlService: GenService<{
     methodKind: "unary";
     input: typeof ReportFlowsRequestSchema;
     output: typeof ReportFlowsResponseSchema;
+  },
+  /**
+   * Ruta mTLS de nodo: el sujeto y la sesion verificados deben corresponder
+   * a request.identity_id y al account/tenant. Publicar no concede acceso.
+   *
+   * @generated from rpc n0x.control.v1.NodeControlService.RegisterWorkloadFromHost
+   */
+  registerWorkloadFromHost: {
+    methodKind: "unary";
+    input: typeof RegisterWorkloadFromHostRequestSchema;
+    output: typeof RegisterWorkloadFromHostResponseSchema;
   },
 }>;
 
@@ -2667,6 +2925,17 @@ export declare const ControlObservationsService: GenService<{
     input: typeof ReadProjectionRequestSchema;
     output: typeof ReadProjectionResponseSchema;
   },
+  /**
+   * Solo authority autenticado por mTLS; lee el anillo sin depender de que
+   * existan suscriptores en la consola ni del ultimo reporte de 1024 eventos.
+   *
+   * @generated from rpc n0x.control.v1.ControlObservationsService.ReadFlowEvents
+   */
+  readFlowEvents: {
+    methodKind: "unary";
+    input: typeof ReadFlowEventsRequestSchema;
+    output: typeof ReadFlowEventsResponseSchema;
+  },
 }>;
 
 /**
@@ -2752,6 +3021,25 @@ export declare const ConnectivityControlService: GenService<{
     methodKind: "unary";
     input: typeof AdmitRequestSchema;
     output: typeof AdmitResponseSchema;
+  },
+  /**
+   * La sesion y el SVID de nodo se verifican como en Admit; request no puede
+   * sustituir el sujeto autenticado ni escoger destinos fuera de la tabla.
+   *
+   * @generated from rpc n0x.control.v1.ConnectivityControlService.AdmitWorkloadOffer
+   */
+  admitWorkloadOffer: {
+    methodKind: "unary";
+    input: typeof AdmitWorkloadOfferRequestSchema;
+    output: typeof AdmitWorkloadOfferResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.control.v1.ConnectivityControlService.RenewWorkloadOffer
+   */
+  renewWorkloadOffer: {
+    methodKind: "unary";
+    input: typeof RenewWorkloadOfferRequestSchema;
+    output: typeof RenewWorkloadOfferResponseSchema;
   },
 }>;
 

@@ -4,7 +4,7 @@
 
 import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
+import type { Duration, Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file n0x/workloads/v1/workloads.proto.
@@ -43,6 +43,13 @@ export declare type WorkloadNode = Message<"n0x.workloads.v1.WorkloadNode"> & {
    * @generated from field: google.protobuf.Timestamp state_changed_at = 5;
    */
   stateChangedAt?: Timestamp | undefined;
+
+  /**
+   * Clave publica del sshd de este nodo en formato authorized_keys; opcional.
+   *
+   * @generated from field: optional string ssh_host_public_key = 6;
+   */
+  sshHostPublicKey?: string | undefined;
 };
 
 /**
@@ -195,6 +202,34 @@ export declare type Workload = Message<"n0x.workloads.v1.Workload"> & {
    * @generated from field: google.protobuf.Timestamp retired_at = 14;
    */
   retiredAt?: Timestamp | undefined;
+
+  /**
+   * Presupuesto por carga y nodo durante window; cero no concede trafico.
+   * Ausente conserva el limite configurado por el servicio.
+   *
+   * @generated from field: optional uint64 byte_limit = 15;
+   */
+  byteLimit?: bigint | undefined;
+
+  /**
+   * Ventana positiva; ausente conserva la ventana configurada por el servicio.
+   *
+   * @generated from field: google.protobuf.Duration window = 16;
+   */
+  window?: Duration | undefined;
+
+  /**
+   * Ausente/UNSPECIFIED conserva HTTP por el nodo y TLS verificado por
+   * hostname en destino directo. HTTPS verifica el certificado del origen.
+   *
+   * @generated from field: optional n0x.workloads.v1.OriginScheme origin_scheme = 17;
+   */
+  originScheme?: OriginScheme | undefined;
+
+  /**
+   * @generated from field: optional string origin_server_name = 18;
+   */
+  originServerName?: string | undefined;
 };
 
 /**
@@ -688,6 +723,36 @@ export declare type CreateWorkloadRequest = Message<"n0x.workloads.v1.CreateWork
    * @generated from field: optional uint64 draft_revision_number = 11;
    */
   draftRevisionNumber?: bigint | undefined;
+
+  /**
+   * Presupuesto por carga y nodo; cero no significa ilimitado. Ausente usa
+   * el limite del servicio (actualmente 64 MiB por ventana de un minuto).
+   *
+   * @generated from field: optional uint64 byte_limit = 12;
+   */
+  byteLimit?: bigint | undefined;
+
+  /**
+   * Debe ser positiva; ausente usa la ventana del servicio.
+   *
+   * @generated from field: google.protobuf.Duration window = 13;
+   */
+  window?: Duration | undefined;
+
+  /**
+   * Solo fija el transporte del origen, no el tipo publico de la carga.
+   * Ausente/UNSPECIFIED conserva HTTP por el nodo y TLS por hostname directo.
+   *
+   * @generated from field: optional n0x.workloads.v1.OriginScheme origin_scheme = 14;
+   */
+  originScheme?: OriginScheme | undefined;
+
+  /**
+   * Nombre para SNI y verificacion del certificado del origen HTTPS.
+   *
+   * @generated from field: optional string origin_server_name = 15;
+   */
+  originServerName?: string | undefined;
 };
 
 /**
@@ -806,6 +871,14 @@ export declare type RegisterWorkloadFromHostRequest = Message<"n0x.workloads.v1.
    * @generated from field: optional uint64 draft_revision_number = 12;
    */
   draftRevisionNumber?: bigint | undefined;
+
+  /**
+   * Clave publica del sshd del nodo autenticado, nunca de otro nodo ni privada.
+   * Ausente conserva la publicacion sin pin de host aportado por el agente.
+   *
+   * @generated from field: optional string ssh_host_public_key = 13;
+   */
+  sshHostPublicKey?: string | undefined;
 };
 
 /**
@@ -1223,6 +1296,33 @@ export declare type GetSessionResponse = Message<"n0x.workloads.v1.GetSessionRes
  * Use `create(GetSessionResponseSchema)` to create a new message.
  */
 export declare const GetSessionResponseSchema: GenMessage<GetSessionResponse>;
+
+/**
+ * Debe conservar los mismos valores que connectivity/v1.OriginScheme.
+ *
+ * @generated from enum n0x.workloads.v1.OriginScheme
+ */
+export enum OriginScheme {
+  /**
+   * @generated from enum value: ORIGIN_SCHEME_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: ORIGIN_SCHEME_HTTP = 1;
+   */
+  HTTP = 1,
+
+  /**
+   * @generated from enum value: ORIGIN_SCHEME_HTTPS = 2;
+   */
+  HTTPS = 2,
+}
+
+/**
+ * Describes the enum n0x.workloads.v1.OriginScheme.
+ */
+export declare const OriginSchemeSchema: GenEnum<OriginScheme>;
 
 /**
  * @generated from enum n0x.workloads.v1.WorkloadType

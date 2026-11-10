@@ -5,6 +5,7 @@
 import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
+import type { IdentityState } from "../../identities/v1/identities_pb.js";
 
 /**
  * Describes the file n0x/events/v1/events.proto.
@@ -168,6 +169,13 @@ export declare type Event = Message<"n0x.events.v1.Event"> & {
    * @generated from field: repeated n0x.events.v1.EventObject related_objects = 10;
    */
   relatedObjects: EventObject[];
+
+  /**
+   * Solo EVENT_TYPE_NODE; object usa IDENTITY con el identity_id estable.
+   *
+   * @generated from field: n0x.events.v1.NodeStateTransition node_state_transition = 11;
+   */
+  nodeStateTransition?: NodeStateTransition | undefined;
 };
 
 /**
@@ -381,6 +389,17 @@ export declare type SubscribeResponse = Message<"n0x.events.v1.SubscribeResponse
    * @generated from field: string cursor = 2;
    */
   cursor: string;
+
+  /**
+   * Checkpoint tras drenar los eventos conocidos hasta este instante y cursor.
+   * Certifica progreso, no solo que el transporte sigue abierto. Ausente
+   * conserva la semantica anterior y no certifica actualidad. Latido nominal
+   * cada 5 s incluso sin eventos; tras 15 s sin mensaje el consumidor debe
+   * considerar caido el stream. No adelantarlo mientras quede backlog previo.
+   *
+   * @generated from field: google.protobuf.Timestamp checkpoint_at = 3;
+   */
+  checkpointAt?: Timestamp | undefined;
 };
 
 /**
@@ -388,6 +407,73 @@ export declare type SubscribeResponse = Message<"n0x.events.v1.SubscribeResponse
  * Use `create(SubscribeResponseSchema)` to create a new message.
  */
 export declare const SubscribeResponseSchema: GenMessage<SubscribeResponse>;
+
+/**
+ * @generated from message n0x.events.v1.NodeStateSnapshot
+ */
+export declare type NodeStateSnapshot = Message<"n0x.events.v1.NodeStateSnapshot"> & {
+  /**
+   * @generated from field: optional n0x.events.v1.NodePhase phase = 1;
+   */
+  phase?: NodePhase | undefined;
+
+  /**
+   * @generated from field: optional n0x.events.v1.NodeObservation observation = 2;
+   */
+  observation?: NodeObservation | undefined;
+
+  /**
+   * @generated from field: optional n0x.identities.v1.IdentityState identity_state = 3;
+   */
+  identityState?: IdentityState | undefined;
+
+  /**
+   * Valores observados de NodeView; no implican acceso ni una revision nueva.
+   *
+   * @generated from field: optional bool ready = 4;
+   */
+  ready?: boolean | undefined;
+
+  /**
+   * @generated from field: optional bool fresh = 5;
+   */
+  fresh?: boolean | undefined;
+};
+
+/**
+ * Describes the message n0x.events.v1.NodeStateSnapshot.
+ * Use `create(NodeStateSnapshotSchema)` to create a new message.
+ */
+export declare const NodeStateSnapshotSchema: GenMessage<NodeStateSnapshot>;
+
+/**
+ * Instantaneas pequenas para senalar al consumidor que debe refrescar el nodo.
+ * before ausente indica primera observacion; after ausente, retirada del inventario.
+ *
+ * @generated from message n0x.events.v1.NodeStateTransition
+ */
+export declare type NodeStateTransition = Message<"n0x.events.v1.NodeStateTransition"> & {
+  /**
+   * @generated from field: optional string incarnation_id = 1;
+   */
+  incarnationId?: string | undefined;
+
+  /**
+   * @generated from field: n0x.events.v1.NodeStateSnapshot before = 2;
+   */
+  before?: NodeStateSnapshot | undefined;
+
+  /**
+   * @generated from field: n0x.events.v1.NodeStateSnapshot after = 3;
+   */
+  after?: NodeStateSnapshot | undefined;
+};
+
+/**
+ * Describes the message n0x.events.v1.NodeStateTransition.
+ * Use `create(NodeStateTransitionSchema)` to create a new message.
+ */
+export declare const NodeStateTransitionSchema: GenMessage<NodeStateTransition>;
 
 /**
  * @generated from enum n0x.events.v1.EventType
@@ -439,6 +525,13 @@ export enum EventType {
    * @generated from enum value: EVENT_TYPE_BLOCK = 8;
    */
   BLOCK = 8,
+
+  /**
+   * Transiciones de fase, observacion o estado de identidad de un nodo.
+   *
+   * @generated from enum value: EVENT_TYPE_NODE = 9;
+   */
+  NODE = 9,
 }
 
 /**
@@ -555,6 +648,75 @@ export enum EventObjectType {
  * Describes the enum n0x.events.v1.EventObjectType.
  */
 export declare const EventObjectTypeSchema: GenEnum<EventObjectType>;
+
+/**
+ * Fases persistidas del nodo de authority; independientes de IdentityState.
+ *
+ * @generated from enum n0x.events.v1.NodePhase
+ */
+export enum NodePhase {
+  /**
+   * @generated from enum value: NODE_PHASE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: NODE_PHASE_PROVISIONING = 1;
+   */
+  PROVISIONING = 1,
+
+  /**
+   * @generated from enum value: NODE_PHASE_ACTIVE = 2;
+   */
+  ACTIVE = 2,
+
+  /**
+   * @generated from enum value: NODE_PHASE_RETIRING = 3;
+   */
+  RETIRING = 3,
+
+  /**
+   * @generated from enum value: NODE_PHASE_RETIRED = 4;
+   */
+  RETIRED = 4,
+}
+
+/**
+ * Describes the enum n0x.events.v1.NodePhase.
+ */
+export declare const NodePhaseSchema: GenEnum<NodePhase>;
+
+/**
+ * Observacion derivada de la proyeccion; offline no es un IdentityState.
+ *
+ * @generated from enum n0x.events.v1.NodeObservation
+ */
+export enum NodeObservation {
+  /**
+   * @generated from enum value: NODE_OBSERVATION_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: NODE_OBSERVATION_UNKNOWN = 1;
+   */
+  UNKNOWN = 1,
+
+  /**
+   * @generated from enum value: NODE_OBSERVATION_OFFLINE = 2;
+   */
+  OFFLINE = 2,
+
+  /**
+   * @generated from enum value: NODE_OBSERVATION_CURRENT = 3;
+   */
+  CURRENT = 3,
+}
+
+/**
+ * Describes the enum n0x.events.v1.NodeObservation.
+ */
+export declare const NodeObservationSchema: GenEnum<NodeObservation>;
 
 /**
  * @generated from service n0x.events.v1.EventsService

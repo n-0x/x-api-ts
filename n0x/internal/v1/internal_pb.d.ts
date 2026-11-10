@@ -2,9 +2,10 @@
 // @generated from file n0x/internal/v1/internal.proto (package n0x.internal.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
 import type { Binding, Scope } from "../../auth/v1/auth_pb.js";
+import type { Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file n0x/internal/v1/internal.proto.
@@ -1263,6 +1264,264 @@ export declare type CommercialDeliveryKey = Message<"n0x.internal.v1.CommercialD
 export declare const CommercialDeliveryKeySchema: GenMessage<CommercialDeliveryKey>;
 
 /**
+ * @generated from message n0x.internal.v1.ServiceAccountSpec
+ */
+export declare type ServiceAccountSpec = Message<"n0x.internal.v1.ServiceAccountSpec"> & {
+  /**
+   * @generated from field: optional string account_id = 1;
+   */
+  accountId?: string | undefined;
+
+  /**
+   * @generated from field: optional string tenant_id = 2;
+   */
+  tenantId?: string | undefined;
+
+  /**
+   * @generated from field: optional string identity_id = 3;
+   */
+  identityId?: string | undefined;
+
+  /**
+   * @generated from field: optional string request_id = 4;
+   */
+  requestId?: string | undefined;
+
+  /**
+   * SHA-256 de 32 bytes, nunca la clave ni el secreto original.
+   *
+   * @generated from field: optional bytes secret_hash = 5;
+   */
+  secretHash?: Uint8Array | undefined;
+
+  /**
+   * Ausente/UNSPECIFIED conserva la prueba de identity_bootstrap_secrets
+   * (consumed_at, request_id y hash). API_KEY exige verificar en api_keys el
+   * secret_sha256, bootstrap_consumed_at y bootstrap_tenant_id, y el enlace
+   * de su service_account_id a esta identidad/cuenta/tenant. No crea ni
+   * sobrescribe una claim de identity_bootstrap_secrets. Una fecha aportada
+   * por el llamante no constituye prueba de consumo. Se revalida identidad
+   * activa, sin cuarentena ni caducidad, antes y despues de emitir.
+   *
+   * @generated from field: optional n0x.internal.v1.ServiceAccountBootstrapSource bootstrap_source = 6;
+   */
+  bootstrapSource?: ServiceAccountBootstrapSource | undefined;
+};
+
+/**
+ * Describes the message n0x.internal.v1.ServiceAccountSpec.
+ * Use `create(ServiceAccountSpecSchema)` to create a new message.
+ */
+export declare const ServiceAccountSpecSchema: GenMessage<ServiceAccountSpec>;
+
+/**
+ * @generated from message n0x.internal.v1.IssueServiceAccountSVIDRequest
+ */
+export declare type IssueServiceAccountSVIDRequest = Message<"n0x.internal.v1.IssueServiceAccountSVIDRequest"> & {
+  /**
+   * @generated from field: n0x.internal.v1.ServiceAccountSpec spec = 1;
+   */
+  spec?: ServiceAccountSpec | undefined;
+
+  /**
+   * PKCS#10 DER o un unico bloque PEM; prueba de posesion de clave.
+   * El emisor deriva el SPIFFE ID del tenant y la identidad, y exige ese SAN.
+   *
+   * @generated from field: optional bytes certificate_signing_request = 2;
+   */
+  certificateSigningRequest?: Uint8Array | undefined;
+};
+
+/**
+ * Describes the message n0x.internal.v1.IssueServiceAccountSVIDRequest.
+ * Use `create(IssueServiceAccountSVIDRequestSchema)` to create a new message.
+ */
+export declare const IssueServiceAccountSVIDRequestSchema: GenMessage<IssueServiceAccountSVIDRequest>;
+
+/**
+ * @generated from message n0x.internal.v1.IssueServiceAccountSVIDResponse
+ */
+export declare type IssueServiceAccountSVIDResponse = Message<"n0x.internal.v1.IssueServiceAccountSVIDResponse"> & {
+  /**
+   * Cadena y bundle PEM, con la misma forma que ServiceAccountSVID del emisor.
+   *
+   * @generated from field: optional bytes chain = 1;
+   */
+  chain?: Uint8Array | undefined;
+
+  /**
+   * @generated from field: optional bytes bundle = 2;
+   */
+  bundle?: Uint8Array | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 3;
+   */
+  expiresAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp renew_after = 4;
+   */
+  renewAfter?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.internal.v1.IssueServiceAccountSVIDResponse.
+ * Use `create(IssueServiceAccountSVIDResponseSchema)` to create a new message.
+ */
+export declare const IssueServiceAccountSVIDResponseSchema: GenMessage<IssueServiceAccountSVIDResponse>;
+
+/**
+ * @generated from message n0x.internal.v1.ClaimAssignmentRunRequest
+ */
+export declare type ClaimAssignmentRunRequest = Message<"n0x.internal.v1.ClaimAssignmentRunRequest"> & {
+};
+
+/**
+ * Describes the message n0x.internal.v1.ClaimAssignmentRunRequest.
+ * Use `create(ClaimAssignmentRunRequestSchema)` to create a new message.
+ */
+export declare const ClaimAssignmentRunRequestSchema: GenMessage<ClaimAssignmentRunRequest>;
+
+/**
+ * @generated from message n0x.internal.v1.ClaimAssignmentRunResponse
+ */
+export declare type ClaimAssignmentRunResponse = Message<"n0x.internal.v1.ClaimAssignmentRunResponse"> & {
+  /**
+   * @generated from field: optional string run_id = 1;
+   */
+  runId?: string | undefined;
+
+  /**
+   * @generated from field: optional string account_id = 2;
+   */
+  accountId?: string | undefined;
+
+  /**
+   * @generated from field: optional string tenant_id = 3;
+   */
+  tenantId?: string | undefined;
+
+  /**
+   * @generated from field: optional string network_id = 4;
+   */
+  networkId?: string | undefined;
+
+  /**
+   * @generated from field: optional string partition_id = 5;
+   */
+  partitionId?: string | undefined;
+
+  /**
+   * @generated from field: optional string instance_id = 6;
+   */
+  instanceId?: string | undefined;
+
+  /**
+   * @generated from field: optional string catalog_id = 7;
+   */
+  catalogId?: string | undefined;
+
+  /**
+   * @generated from field: optional string catalog_version = 8;
+   */
+  catalogVersion?: string | undefined;
+
+  /**
+   * @generated from field: optional string identity_id = 9;
+   */
+  identityId?: string | undefined;
+
+  /**
+   * Credencial corta de instancia ligada al SVID; nunca registrar el token.
+   *
+   * @generated from field: optional string token = 10;
+   */
+  token?: string | undefined;
+
+  /**
+   * Caducidad de esa credencial corta; renovar antes de que venza.
+   *
+   * @generated from field: google.protobuf.Timestamp expires_at = 11;
+   */
+  expiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.internal.v1.ClaimAssignmentRunResponse.
+ * Use `create(ClaimAssignmentRunResponseSchema)` to create a new message.
+ */
+export declare const ClaimAssignmentRunResponseSchema: GenMessage<ClaimAssignmentRunResponse>;
+
+/**
+ * @generated from message n0x.internal.v1.RenewAssignmentInstanceTokenRequest
+ */
+export declare type RenewAssignmentInstanceTokenRequest = Message<"n0x.internal.v1.RenewAssignmentInstanceTokenRequest"> & {
+  /**
+   * @generated from field: optional string run_id = 1;
+   */
+  runId?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.internal.v1.RenewAssignmentInstanceTokenRequest.
+ * Use `create(RenewAssignmentInstanceTokenRequestSchema)` to create a new message.
+ */
+export declare const RenewAssignmentInstanceTokenRequestSchema: GenMessage<RenewAssignmentInstanceTokenRequest>;
+
+/**
+ * @generated from message n0x.internal.v1.RenewAssignmentInstanceTokenResponse
+ */
+export declare type RenewAssignmentInstanceTokenResponse = Message<"n0x.internal.v1.RenewAssignmentInstanceTokenResponse"> & {
+  /**
+   * Credencial corta de instancia ligada al SVID; nunca registrar el token.
+   * Si esta ausente, el runtime sigue usando el token vigente; si esta presente,
+   * el runtime lo sustituye por este.
+   *
+   * @generated from field: optional string token = 1;
+   */
+  token?: string | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 2;
+   */
+  expiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.internal.v1.RenewAssignmentInstanceTokenResponse.
+ * Use `create(RenewAssignmentInstanceTokenResponseSchema)` to create a new message.
+ */
+export declare const RenewAssignmentInstanceTokenResponseSchema: GenMessage<RenewAssignmentInstanceTokenResponse>;
+
+/**
+ * Selecciona la prueba persistida que el emisor debe verificar por si mismo.
+ *
+ * @generated from enum n0x.internal.v1.ServiceAccountBootstrapSource
+ */
+export enum ServiceAccountBootstrapSource {
+  /**
+   * @generated from enum value: SERVICE_ACCOUNT_BOOTSTRAP_SOURCE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: SERVICE_ACCOUNT_BOOTSTRAP_SOURCE_IDENTITY_SECRET = 1;
+   */
+  IDENTITY_SECRET = 1,
+
+  /**
+   * @generated from enum value: SERVICE_ACCOUNT_BOOTSTRAP_SOURCE_API_KEY = 2;
+   */
+  API_KEY = 2,
+}
+
+/**
+ * Describes the enum n0x.internal.v1.ServiceAccountBootstrapSource.
+ */
+export declare const ServiceAccountBootstrapSourceSchema: GenEnum<ServiceAccountBootstrapSource>;
+
+/**
  * @generated from service n0x.internal.v1.AuthorityService
  */
 export declare const AuthorityService: GenService<{
@@ -1411,6 +1670,47 @@ export declare const ProvisionService: GenService<{
     methodKind: "unary";
     input: typeof ObserveRequestSchema;
     output: typeof ObserveResponseSchema;
+  },
+  /**
+   * Solo mTLS del emisor autorizado; prepara y aplica una intencion durable
+   * ligada al request_id y al CSR, sin aceptar secretos en claro.
+   *
+   * @generated from rpc n0x.internal.v1.ProvisionService.IssueServiceAccountSVID
+   */
+  issueServiceAccountSVID: {
+    methodKind: "unary";
+    input: typeof IssueServiceAccountSVIDRequestSchema;
+    output: typeof IssueServiceAccountSVIDResponseSchema;
+  },
+}>;
+
+/**
+ * Endpoint privado de resources, solo para el peer mTLS /system/assignments.
+ * El runtime descubre trabajo y recibe credenciales cortas sin acceder a Mongo.
+ *
+ * @generated from service n0x.internal.v1.AssignmentsRuntimeService
+ */
+export declare const AssignmentsRuntimeService: GenService<{
+  /**
+   * Una respuesta vacia significa que no hay trabajo pendiente.
+   *
+   * @generated from rpc n0x.internal.v1.AssignmentsRuntimeService.ClaimAssignmentRun
+   */
+  claimAssignmentRun: {
+    methodKind: "unary";
+    input: typeof ClaimAssignmentRunRequestSchema;
+    output: typeof ClaimAssignmentRunResponseSchema;
+  },
+  /**
+   * Exige el peer mTLS /system/assignments y el Bearer vigente de la ejecucion
+   * reclamada mediante ClaimAssignmentRun. Extiende la validez del token y el lease.
+   *
+   * @generated from rpc n0x.internal.v1.AssignmentsRuntimeService.RenewAssignmentInstanceToken
+   */
+  renewAssignmentInstanceToken: {
+    methodKind: "unary";
+    input: typeof RenewAssignmentInstanceTokenRequestSchema;
+    output: typeof RenewAssignmentInstanceTokenResponseSchema;
   },
 }>;
 

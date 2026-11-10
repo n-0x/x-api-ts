@@ -2225,6 +2225,9 @@ export declare const AssignmentsService: GenService<{
    * Runtime writes require /system/assignments mTLS plus a short-lived instance
    * token bound to that SVID. The instance service account remains the IAM actor.
    * No direct database access; server validates lineage and stores timestamps.
+   * Start, Append, Record* y Finish se sirven en el endpoint privado de
+   * resources: exigen mTLS del peer /system/assignments mas Bearer del token
+   * corto de instancia ligado al SVID; no son operaciones para humanos.
    *
    * @generated from rpc n0x.assignments.v1.AssignmentsService.StartAssignmentRun
    */

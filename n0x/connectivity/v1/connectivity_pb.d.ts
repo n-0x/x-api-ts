@@ -842,6 +842,13 @@ export declare type ProxyDirectTarget = Message<"n0x.connectivity.v1.ProxyDirect
    * @generated from field: google.protobuf.Timestamp resolution_expires_at = 6;
    */
   resolutionExpiresAt?: Timestamp | undefined;
+
+  /**
+   * Ausente conserva la denegacion del destino sin presupuesto explicito.
+   *
+   * @generated from field: n0x.connectivity.v1.WorkloadOfferBudget budget = 7;
+   */
+  budget?: WorkloadOfferBudget | undefined;
 };
 
 /**
@@ -885,6 +892,27 @@ export declare type ProxyWorkloadTarget = Message<"n0x.connectivity.v1.ProxyWork
     value: ProxyDirectTarget;
     case: "directDestination";
   } | { case: undefined; value?: undefined };
+
+  /**
+   * @generated from field: optional string display_name = 6;
+   */
+  displayName?: string | undefined;
+
+  /**
+   * Ausente/UNSPECIFIED conserva HTTP por la pata del nodo y TLS verificado
+   * por hostname para el destino directo. HTTPS exige verificar el origen.
+   *
+   * @generated from field: optional n0x.connectivity.v1.OriginScheme origin_scheme = 7;
+   */
+  originScheme?: OriginScheme | undefined;
+
+  /**
+   * Nombre para SNI y verificacion TLS del origen; ausente conserva el nombre
+   * de destino usado actualmente. No controla el hostname publico de la carga.
+   *
+   * @generated from field: optional string origin_server_name = 8;
+   */
+  originServerName?: string | undefined;
 };
 
 /**
@@ -980,6 +1008,34 @@ export declare type ProxyTable = Message<"n0x.connectivity.v1.ProxyTable"> & {
    * @generated from field: google.protobuf.Timestamp generated_at = 6;
    */
   generatedAt?: Timestamp | undefined;
+
+  /**
+   * Indice completo de nodos clientes, incluidos los que no sirven cargas.
+   * Ausente no permite inferir una identidad desde una encarnacion.
+   *
+   * @generated from field: repeated n0x.connectivity.v1.ProxyNodeIdentity node_identities = 7;
+   */
+  nodeIdentities: ProxyNodeIdentity[];
+
+  /**
+   * @generated from field: repeated n0x.connectivity.v1.ProxyPersonIdentity person_identities = 8;
+   */
+  personIdentities: ProxyPersonIdentity[];
+
+  /**
+   * Suelos durables por identidad: rechazan sesiones anteriores a not_before
+   * incluso tras levantar una cuarentena o reiniciar una replica del proxy.
+   *
+   * @generated from field: repeated n0x.connectivity.v1.IdentitySessionFloor identity_session_floors = 9;
+   */
+  identitySessionFloors: IdentitySessionFloor[];
+
+  /**
+   * Claves publicas SSH de la CA del tenant, activa y anterior durante rotacion.
+   *
+   * @generated from field: repeated string ssh_ca_public_keys = 10;
+   */
+  sshCaPublicKeys: string[];
 };
 
 /**
@@ -987,6 +1043,27 @@ export declare type ProxyTable = Message<"n0x.connectivity.v1.ProxyTable"> & {
  * Use `create(ProxyTableSchema)` to create a new message.
  */
 export declare const ProxyTableSchema: GenMessage<ProxyTable>;
+
+/**
+ * @generated from message n0x.connectivity.v1.ProxyNodeIdentity
+ */
+export declare type ProxyNodeIdentity = Message<"n0x.connectivity.v1.ProxyNodeIdentity"> & {
+  /**
+   * @generated from field: optional string incarnation_id = 1;
+   */
+  incarnationId?: string | undefined;
+
+  /**
+   * @generated from field: optional string identity_id = 2;
+   */
+  identityId?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ProxyNodeIdentity.
+ * Use `create(ProxyNodeIdentitySchema)` to create a new message.
+ */
+export declare const ProxyNodeIdentitySchema: GenMessage<ProxyNodeIdentity>;
 
 /**
  * @generated from message n0x.connectivity.v1.PublishProxyTableRequest
@@ -1311,6 +1388,20 @@ export declare type WorkloadOfferAdmission = Message<"n0x.connectivity.v1.Worklo
    * @generated from field: google.protobuf.Timestamp renew_after = 4;
    */
   renewAfter?: Timestamp | undefined;
+
+  /**
+   * Tipo de carga para que el nodo configure el servidor SSH cuando proceda.
+   *
+   * @generated from field: optional n0x.connectivity.v1.ProxyWorkloadType workload_type = 5;
+   */
+  workloadType?: ProxyWorkloadType | undefined;
+
+  /**
+   * CA activa y anterior para TrustedUserCAKeys; se actualizan al renovar.
+   *
+   * @generated from field: repeated string ssh_ca_public_keys = 6;
+   */
+  sshCaPublicKeys: string[];
 };
 
 /**
@@ -1787,6 +1878,160 @@ export declare type WorkloadStreamOpen = Message<"n0x.connectivity.v1.WorkloadSt
 export declare const WorkloadStreamOpenSchema: GenMessage<WorkloadStreamOpen>;
 
 /**
+ * @generated from message n0x.connectivity.v1.GetWorkloadNodeStatusRequest
+ */
+export declare type GetWorkloadNodeStatusRequest = Message<"n0x.connectivity.v1.GetWorkloadNodeStatusRequest"> & {
+  /**
+   * @generated from field: optional string account_id = 1;
+   */
+  accountId?: string | undefined;
+
+  /**
+   * @generated from field: optional string tenant_id = 2;
+   */
+  tenantId?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.GetWorkloadNodeStatusRequest.
+ * Use `create(GetWorkloadNodeStatusRequestSchema)` to create a new message.
+ */
+export declare const GetWorkloadNodeStatusRequestSchema: GenMessage<GetWorkloadNodeStatusRequest>;
+
+/**
+ * Estado observado por carga y nodo; desconexion no cambia IdentityState.
+ *
+ * @generated from message n0x.connectivity.v1.WorkloadNodeStatus
+ */
+export declare type WorkloadNodeStatus = Message<"n0x.connectivity.v1.WorkloadNodeStatus"> & {
+  /**
+   * @generated from field: optional string account_id = 1;
+   */
+  accountId?: string | undefined;
+
+  /**
+   * @generated from field: optional string tenant_id = 2;
+   */
+  tenantId?: string | undefined;
+
+  /**
+   * @generated from field: optional string workload_id = 3;
+   */
+  workloadId?: string | undefined;
+
+  /**
+   * @generated from field: optional string identity_id = 4;
+   */
+  identityId?: string | undefined;
+
+  /**
+   * @generated from field: optional bool connected = 5;
+   */
+  connected?: boolean | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp changed_at = 6;
+   */
+  changedAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadNodeStatus.
+ * Use `create(WorkloadNodeStatusSchema)` to create a new message.
+ */
+export declare const WorkloadNodeStatusSchema: GenMessage<WorkloadNodeStatus>;
+
+/**
+ * @generated from message n0x.connectivity.v1.GetWorkloadNodeStatusResponse
+ */
+export declare type GetWorkloadNodeStatusResponse = Message<"n0x.connectivity.v1.GetWorkloadNodeStatusResponse"> & {
+  /**
+   * Instantanea acotada del registro NodeConnections del proxy para el tenant.
+   * Una pareja ausente carece de observacion; no certifica una conexion.
+   *
+   * @generated from field: repeated n0x.connectivity.v1.WorkloadNodeStatus nodes = 1;
+   */
+  nodes: WorkloadNodeStatus[];
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.GetWorkloadNodeStatusResponse.
+ * Use `create(GetWorkloadNodeStatusResponseSchema)` to create a new message.
+ */
+export declare const GetWorkloadNodeStatusResponseSchema: GenMessage<GetWorkloadNodeStatusResponse>;
+
+/**
+ * Vincula el login del aserto humano con la identidad estable de los grants.
+ *
+ * @generated from message n0x.connectivity.v1.ProxyPersonIdentity
+ */
+export declare type ProxyPersonIdentity = Message<"n0x.connectivity.v1.ProxyPersonIdentity"> & {
+  /**
+   * @generated from field: optional string login = 1;
+   */
+  login?: string | undefined;
+
+  /**
+   * @generated from field: optional string identity_id = 2;
+   */
+  identityId?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ProxyPersonIdentity.
+ * Use `create(ProxyPersonIdentitySchema)` to create a new message.
+ */
+export declare const ProxyPersonIdentitySchema: GenMessage<ProxyPersonIdentity>;
+
+/**
+ * @generated from message n0x.connectivity.v1.IdentitySessionFloor
+ */
+export declare type IdentitySessionFloor = Message<"n0x.connectivity.v1.IdentitySessionFloor"> & {
+  /**
+   * @generated from field: optional string identity_id = 1;
+   */
+  identityId?: string | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp not_before = 2;
+   */
+  notBefore?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.IdentitySessionFloor.
+ * Use `create(IdentitySessionFloorSchema)` to create a new message.
+ */
+export declare const IdentitySessionFloorSchema: GenMessage<IdentitySessionFloor>;
+
+/**
+ * Transporte del origen; independiente del tipo de acceso publico a la carga.
+ *
+ * @generated from enum n0x.connectivity.v1.OriginScheme
+ */
+export enum OriginScheme {
+  /**
+   * @generated from enum value: ORIGIN_SCHEME_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: ORIGIN_SCHEME_HTTP = 1;
+   */
+  HTTP = 1,
+
+  /**
+   * @generated from enum value: ORIGIN_SCHEME_HTTPS = 2;
+   */
+  HTTPS = 2,
+}
+
+/**
+ * Describes the enum n0x.connectivity.v1.OriginScheme.
+ */
+export declare const OriginSchemeSchema: GenEnum<OriginScheme>;
+
+/**
  * @generated from enum n0x.connectivity.v1.ProxyWorkloadType
  */
 export enum ProxyWorkloadType {
@@ -1865,6 +2110,25 @@ export declare const ForwardStatusService: GenService<{
     methodKind: "unary";
     input: typeof GetMetricsRequestSchema;
     output: typeof GetMetricsResponseSchema;
+  },
+  /**
+   * Lectura interna mTLS cuyo lector autorizado es authority/resources para
+   * NodeConnectionSource; no publica ni modifica cargas. Se sirve en el listener
+   * control_listen de ConnectivityProcessConfig, junto a ProxyControlService,
+   * y autoriza contra la allowlist control_plane_ids de SPIFFE ID fijados.
+   * No autoriza con issuer_ids, los emisores de admision que usa el resto de
+   * ForwardStatusService, ni con cualquier SVID del trust domain.
+   * Deniega si falta el peer autenticado, la allowlist esta ausente o vacia,
+   * o falta account_id o tenant_id.
+   * Solo devuelve el ambito account/tenant pedido; una pareja carga-nodo ausente
+   * no certifica conectividad.
+   *
+   * @generated from rpc n0x.connectivity.v1.ForwardStatusService.GetWorkloadNodeStatus
+   */
+  getWorkloadNodeStatus: {
+    methodKind: "unary";
+    input: typeof GetWorkloadNodeStatusRequestSchema;
+    output: typeof GetWorkloadNodeStatusResponseSchema;
   },
 }>;
 

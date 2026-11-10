@@ -2,8 +2,9 @@
 // @generated from file n0x/manager/v1/manager.proto (package n0x.manager.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
+import type { Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file n0x/manager/v1/manager.proto.
@@ -560,6 +561,19 @@ export declare type LoginRequest = Message<"n0x.manager.v1.LoginRequest"> & {
    * @generated from field: string code_challenge_method = 5;
    */
   codeChallengeMethod: string;
+
+  /**
+   * @generated from field: optional string workload_id = 6;
+   */
+  workloadId?: string | undefined;
+
+  /**
+   * Solo puede endurecer el login. Nunca concede acceso ni sustituye la
+   * comprobacion del permiso de la carga, que puede exigir MFA por si mismo.
+   *
+   * @generated from field: optional bool require_mfa = 7;
+   */
+  requireMfa?: boolean | undefined;
 };
 
 /**
@@ -633,6 +647,15 @@ export declare type ExchangeTokenResponse = Message<"n0x.manager.v1.ExchangeToke
    * @generated from field: double expires_at = 2;
    */
   expiresAt: number;
+
+  /**
+   * Instante de la ultima MFA verificada, nunca una declaracion de la CLI.
+   * Ausente no acredita MFA. Timestamp porque el fichero CliSession usa un
+   * tipo temporal distinto al double de expires_at de este RPC.
+   *
+   * @generated from field: google.protobuf.Timestamp mfa_at = 3;
+   */
+  mfaAt?: Timestamp | undefined;
 };
 
 /**
@@ -1361,6 +1384,247 @@ export declare type CreatePortalResponse = Message<"n0x.manager.v1.CreatePortalR
 export declare const CreatePortalResponseSchema: GenMessage<CreatePortalResponse>;
 
 /**
+ * @generated from message n0x.manager.v1.ProxyLoginContextRequest
+ */
+export declare type ProxyLoginContextRequest = Message<"n0x.manager.v1.ProxyLoginContextRequest"> & {
+  /**
+   * @generated from field: optional string host = 1;
+   */
+  host?: string | undefined;
+
+  /**
+   * Ruta local del host validado, nunca una URL de redireccion arbitraria.
+   *
+   * @generated from field: optional string return_path = 2;
+   */
+  returnPath?: string | undefined;
+
+  /**
+   * @generated from field: optional string nonce = 3;
+   */
+  nonce?: string | undefined;
+
+  /**
+   * Solo endurece la autenticacion; no concede acceso a la carga.
+   *
+   * @generated from field: optional bool require_mfa = 4;
+   */
+  requireMfa?: boolean | undefined;
+};
+
+/**
+ * Describes the message n0x.manager.v1.ProxyLoginContextRequest.
+ * Use `create(ProxyLoginContextRequestSchema)` to create a new message.
+ */
+export declare const ProxyLoginContextRequestSchema: GenMessage<ProxyLoginContextRequest>;
+
+/**
+ * @generated from message n0x.manager.v1.ProxyLoginContextResponse
+ */
+export declare type ProxyLoginContextResponse = Message<"n0x.manager.v1.ProxyLoginContextResponse"> & {
+  /**
+   * @generated from field: optional n0x.manager.v1.ProxyLoginStatus status = 1;
+   */
+  status?: ProxyLoginStatus | undefined;
+
+  /**
+   * @generated from field: optional string workload_label = 2;
+   */
+  workloadLabel?: string | undefined;
+
+  /**
+   * @generated from field: optional string person_display = 3;
+   */
+  personDisplay?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.manager.v1.ProxyLoginContextResponse.
+ * Use `create(ProxyLoginContextResponseSchema)` to create a new message.
+ */
+export declare const ProxyLoginContextResponseSchema: GenMessage<ProxyLoginContextResponse>;
+
+/**
+ * @generated from message n0x.manager.v1.IssueProxyReturnRequest
+ */
+export declare type IssueProxyReturnRequest = Message<"n0x.manager.v1.IssueProxyReturnRequest"> & {
+  /**
+   * @generated from field: optional string host = 1;
+   */
+  host?: string | undefined;
+
+  /**
+   * @generated from field: optional string return_path = 2;
+   */
+  returnPath?: string | undefined;
+
+  /**
+   * @generated from field: optional string nonce = 3;
+   */
+  nonce?: string | undefined;
+
+  /**
+   * Solo endurece la autenticacion; no sustituye la autorizacion del proxy.
+   *
+   * @generated from field: optional bool require_mfa = 4;
+   */
+  requireMfa?: boolean | undefined;
+};
+
+/**
+ * Describes the message n0x.manager.v1.IssueProxyReturnRequest.
+ * Use `create(IssueProxyReturnRequestSchema)` to create a new message.
+ */
+export declare const IssueProxyReturnRequestSchema: GenMessage<IssueProxyReturnRequest>;
+
+/**
+ * @generated from message n0x.manager.v1.IssueProxyReturnResponse
+ */
+export declare type IssueProxyReturnResponse = Message<"n0x.manager.v1.IssueProxyReturnResponse"> & {
+  /**
+   * Vuelta al host validado con aserto JWS ES256: iss, aud=host, sub=user_id,
+   * nonce, mfa_at, idle_s, iat, exp (maximo iat+60 s) y jti.
+   *
+   * @generated from field: optional string redirect_url = 1;
+   */
+  redirectUrl?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.manager.v1.IssueProxyReturnResponse.
+ * Use `create(IssueProxyReturnResponseSchema)` to create a new message.
+ */
+export declare const IssueProxyReturnResponseSchema: GenMessage<IssueProxyReturnResponse>;
+
+/**
+ * @generated from message n0x.manager.v1.IssueSshCertificateRequest
+ */
+export declare type IssueSshCertificateRequest = Message<"n0x.manager.v1.IssueSshCertificateRequest"> & {
+  /**
+   * @generated from field: optional string workload_id = 1;
+   */
+  workloadId?: string | undefined;
+
+  /**
+   * Clave publica de usuario en formato authorized_keys; nunca clave privada.
+   *
+   * @generated from field: optional string public_key = 2;
+   */
+  publicKey?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.manager.v1.IssueSshCertificateRequest.
+ * Use `create(IssueSshCertificateRequestSchema)` to create a new message.
+ */
+export declare const IssueSshCertificateRequestSchema: GenMessage<IssueSshCertificateRequest>;
+
+/**
+ * @generated from message n0x.manager.v1.IssueSshCertificateResponse
+ */
+export declare type IssueSshCertificateResponse = Message<"n0x.manager.v1.IssueSshCertificateResponse"> & {
+  /**
+   * Certificado de usuario en formato authorized_keys, valido durante 10 min.
+   *
+   * @generated from field: optional string certificate = 1;
+   */
+  certificate?: string | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 2;
+   */
+  expiresAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: optional string proxy_ssh_address = 3;
+   */
+  proxySshAddress?: string | undefined;
+
+  /**
+   * Clave publica del proxy en formato authorized_keys.
+   *
+   * @generated from field: optional string proxy_host_key = 4;
+   */
+  proxyHostKey?: string | undefined;
+
+  /**
+   * Una denegacion de negocio devuelve este motivo y no devuelve certificado.
+   * Ausente significa que no se informa una denegacion; no prueba autenticacion.
+   *
+   * @generated from field: optional n0x.manager.v1.SshCertificateDenialReason denial_reason = 5;
+   */
+  denialReason?: SshCertificateDenialReason | undefined;
+};
+
+/**
+ * Describes the message n0x.manager.v1.IssueSshCertificateResponse.
+ * Use `create(IssueSshCertificateResponseSchema)` to create a new message.
+ */
+export declare const IssueSshCertificateResponseSchema: GenMessage<IssueSshCertificateResponse>;
+
+/**
+ * Estado de consentimiento antes de emitir el aserto de vuelta al proxy.
+ *
+ * @generated from enum n0x.manager.v1.ProxyLoginStatus
+ */
+export enum ProxyLoginStatus {
+  /**
+   * @generated from enum value: PROXY_LOGIN_STATUS_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: PROXY_LOGIN_STATUS_LOGIN_REQUIRED = 1;
+   */
+  LOGIN_REQUIRED = 1,
+
+  /**
+   * @generated from enum value: PROXY_LOGIN_STATUS_MFA_REQUIRED = 2;
+   */
+  MFA_REQUIRED = 2,
+
+  /**
+   * @generated from enum value: PROXY_LOGIN_STATUS_READY = 3;
+   */
+  READY = 3,
+}
+
+/**
+ * Describes the enum n0x.manager.v1.ProxyLoginStatus.
+ */
+export declare const ProxyLoginStatusSchema: GenEnum<ProxyLoginStatus>;
+
+/**
+ * @generated from enum n0x.manager.v1.SshCertificateDenialReason
+ */
+export enum SshCertificateDenialReason {
+  /**
+   * @generated from enum value: SSH_CERTIFICATE_DENIAL_REASON_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: SSH_CERTIFICATE_DENIAL_REASON_NO_PERMISSION = 1;
+   */
+  NO_PERMISSION = 1,
+
+  /**
+   * @generated from enum value: SSH_CERTIFICATE_DENIAL_REASON_MFA_REQUIRED = 2;
+   */
+  MFA_REQUIRED = 2,
+
+  /**
+   * @generated from enum value: SSH_CERTIFICATE_DENIAL_REASON_QUARANTINED = 3;
+   */
+  QUARANTINED = 3,
+}
+
+/**
+ * Describes the enum n0x.manager.v1.SshCertificateDenialReason.
+ */
+export declare const SshCertificateDenialReasonSchema: GenEnum<SshCertificateDenialReason>;
+
+/**
  * @generated from service n0x.manager.v1.AuthService
  */
 export declare const AuthService: GenService<{
@@ -1404,6 +1668,29 @@ export declare const AuthService: GenService<{
     input: typeof LogoutRequestSchema;
     output: typeof LogoutResponseSchema;
   },
+  /**
+   * Contexto de navegador: lee la cookie de sesion humana si existe; sin ella
+   * devuelve LOGIN_REQUIRED. No acepta el bearer de CLI ni emite credenciales.
+   *
+   * @generated from rpc n0x.manager.v1.AuthService.ProxyLoginContext
+   */
+  proxyLoginContext: {
+    methodKind: "unary";
+    input: typeof ProxyLoginContextRequestSchema;
+    output: typeof ProxyLoginContextResponseSchema;
+  },
+  /**
+   * Exige cookie de sesion humana y CSRF; MFA reciente cuando corresponda.
+   * El host se valida contra proxy_public_domain y contra la carga publicada
+   * antes de firmar la vuelta, para impedir una redireccion abierta.
+   *
+   * @generated from rpc n0x.manager.v1.AuthService.IssueProxyReturn
+   */
+  issueProxyReturn: {
+    methodKind: "unary";
+    input: typeof IssueProxyReturnRequestSchema;
+    output: typeof IssueProxyReturnResponseSchema;
+  },
 }>;
 
 /**
@@ -1441,6 +1728,18 @@ export declare const CliService: GenService<{
     methodKind: "unary";
     input: typeof GetCliAccessRequestSchema;
     output: typeof GetCliAccessResponseSchema;
+  },
+  /**
+   * Exige Bearer de sesion humana de CLI (n2xc_), sin cookies de navegador.
+   * El principal SSH se deriva del permiso, nunca de la peticion; el servidor
+   * revalida permiso, MFA y cuarentena antes de emitir el certificado corto.
+   *
+   * @generated from rpc n0x.manager.v1.CliService.IssueSshCertificate
+   */
+  issueSshCertificate: {
+    methodKind: "unary";
+    input: typeof IssueSshCertificateRequestSchema;
+    output: typeof IssueSshCertificateResponseSchema;
   },
 }>;
 
