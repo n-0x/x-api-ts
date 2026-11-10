@@ -647,6 +647,15 @@ export declare type CreateNodeEnrollmentRequest = Message<"n0x.identities.v1.Cre
    * @generated from field: optional uint64 draft_revision_number = 8;
    */
   draftRevisionNumber?: bigint | undefined;
+
+  /**
+   * Ausente o false conserva el alta con malla; true da de alta un nodo que
+   * solo expone cargas por conexion saliente, sin TUN ni direccion de malla.
+   * El bootstrap resultante lleva files/v1.ClientBootstrap.expose_only.
+   *
+   * @generated from field: optional bool expose_only = 9;
+   */
+  exposeOnly?: boolean | undefined;
 };
 
 /**

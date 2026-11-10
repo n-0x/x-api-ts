@@ -2530,6 +2530,56 @@ export declare type RegisterWorkloadFromHostRequest = Message<"n0x.control.v1.Re
 export declare const RegisterWorkloadFromHostRequestSchema: GenMessage<RegisterWorkloadFromHostRequest>;
 
 /**
+ * @generated from message n0x.control.v1.RegisterNodeWorkloadRequest
+ */
+export declare type RegisterNodeWorkloadRequest = Message<"n0x.control.v1.RegisterNodeWorkloadRequest"> & {
+  /**
+   * El tenant y incarnation_id salen del SVID de nodo verificado. El SVID no
+   * lleva red ni particion: el scope completo es el de la Session, y solo vale
+   * tras contrastarla con la configuracion, activacion y ownership del
+   * controller; una discrepancia se rechaza antes de este salto.
+   *
+   * @generated from field: n0x.control.v1.Scope scope = 1;
+   */
+  scope?: Scope | undefined;
+
+  /**
+   * @generated from field: optional string incarnation_id = 2;
+   */
+  incarnationId?: string | undefined;
+
+  /**
+   * Resources resuelve la encarnacion a account_id, tenant_id e identity_id en
+   * su propio estado y rechaza si request no coincide con esos valores.
+   *
+   * @generated from field: n0x.workloads.v1.RegisterWorkloadFromHostRequest request = 3;
+   */
+  request?: RegisterWorkloadFromHostRequest$1 | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.RegisterNodeWorkloadRequest.
+ * Use `create(RegisterNodeWorkloadRequestSchema)` to create a new message.
+ */
+export declare const RegisterNodeWorkloadRequestSchema: GenMessage<RegisterNodeWorkloadRequest>;
+
+/**
+ * @generated from message n0x.control.v1.RegisterNodeWorkloadResponse
+ */
+export declare type RegisterNodeWorkloadResponse = Message<"n0x.control.v1.RegisterNodeWorkloadResponse"> & {
+  /**
+   * @generated from field: n0x.workloads.v1.RegisterWorkloadFromHostResponse response = 1;
+   */
+  response?: RegisterWorkloadFromHostResponse$1 | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.RegisterNodeWorkloadResponse.
+ * Use `create(RegisterNodeWorkloadResponseSchema)` to create a new message.
+ */
+export declare const RegisterNodeWorkloadResponseSchema: GenMessage<RegisterNodeWorkloadResponse>;
+
+/**
  * El scope se autoriza igual que en ReadProjection; no se aceptan ambitos
  * de cuenta o tenant independientes que puedan contradecirlo.
  *
@@ -3076,6 +3126,25 @@ export declare const AlertEvaluationService: GenService<{
     methodKind: "unary";
     input: typeof RecordAlertTransitionsRequestSchema;
     output: typeof RecordAlertTransitionsResponseSchema;
+  },
+}>;
+
+/**
+ * Salto interno controller -> resources: solo lo llama el controller por mTLS
+ * con su SVID fijado, tras verificar el SVID de nodo y la Session en
+ * NodeControlService.RegisterWorkloadFromHost. Nunca lo llama un nodo ni una
+ * persona. Publicar no concede acceso.
+ *
+ * @generated from service n0x.control.v1.NodeWorkloadRegistrationService
+ */
+export declare const NodeWorkloadRegistrationService: GenService<{
+  /**
+   * @generated from rpc n0x.control.v1.NodeWorkloadRegistrationService.RegisterNodeWorkload
+   */
+  registerNodeWorkload: {
+    methodKind: "unary";
+    input: typeof RegisterNodeWorkloadRequestSchema;
+    output: typeof RegisterNodeWorkloadResponseSchema;
   },
 }>;
 

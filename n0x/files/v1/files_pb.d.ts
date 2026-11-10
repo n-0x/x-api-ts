@@ -526,10 +526,10 @@ export declare type ResourcesProcessConfig = Message<"n0x.files.v1.ResourcesProc
   federatedTrustDomains: string[];
 
   /**
-   * Destino autenticado de PublishProxyTable, leido por resources. Ausente
-   * conserva la publicacion sin entrega al proxy (publisher_not_configured).
+   * Deprecado: usar proxy_table_publishers. Solo se lee si esa lista esta vacia.
    *
-   * @generated from field: n0x.files.v1.ProxyTablePublisher proxy_table_publisher = 36;
+   * @generated from field: n0x.files.v1.ProxyTablePublisher proxy_table_publisher = 36 [deprecated = true];
+   * @deprecated
    */
   proxyTablePublisher?: ProxyTablePublisher | undefined;
 
@@ -545,6 +545,17 @@ export declare type ResourcesProcessConfig = Message<"n0x.files.v1.ResourcesProc
    * @generated from field: optional string assignment_instance_trust_file = 38;
    */
   assignmentInstanceTrustFile?: string | undefined;
+
+  /**
+   * Resources publica la misma tabla a cada destino y sigue siendo su unico
+   * autor; destinos tipicos son el proxy y cz-admission. Cada destino confirma
+   * su propia aplicacion: el fallo de uno no se oculta ni impide intentar los
+   * demas. Configurar a la vez los campos 36 y 39 es invalido y falla cerrado
+   * al cargar. Lista vacia y sin 36 conserva publisher_not_configured.
+   *
+   * @generated from field: repeated n0x.files.v1.ProxyTablePublisher proxy_table_publishers = 39;
+   */
+  proxyTablePublishers: ProxyTablePublisher[];
 };
 
 /**
@@ -1081,6 +1092,8 @@ export declare type ConnectivityProcessConfig = Message<"n0x.files.v1.Connectivi
    * Allowlist de SPIFFE ID fijados para publicar la tabla y autorizar la lectura
    * GetWorkloadNodeStatus de authority/resources para NodeConnectionSource;
    * no son los emisores de admision de issuer_ids. Ausente o vacia deniega.
+   * Tambien fija quienes pueden llamar a ProxyControlService.PublishProxyTable
+   * en control_listen del rol cz-admission, que no es autor de tablas.
    *
    * @generated from field: repeated string control_plane_ids = 17;
    */
@@ -1089,6 +1102,8 @@ export declare type ConnectivityProcessConfig = Message<"n0x.files.v1.Connectivi
   /**
    * Listener mTLS de ProxyControlService y de la lectura GetWorkloadNodeStatus
    * para authority/resources, autorizados con control_plane_ids;
+   * el rol cz-admission tambien sirve aqui ProxyControlService.PublishProxyTable
+   * con esos SPIFFE ID fijados, sin ser autor de tablas;
    * ausente no habilita este listener.
    *
    * @generated from field: optional string control_listen = 18;

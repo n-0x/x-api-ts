@@ -6,7 +6,7 @@ import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobu
 import type { Message } from "@bufbuild/protobuf";
 import type { Scope } from "../../signed/v1/signed_pb.js";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import type { ActivateNodeRequest, AdmitRequest, BeginActivationRequest, RecoverSessionRequest, RenewLeaseRequest, ReportFlowsRequest, ReportStateRequest } from "../../control/v1/control_pb.js";
+import type { ActivateNodeRequest, AdmitRequest, AdmitWorkloadOfferRequest, BeginActivationRequest, RecoverSessionRequest, RenewLeaseRequest, RenewWorkloadOfferRequest, ReportFlowsRequest, ReportStateRequest } from "../../control/v1/control_pb.js";
 
 /**
  * Describes the file n0x/mesh/v1/mesh.proto.
@@ -472,6 +472,22 @@ export declare type ForwardRequest = Message<"n0x.mesh.v1.ForwardRequest"> & {
      */
     value: ReportFlowsRequest;
     case: "reportFlows";
+  } | {
+    /**
+     * Forward entre controladores hacia el owner, igual que admit; la respuesta
+     * sigue en ForwardResponse.response como bytes de la respuesta de control/v1
+     * correspondiente.
+     *
+     * @generated from field: n0x.control.v1.AdmitWorkloadOfferRequest admit_workload_offer = 20;
+     */
+    value: AdmitWorkloadOfferRequest;
+    case: "admitWorkloadOffer";
+  } | {
+    /**
+     * @generated from field: n0x.control.v1.RenewWorkloadOfferRequest renew_workload_offer = 21;
+     */
+    value: RenewWorkloadOfferRequest;
+    case: "renewWorkloadOffer";
   } | { case: undefined; value?: undefined };
 };
 
