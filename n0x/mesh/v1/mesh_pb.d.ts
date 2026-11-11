@@ -6,7 +6,7 @@ import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobu
 import type { Message } from "@bufbuild/protobuf";
 import type { Scope } from "../../signed/v1/signed_pb.js";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import type { ActivateNodeRequest, AdmitRequest, AdmitWorkloadOfferRequest, BeginActivationRequest, RecoverSessionRequest, RenewLeaseRequest, RenewWorkloadOfferRequest, ReportFlowsRequest, ReportStateRequest } from "../../control/v1/control_pb.js";
+import type { ActivateNodeRequest, AdmitRequest, AdmitWorkloadOfferRequest, BeginActivationRequest, RecoverSessionRequest, RegisterWorkloadFromHostRequest, RenewLeaseRequest, RenewWorkloadOfferRequest, ReportFlowsRequest, ReportStateRequest } from "../../control/v1/control_pb.js";
 
 /**
  * Describes the file n0x/mesh/v1/mesh.proto.
@@ -488,6 +488,17 @@ export declare type ForwardRequest = Message<"n0x.mesh.v1.ForwardRequest"> & {
      */
     value: RenewWorkloadOfferRequest;
     case: "renewWorkloadOffer";
+  } | {
+    /**
+     * Forward entre controladores hacia el owner; lleva la Session completa
+     * porque solo el owner puede validarla. La identidad del nodo viaja en
+     * node_chain; la respuesta va en ForwardResponse.response como bytes de
+     * n0x.control.v1.RegisterWorkloadFromHostResponse.
+     *
+     * @generated from field: n0x.control.v1.RegisterWorkloadFromHostRequest register_workload_from_host = 22;
+     */
+    value: RegisterWorkloadFromHostRequest;
+    case: "registerWorkloadFromHost";
   } | { case: undefined; value?: undefined };
 };
 
