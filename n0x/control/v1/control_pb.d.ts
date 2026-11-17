@@ -1037,6 +1037,37 @@ export declare type HostTelemetry = Message<"n0x.control.v1.HostTelemetry"> & {
    * @generated from field: int64 observed_at = 8;
    */
   observedAt: bigint;
+
+  /**
+   * Carga media del sistema a 1, 5 y 15 minutos; ausente si no se mide.
+   *
+   * @generated from field: optional double load_1 = 9;
+   */
+  load1?: number | undefined;
+
+  /**
+   * @generated from field: optional double load_5 = 10;
+   */
+  load5?: number | undefined;
+
+  /**
+   * @generated from field: optional double load_15 = 11;
+   */
+  load15?: number | undefined;
+
+  /**
+   * Contadores monotonos de bytes de la interfaz n2x desde system_boot_id.
+   * Ausente: el agente no lo mide. El controller calcula deltas; un nuevo
+   * boot del sistema reinicia la referencia sin generar un pico.
+   *
+   * @generated from field: optional uint64 n2x_rx_bytes = 12;
+   */
+  n2xRxBytes?: bigint | undefined;
+
+  /**
+   * @generated from field: optional uint64 n2x_tx_bytes = 13;
+   */
+  n2xTxBytes?: bigint | undefined;
 };
 
 /**
@@ -1113,6 +1144,13 @@ export declare type FlowTelemetry = Message<"n0x.control.v1.FlowTelemetry"> & {
    * @generated from field: n0x.control.v1.ListeningPortsObservation listening_ports = 8;
    */
   listeningPorts?: ListeningPortsObservation | undefined;
+
+  /**
+   * Ausente: agente anterior o sin dato; no equivale a contadores a cero.
+   *
+   * @generated from field: n0x.control.v1.FlowCounters counters = 9;
+   */
+  counters?: FlowCounters | undefined;
 };
 
 /**
@@ -1120,6 +1158,51 @@ export declare type FlowTelemetry = Message<"n0x.control.v1.FlowTelemetry"> & {
  * Use `create(FlowTelemetrySchema)` to create a new message.
  */
 export declare const FlowTelemetrySchema: GenMessage<FlowTelemetry>;
+
+/**
+ * Acumulados monotonos desde el boot_id del agente en ReportFlowsRequest.
+ * El controller calcula deltas y reinicia la referencia sin pico al cambiar
+ * boot_id. Los contadores opcionales ausentes indican que no se miden.
+ *
+ * @generated from message n0x.control.v1.FlowCounters
+ */
+export declare type FlowCounters = Message<"n0x.control.v1.FlowCounters"> & {
+  /**
+   * @generated from field: optional uint64 allowed_total = 1;
+   */
+  allowedTotal?: bigint | undefined;
+
+  /**
+   * @generated from field: optional uint64 denied_total = 2;
+   */
+  deniedTotal?: bigint | undefined;
+
+  /**
+   * Histograma de latencia de establecimiento TCP medido en el nodo destino
+   * para flujos permitidos. Limites superiores fijos y ordenados en ms:
+   * 1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000.
+   * Ambas listas vacias indican que el histograma no se mide.
+   *
+   * @generated from field: repeated double connect_latency_bounds_ms = 3;
+   */
+  connectLatencyBoundsMs: number[];
+
+  /**
+   * Acumulados en el tiempo desde boot_id, con len(counts) = len(bounds) + 1.
+   * No son acumulativos por limite ("le" no acumulativo): cada recuento i
+   * corresponde al intervalo (bound[i-1], bound[i]], el primero incluye las
+   * latencias hasta bound[0] y el ultimo es el desbordamiento sobre 5000 ms.
+   *
+   * @generated from field: repeated uint64 connect_latency_counts = 4;
+   */
+  connectLatencyCounts: bigint[];
+};
+
+/**
+ * Describes the message n0x.control.v1.FlowCounters.
+ * Use `create(FlowCountersSchema)` to create a new message.
+ */
+export declare const FlowCountersSchema: GenMessage<FlowCounters>;
 
 /**
  * @generated from message n0x.control.v1.ReportFlowsRequest

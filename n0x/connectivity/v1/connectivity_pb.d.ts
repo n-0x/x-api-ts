@@ -1961,6 +1961,100 @@ export declare type GetWorkloadNodeStatusResponse = Message<"n0x.connectivity.v1
 export declare const GetWorkloadNodeStatusResponseSchema: GenMessage<GetWorkloadNodeStatusResponse>;
 
 /**
+ * @generated from message n0x.connectivity.v1.GetWorkloadCountersRequest
+ */
+export declare type GetWorkloadCountersRequest = Message<"n0x.connectivity.v1.GetWorkloadCountersRequest"> & {
+  /**
+   * @generated from field: optional string account_id = 1;
+   */
+  accountId?: string | undefined;
+
+  /**
+   * @generated from field: optional string tenant_id = 2;
+   */
+  tenantId?: string | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.GetWorkloadCountersRequest.
+ * Use `create(GetWorkloadCountersRequestSchema)` to create a new message.
+ */
+export declare const GetWorkloadCountersRequestSchema: GenMessage<GetWorkloadCountersRequest>;
+
+/**
+ * @generated from message n0x.connectivity.v1.GetWorkloadCountersResponse
+ */
+export declare type GetWorkloadCountersResponse = Message<"n0x.connectivity.v1.GetWorkloadCountersResponse"> & {
+  /**
+   * Identifica el boot del proceso proxy y cambia en cada reinicio. El lector
+   * reinicia la referencia para calcular deltas sin pico cuando cambia.
+   *
+   * @generated from field: optional string boot_id = 1;
+   */
+  bootId?: string | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp observed_at = 2;
+   */
+  observedAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: repeated n0x.connectivity.v1.WorkloadCounters workloads = 3;
+   */
+  workloads: WorkloadCounters[];
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.GetWorkloadCountersResponse.
+ * Use `create(GetWorkloadCountersResponseSchema)` to create a new message.
+ */
+export declare const GetWorkloadCountersResponseSchema: GenMessage<GetWorkloadCountersResponse>;
+
+/**
+ * Contadores en memoria del proxy; resources los lee cada minuto y agrega.
+ * Ausencia de un contador o de una carga significa sin dato, nunca cero.
+ *
+ * @generated from message n0x.connectivity.v1.WorkloadCounters
+ */
+export declare type WorkloadCounters = Message<"n0x.connectivity.v1.WorkloadCounters"> & {
+  /**
+   * @generated from field: optional string account_id = 1;
+   */
+  accountId?: string | undefined;
+
+  /**
+   * @generated from field: optional string tenant_id = 2;
+   */
+  tenantId?: string | undefined;
+
+  /**
+   * @generated from field: optional string workload_id = 3;
+   */
+  workloadId?: string | undefined;
+
+  /**
+   * Conexiones abiertas acumuladas, monotonas desde el boot_id del proxy.
+   *
+   * @generated from field: optional uint64 connections_total = 4;
+   */
+  connectionsTotal?: bigint | undefined;
+
+  /**
+   * Peticiones HTTP acumuladas, monotonas desde el mismo boot_id.
+   * Ausente si la carga no es HTTP o no se mide.
+   *
+   * @generated from field: optional uint64 http_requests_total = 5;
+   */
+  httpRequestsTotal?: bigint | undefined;
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.WorkloadCounters.
+ * Use `create(WorkloadCountersSchema)` to create a new message.
+ */
+export declare const WorkloadCountersSchema: GenMessage<WorkloadCounters>;
+
+/**
  * Vincula el login del aserto humano con la identidad estable de los grants.
  *
  * @generated from message n0x.connectivity.v1.ProxyPersonIdentity
@@ -2129,6 +2223,22 @@ export declare const ForwardStatusService: GenService<{
     methodKind: "unary";
     input: typeof GetWorkloadNodeStatusRequestSchema;
     output: typeof GetWorkloadNodeStatusResponseSchema;
+  },
+  /**
+   * Lectura privada para resources cada minuto (ADR 0026, punto 4).
+   * Se reutiliza este servicio porque el proxy ya lo registra en control_listen
+   * con el lector resources, junto a GetWorkloadNodeStatus (workload_status.go).
+   * Mismo modelo mTLS: solo la allowlist control_plane_ids, nunca issuer_ids
+   * ni cualquier SVID del trust domain. Deniega sin peer autenticado, sin
+   * allowlist o con ella vacia, o sin account_id o tenant_id; solo devuelve
+   * contadores del ambito account/tenant solicitado.
+   *
+   * @generated from rpc n0x.connectivity.v1.ForwardStatusService.GetWorkloadCounters
+   */
+  getWorkloadCounters: {
+    methodKind: "unary";
+    input: typeof GetWorkloadCountersRequestSchema;
+    output: typeof GetWorkloadCountersResponseSchema;
   },
 }>;
 
