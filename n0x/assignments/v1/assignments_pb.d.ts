@@ -12,6 +12,79 @@ import type { Duration, Timestamp } from "@bufbuild/protobuf/wkt";
 export declare const file_n0x_assignments_v1_assignments: GenFile;
 
 /**
+ * @generated from message n0x.assignments.v1.AssignmentCharterStep
+ */
+export declare type AssignmentCharterStep = Message<"n0x.assignments.v1.AssignmentCharterStep"> & {
+  /**
+   * @generated from field: string program_id = 1;
+   */
+  programId: string;
+
+  /**
+   * @generated from field: string program_version = 2;
+   */
+  programVersion: string;
+
+  /**
+   * Techo de permisos IAM de este step; ver n0x.tasks.v1.Step.permissions.
+   *
+   * @generated from field: repeated string permissions = 3;
+   */
+  permissions: string[];
+};
+
+/**
+ * Describes the message n0x.assignments.v1.AssignmentCharterStep.
+ * Use `create(AssignmentCharterStepSchema)` to create a new message.
+ */
+export declare const AssignmentCharterStepSchema: GenMessage<AssignmentCharterStep>;
+
+/**
+ * Una forma de trabajar del assignment, declarada y versionada por n-0x.
+ *
+ * @generated from message n0x.assignments.v1.AssignmentCharter
+ */
+export declare type AssignmentCharter = Message<"n0x.assignments.v1.AssignmentCharter"> & {
+  /**
+   * @generated from field: string charter_id = 1;
+   */
+  charterId: string;
+
+  /**
+   * @generated from field: string charter_version = 2;
+   */
+  charterVersion: string;
+
+  /**
+   * @generated from field: string title = 3;
+   */
+  title: string;
+
+  /**
+   * @generated from field: repeated n0x.assignments.v1.AssignmentTriggerType supported_triggers = 4;
+   */
+  supportedTriggers: AssignmentTriggerType[];
+
+  /**
+   * Techo de acciones de plataforma de este charter.
+   *
+   * @generated from field: repeated string platform_actions = 5;
+   */
+  platformActions: string[];
+
+  /**
+   * @generated from field: repeated n0x.assignments.v1.AssignmentCharterStep steps = 6;
+   */
+  steps: AssignmentCharterStep[];
+};
+
+/**
+ * Describes the message n0x.assignments.v1.AssignmentCharter.
+ * Use `create(AssignmentCharterSchema)` to create a new message.
+ */
+export declare const AssignmentCharterSchema: GenMessage<AssignmentCharter>;
+
+/**
  * Platform-owned catalog metadata is a capability ceiling, never an IAM grant.
  *
  * @generated from message n0x.assignments.v1.AssignmentCatalogEntry
@@ -49,6 +122,14 @@ export declare type AssignmentCatalogEntry = Message<"n0x.assignments.v1.Assignm
    * @generated from field: repeated string platform_actions = 6;
    */
   platformActions: string[];
+
+  /**
+   * catalog_version fija esta lista. supported_triggers y platform_actions
+   * son la union de los charters.
+   *
+   * @generated from field: repeated n0x.assignments.v1.AssignmentCharter charters = 7;
+   */
+  charters: AssignmentCharter[];
 };
 
 /**
@@ -77,6 +158,18 @@ export declare type AssignmentTriggerConfiguration = Message<"n0x.assignments.v1
    * @generated from field: string time_zone = 3;
    */
   timeZone: string;
+
+  /**
+   * Charter al que pertenece este trigger. Vacio se aplica al unico charter
+   * de la entrada; con mas de uno, InvalidArgument. Un charter desconocido o
+   * un tipo de trigger que ese charter no admite: InvalidArgument. El
+   * servidor siempre lo devuelve relleno. Un charter sin triggers activos
+   * esta apagado. Un cliente que reenvie triggers sin este campo solo
+   * funciona mientras la entrada tenga un unico charter.
+   *
+   * @generated from field: string charter_id = 4;
+   */
+  charterId: string;
 };
 
 /**
@@ -345,7 +438,8 @@ export declare type AssignmentFindingEvidence = Message<"n0x.assignments.v1.Assi
 export declare const AssignmentFindingEvidenceSchema: GenMessage<AssignmentFindingEvidence>;
 
 /**
- * Deduplicated by account, tenant, instance, kind, and fingerprint. Accepting or
+ * Deduplicated by account, tenant, instance, kind, and fingerprint. charter_id
+ * is an attribute, not part of the key. Accepting or
  * ignoring a recommendation does not resolve a finding: only a later run that
  * no longer observes it can do so. Findings have no TTL; runs retain 180 days.
  *
@@ -410,6 +504,14 @@ export declare type AssignmentFinding = Message<"n0x.assignments.v1.AssignmentFi
    * @generated from field: google.protobuf.Timestamp resolved_at = 11;
    */
   resolvedAt?: Timestamp | undefined;
+
+  /**
+   * Charter que lo detecto. Atributo: no entra en finding_id. Solo una
+   * ejecucion del mismo charter resuelve el hallazgo.
+   *
+   * @generated from field: string charter_id = 12;
+   */
+  charterId: string;
 };
 
 /**
@@ -518,6 +620,13 @@ export declare type AssignmentRecommendation = Message<"n0x.assignments.v1.Assig
    * @generated from field: string accepted_by_identity_id = 10;
    */
   acceptedByIdentityId: string;
+
+  /**
+   * Charter de la ejecucion que la produjo.
+   *
+   * @generated from field: string charter_id = 11;
+   */
+  charterId: string;
 };
 
 /**
@@ -754,6 +863,26 @@ export declare type AssignmentRun = Message<"n0x.assignments.v1.AssignmentRun"> 
    * @generated from field: uint64 observed_revision_number = 19;
    */
   observedRevisionNumber: bigint;
+
+  /**
+   * Congelados al disparar, igual que catalog_version.
+   *
+   * @generated from field: string charter_id = 20;
+   */
+  charterId: string;
+
+  /**
+   * @generated from field: string charter_version = 21;
+   */
+  charterVersion: string;
+
+  /**
+   * Enlaza con n0x.tasks.v1.Task: steps, intentos y traza. Vacio solo en
+   * ejecuciones anteriores al motor de tasks.
+   *
+   * @generated from field: string task_id = 22;
+   */
+  taskId: string;
 };
 
 /**
@@ -1268,6 +1397,16 @@ export declare type TriggerAssignmentRunRequest = Message<"n0x.assignments.v1.Tr
    * @generated from field: string request_id = 4;
    */
   requestId: string;
+
+  /**
+   * Vacio se aplica al unico charter de la entrada; con mas de uno,
+   * InvalidArgument. Si ese charter ya esta en curso, FailedPrecondition; si
+   * el tenant supero su tope de tasks abiertas, ResourceExhausted. En los dos
+   * casos no crea ejecucion: solo el cron deja ejecuciones SKIPPED.
+   *
+   * @generated from field: string charter_id = 5;
+   */
+  charterId: string;
 };
 
 /**
@@ -1335,6 +1474,21 @@ export declare type ListAssignmentRunsRequest = Message<"n0x.assignments.v1.List
    * @generated from field: int32 page_size = 8;
    */
   pageSize: number;
+
+  /**
+   * Por defecto no se devuelven ejecuciones SKIPPED. Filtrar por
+   * result = SKIPPED las devuelve aunque este campo sea false.
+   *
+   * @generated from field: bool include_skipped = 9;
+   */
+  includeSkipped: boolean;
+
+  /**
+   * Vacio no filtra.
+   *
+   * @generated from field: string charter_id = 10;
+   */
+  charterId: string;
 };
 
 /**
@@ -2100,6 +2254,22 @@ export enum AssignmentRunResult {
    * @generated from enum value: ASSIGNMENT_RUN_RESULT_FAILED = 3;
    */
   FAILED = 3,
+
+  /**
+   * El disparo por cron se omitio porque el charter ya estaba en curso o el
+   * tenant supero su tope de tasks abiertas. error lleva el motivo. El run es
+   * FINISHED con started_at = finished_at = trigger.triggered_at.
+   *
+   * @generated from enum value: ASSIGNMENT_RUN_RESULT_SKIPPED = 4;
+   */
+  SKIPPED = 4,
+
+  /**
+   * Cancelada: la instancia se desactivo o entro en cuarentena.
+   *
+   * @generated from enum value: ASSIGNMENT_RUN_RESULT_CANCELLED = 5;
+   */
+  CANCELLED = 5,
 }
 
 /**
