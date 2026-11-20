@@ -752,6 +752,15 @@ export declare type ManagerProcessConfig_AssistantConfig = Message<"n0x.files.v1
    * @generated from field: string model = 4;
    */
   model: string;
+
+  /**
+   * Activa el bucle de herramientas search y call (lecturas con token
+   * delegado de conversacion). Ausente o false: una llamada al modelo por
+   * turno, sin herramientas.
+   *
+   * @generated from field: bool tools_enabled = 5;
+   */
+  toolsEnabled: boolean;
 };
 
 /**
