@@ -2,9 +2,10 @@
 // @generated from file n0x/assistant/v1/assistant.proto (package n0x.assistant.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { JsonObject, Message as Message$1 } from "@bufbuild/protobuf";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
+import type { OperationKind } from "../../catalog/v1/catalog_pb.js";
 
 /**
  * Describes the file n0x/assistant/v1/assistant.proto.
@@ -69,6 +70,17 @@ export declare type Conversation = Message$1<"n0x.assistant.v1.Conversation"> & 
    * @generated from field: google.protobuf.Timestamp updated_at = 11;
    */
   updatedAt?: Timestamp | undefined;
+
+  /**
+   * En orden de anotacion; incluye los resueltos. Como mucho 50 GOVERNED y 10
+   * EFFECT con estado PROPOSED a la vez; call rechaza el siguiente con
+   * proposal_full o effects_full. Los cambios nuevos nunca se copian al
+   * Proposal antiguo: una consola en v0.6.0 no debe ver una tarjeta que no
+   * sabe aplicar.
+   *
+   * @generated from field: repeated n0x.assistant.v1.ProposedChange changes = 12;
+   */
+  changes: ProposedChange[];
 };
 
 /**
@@ -110,6 +122,15 @@ export declare type Message = Message$1<"n0x.assistant.v1.Message"> & {
    * @generated from field: google.protobuf.Timestamp at = 6;
    */
   at?: Timestamp | undefined;
+
+  /**
+   * Solo en el mensaje del asistente que cierra un turno completado, en
+   * orden. El servidor nunca escribe un mensaje del asistente con text vacio,
+   * tenga o no actividad (una consola en v0.6.0 lo mostraria vacio).
+   *
+   * @generated from field: repeated n0x.assistant.v1.ToolActivity activity = 7;
+   */
+  activity: ToolActivity[];
 };
 
 /**
@@ -136,6 +157,14 @@ export declare type Turn = Message$1<"n0x.assistant.v1.Turn"> & {
    * @generated from field: string error = 3;
    */
   error: string;
+
+  /**
+   * La del turno en curso o fallido; vacia cuando el turno se completo (esta
+   * en el mensaje).
+   *
+   * @generated from field: repeated n0x.assistant.v1.ToolActivity activity = 4;
+   */
+  activity: ToolActivity[];
 };
 
 /**
@@ -145,6 +174,9 @@ export declare type Turn = Message$1<"n0x.assistant.v1.Turn"> & {
 export declare const TurnSchema: GenMessage<Turn>;
 
 /**
+ * Obsoleto: tarjetas de comando anteriores al catalogo. Se conserva para
+ * clientes en v0.6.0; ver Conversation.changes.
+ *
  * @generated from message n0x.assistant.v1.Proposal
  */
 export declare type Proposal = Message$1<"n0x.assistant.v1.Proposal"> & {
@@ -184,6 +216,9 @@ export declare const ProposalSchema: GenMessage<Proposal>;
  * ProposalCommand describes a suggested action for the browser to confirm and
  * execute with the user's existing permissions.
  *
+ * Obsoleto: tarjetas de comando anteriores al catalogo. Se conserva para
+ * clientes en v0.6.0; ver Conversation.changes.
+ *
  * @generated from message n0x.assistant.v1.ProposalCommand
  */
 export declare type ProposalCommand = Message$1<"n0x.assistant.v1.ProposalCommand"> & {
@@ -210,6 +245,10 @@ export declare type ProposalCommand = Message$1<"n0x.assistant.v1.ProposalComman
 export declare const ProposalCommandSchema: GenMessage<ProposalCommand>;
 
 /**
+ * Lo unico que manda el navegador: donde esta el usuario, nunca el contenido
+ * de la pantalla. El asistente lee los datos con call. selected_ids sigue
+ * siendo la seleccion multiple de la vista.
+ *
  * @generated from message n0x.assistant.v1.ConversationContext
  */
 export declare type ConversationContext = Message$1<"n0x.assistant.v1.ConversationContext"> & {
@@ -227,6 +266,21 @@ export declare type ConversationContext = Message$1<"n0x.assistant.v1.Conversati
    * @generated from field: string view = 3;
    */
   view: string;
+
+  /**
+   * Objeto abierto en la vista, si hay uno. Tipo estable en minusculas: node,
+   * workload, identity, group, permission, revision, assignment_instance,
+   * assignment_run, task, alert_rule, event, session. Ambos vacios o ambos
+   * presentes.
+   *
+   * @generated from field: string object_type = 4;
+   */
+  objectType: string;
+
+  /**
+   * @generated from field: string object_id = 5;
+   */
+  objectId: string;
 };
 
 /**
@@ -234,6 +288,202 @@ export declare type ConversationContext = Message$1<"n0x.assistant.v1.Conversati
  * Use `create(ConversationContextSchema)` to create a new message.
  */
 export declare const ConversationContextSchema: GenMessage<ConversationContext>;
+
+/**
+ * Una llamada a herramienta, tal como la muestra el hilo. Nunca lleva el
+ * resultado de una lectura ni la peticion completa.
+ *
+ * @generated from message n0x.assistant.v1.ToolActivity
+ */
+export declare type ToolActivity = Message$1<"n0x.assistant.v1.ToolActivity"> & {
+  /**
+   * @generated from field: n0x.assistant.v1.AssistantTool tool = 1;
+   */
+  tool: AssistantTool;
+
+  /**
+   * Una linea de texto plano, hasta 200 caracteres, que compone el manager,
+   * p. ej. "Leyo 12 cargas". Puede citar nombres leidos de la plataforma: el
+   * navegador la muestra como texto, nunca como HTML ni enlace.
+   *
+   * @generated from field: string summary = 2;
+   */
+  summary: string;
+
+  /**
+   * Con call, el metodo pedido. Vacio con search. Nombre completo protobuf
+   * del metodo, p. ej. n0x.permissions.v1.PermissionsService.CreatePermission.
+   *
+   * @generated from field: string operation = 3;
+   */
+  operation: string;
+
+  /**
+   * Tipo del catalogo para operation, tambien PERSON_ONLY o EXCLUDED cuando
+   * la llamada se rechaza; un metodo sin la opcion se informa como EXCLUDED.
+   * UNSPECIFIED solo con search o si operation no existe.
+   *
+   * @generated from field: n0x.catalog.v1.OperationKind kind = 4;
+   */
+  kind: OperationKind;
+
+  /**
+   * @generated from field: n0x.assistant.v1.ToolOutcome outcome = 5;
+   */
+  outcome: ToolOutcome;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp occurred_at = 6;
+   */
+  occurredAt?: Timestamp | undefined;
+
+  /**
+   * Con PROPOSED o PENDING_CONFIRMATION, el ProposedChange creado.
+   *
+   * @generated from field: string change_id = 7;
+   */
+  changeId: string;
+
+  /**
+   * Solo con REJECTED. Codigo fijo: operation_unknown, operation_excluded,
+   * person_only, invalid_request, server_field, permission_denied,
+   * read_failed, proposal_full, effects_full, call_limit.
+   *
+   * @generated from field: string error = 8;
+   */
+  error: string;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.ToolActivity.
+ * Use `create(ToolActivitySchema)` to create a new message.
+ */
+export declare const ToolActivitySchema: GenMessage<ToolActivity>;
+
+/**
+ * @generated from message n0x.assistant.v1.ProposedChange
+ */
+export declare type ProposedChange = Message$1<"n0x.assistant.v1.ProposedChange"> & {
+  /**
+   * Lo asigna el manager; unico en la conversacion.
+   *
+   * @generated from field: string change_id = 1;
+   */
+  changeId: string;
+
+  /**
+   * Nombre completo protobuf del metodo, p. ej.
+   * n0x.permissions.v1.PermissionsService.CreatePermission.
+   *
+   * @generated from field: string operation = 2;
+   */
+  operation: string;
+
+  /**
+   * GOVERNED o EFFECT, copiado del catalogo al anotar.
+   *
+   * @generated from field: n0x.catalog.v1.OperationKind kind = 3;
+   */
+  kind: OperationKind;
+
+  /**
+   * Peticion en protojson con nombres proto, validada contra el esquema de
+   * operation al anotar. Nunca lleva los campos que pone quien aplica:
+   * account_id, tenant_id, request_id, draft_revision_number ni origin;
+   * call rechaza con server_field una peticion que los traiga, y el
+   * navegador los rellena con la conversacion al aplicar. Nunca lleva
+   * secretos: una operacion cuya peticion los tiene no es GOVERNED ni EFFECT.
+   *
+   * @generated from field: string request_json = 4;
+   */
+  requestJson: string;
+
+  /**
+   * Explicacion del modelo, texto plano hasta 200 caracteres. No confiable:
+   * la tarjeta la muestra junto a operation y request_json, nunca en su lugar.
+   *
+   * @generated from field: string summary = 5;
+   */
+  summary: string;
+
+  /**
+   * @generated from field: n0x.assistant.v1.ProposedChangeStatus status = 6;
+   */
+  status: ProposedChangeStatus;
+
+  /**
+   * Solo con FAILED: codigo Connect en snake_case que devolvio x-api, p. ej.
+   * permission_denied o failed_precondition. Nunca el mensaje del servidor
+   * ni texto del modelo.
+   *
+   * @generated from field: string error = 7;
+   */
+  error: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp proposed_at = 8;
+   */
+  proposedAt?: Timestamp | undefined;
+
+  /**
+   * Con APPLIED: cuando el manager recibio el aviso del navegador.
+   *
+   * @generated from field: google.protobuf.Timestamp applied_at = 9;
+   */
+  appliedAt?: Timestamp | undefined;
+
+  /**
+   * Con APPLIED, si x-api devolvio revision_number: la revision que contiene
+   * el cambio. Enlaza la conversacion con la revision.
+   *
+   * @generated from field: optional uint64 revision_number = 10;
+   */
+  revisionNumber?: bigint | undefined;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.ProposedChange.
+ * Use `create(ProposedChangeSchema)` to create a new message.
+ */
+export declare const ProposedChangeSchema: GenMessage<ProposedChange>;
+
+/**
+ * @generated from message n0x.assistant.v1.ProposedChangeOutcome
+ */
+export declare type ProposedChangeOutcome = Message$1<"n0x.assistant.v1.ProposedChangeOutcome"> & {
+  /**
+   * @generated from field: string change_id = 1;
+   */
+  changeId: string;
+
+  /**
+   * APPLIED, FAILED o DISCARDED; otro valor, InvalidArgument.
+   *
+   * @generated from field: n0x.assistant.v1.ProposedChangeStatus status = 2;
+   */
+  status: ProposedChangeStatus;
+
+  /**
+   * Obligatorio con FAILED y vacio en otro caso; formato de ProposedChange.error.
+   *
+   * @generated from field: string error = 3;
+   */
+  error: string;
+
+  /**
+   * Solo con APPLIED; con otro estado, InvalidArgument. Repetir APPLIED con
+   * otro revision_number, FailedPrecondition.
+   *
+   * @generated from field: optional uint64 revision_number = 4;
+   */
+  revisionNumber?: bigint | undefined;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.ProposedChangeOutcome.
+ * Use `create(ProposedChangeOutcomeSchema)` to create a new message.
+ */
+export declare const ProposedChangeOutcomeSchema: GenMessage<ProposedChangeOutcome>;
 
 /**
  * @generated from message n0x.assistant.v1.CreateConversationRequest
@@ -486,6 +736,166 @@ export declare type DismissProposalResponse = Message$1<"n0x.assistant.v1.Dismis
 export declare const DismissProposalResponseSchema: GenMessage<DismissProposalResponse>;
 
 /**
+ * @generated from message n0x.assistant.v1.ReportProposalOutcomeRequest
+ */
+export declare type ReportProposalOutcomeRequest = Message$1<"n0x.assistant.v1.ReportProposalOutcomeRequest"> & {
+  /**
+   * @generated from field: string conversation_id = 1;
+   */
+  conversationId: string;
+
+  /**
+   * Idempotencia: repetir request_id con el mismo contenido devuelve la
+   * conversacion sin cambios; con otro contenido, Aborted, el mismo conflicto
+   * que SendMessage. Sin expected_version: se admite con un turno en curso y
+   * sube Conversation.version; el turno siguiente ve el resultado.
+   *
+   * @generated from field: string request_id = 2;
+   */
+  requestId: string;
+
+  /**
+   * De 1 a 60 elementos.
+   *
+   * @generated from field: repeated n0x.assistant.v1.ProposedChangeOutcome outcomes = 3;
+   */
+  outcomes: ProposedChangeOutcome[];
+};
+
+/**
+ * Describes the message n0x.assistant.v1.ReportProposalOutcomeRequest.
+ * Use `create(ReportProposalOutcomeRequestSchema)` to create a new message.
+ */
+export declare const ReportProposalOutcomeRequestSchema: GenMessage<ReportProposalOutcomeRequest>;
+
+/**
+ * @generated from message n0x.assistant.v1.ReportProposalOutcomeResponse
+ */
+export declare type ReportProposalOutcomeResponse = Message$1<"n0x.assistant.v1.ReportProposalOutcomeResponse"> & {
+  /**
+   * @generated from field: n0x.assistant.v1.Conversation conversation = 1;
+   */
+  conversation?: Conversation | undefined;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.ReportProposalOutcomeResponse.
+ * Use `create(ReportProposalOutcomeResponseSchema)` to create a new message.
+ */
+export declare const ReportProposalOutcomeResponseSchema: GenMessage<ReportProposalOutcomeResponse>;
+
+/**
+ * @generated from enum n0x.assistant.v1.AssistantTool
+ */
+export enum AssistantTool {
+  /**
+   * @generated from enum value: ASSISTANT_TOOL_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: ASSISTANT_TOOL_SEARCH = 1;
+   */
+  SEARCH = 1,
+
+  /**
+   * @generated from enum value: ASSISTANT_TOOL_CALL = 2;
+   */
+  CALL = 2,
+}
+
+/**
+ * Describes the enum n0x.assistant.v1.AssistantTool.
+ */
+export declare const AssistantToolSchema: GenEnum<AssistantTool>;
+
+/**
+ * @generated from enum n0x.assistant.v1.ToolOutcome
+ */
+export enum ToolOutcome {
+  /**
+   * @generated from enum value: TOOL_OUTCOME_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * search respondio, o call ejecuto una lectura como el usuario.
+   *
+   * @generated from enum value: TOOL_OUTCOME_EXECUTED = 1;
+   */
+  EXECUTED = 1,
+
+  /**
+   * call anoto un cambio GOVERNED en la propuesta; no se ejecuto.
+   *
+   * @generated from enum value: TOOL_OUTCOME_PROPOSED = 2;
+   */
+  PROPOSED = 2,
+
+  /**
+   * call anoto un EFFECT como tarjeta pendiente; no se ejecuto.
+   *
+   * @generated from enum value: TOOL_OUTCOME_PENDING_CONFIRMATION = 3;
+   */
+  PENDING_CONFIRMATION = 3,
+
+  /**
+   * call no hizo nada; error dice por que.
+   *
+   * @generated from enum value: TOOL_OUTCOME_REJECTED = 4;
+   */
+  REJECTED = 4,
+}
+
+/**
+ * Describes the enum n0x.assistant.v1.ToolOutcome.
+ */
+export declare const ToolOutcomeSchema: GenEnum<ToolOutcome>;
+
+/**
+ * @generated from enum n0x.assistant.v1.ProposedChangeStatus
+ */
+export enum ProposedChangeStatus {
+  /**
+   * @generated from enum value: PROPOSED_CHANGE_STATUS_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * Anotado por el asistente; la persona aun no ha actuado.
+   *
+   * @generated from enum value: PROPOSED_CHANGE_STATUS_PROPOSED = 1;
+   */
+  PROPOSED = 1,
+
+  /**
+   * GOVERNED: publicado en una revision. EFFECT: confirmado y aplicado.
+   *
+   * @generated from enum value: PROPOSED_CHANGE_STATUS_APPLIED = 2;
+   */
+  APPLIED = 2,
+
+  /**
+   * x-api rechazo la peticion al aplicarla; se puede reintentar.
+   *
+   * @generated from enum value: PROPOSED_CHANGE_STATUS_FAILED = 3;
+   */
+  FAILED = 3,
+
+  /**
+   * La persona lo descarto, o descarto el borrador que lo contenia.
+   *
+   * @generated from enum value: PROPOSED_CHANGE_STATUS_DISCARDED = 4;
+   */
+  DISCARDED = 4,
+}
+
+/**
+ * Describes the enum n0x.assistant.v1.ProposedChangeStatus.
+ */
+export declare const ProposedChangeStatusSchema: GenEnum<ProposedChangeStatus>;
+
+/**
  * @generated from service n0x.assistant.v1.AssistantService
  */
 export declare const AssistantService: GenService<{
@@ -522,6 +932,9 @@ export declare const AssistantService: GenService<{
     output: typeof SendMessageResponseSchema;
   },
   /**
+   * Obsoleto: tarjetas de comando anteriores al catalogo. Se conserva para
+   * clientes en v0.6.0; ver Conversation.changes.
+   *
    * @generated from rpc n0x.assistant.v1.AssistantService.DismissProposal
    */
   dismissProposal: {
@@ -536,6 +949,25 @@ export declare const AssistantService: GenService<{
     methodKind: "unary";
     input: typeof DeleteConversationRequestSchema;
     output: typeof DeleteConversationResponseSchema;
+  },
+  /**
+   * El navegador avisa de lo que paso con cambios propuestos despues de que
+   * la persona actuara. Solo con la sesion del navegador del usuario de la
+   * conversacion (otra conversacion: NotFound); un token delegado no puede
+   * llamarla. Es lo que el hilo y el asistente ven, no una prueba de que
+   * x-api cambiara. Atomica: un change_id desconocido da NotFound y no
+   * aplica nada; un change_id repetido en la peticion, InvalidArgument.
+   * Transiciones: PROPOSED o FAILED a APPLIED, FAILED o DISCARDED. APPLIED y
+   * DISCARDED son finales: repetir el mismo estado no cambia nada (salvo
+   * APPLIED con otro revision_number, FailedPrecondition); otro estado,
+   * FailedPrecondition. FAILED a FAILED reemplaza error.
+   *
+   * @generated from rpc n0x.assistant.v1.AssistantService.ReportProposalOutcome
+   */
+  reportProposalOutcome: {
+    methodKind: "unary";
+    input: typeof ReportProposalOutcomeRequestSchema;
+    output: typeof ReportProposalOutcomeResponseSchema;
   },
 }>;
 

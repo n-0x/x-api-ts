@@ -2,14 +2,15 @@
 // @generated from file n0x/assistant/v1/assistant.proto (package n0x.assistant.v1, syntax proto3)
 /* eslint-disable */
 
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc, tsEnum } from "@bufbuild/protobuf/codegenv2";
 import { file_google_protobuf_struct, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
+import { file_n0x_catalog_v1_catalog } from "../../catalog/v1/catalog_pb.js";
 
 /**
  * Describes the file n0x/assistant/v1/assistant.proto.
  */
 export const file_n0x_assistant_v1_assistant = /*@__PURE__*/
-  fileDesc("CiBuMHgvYXNzaXN0YW50L3YxL2Fzc2lzdGFudC5wcm90bxIQbjB4LmFzc2lzdGFudC52MSLTAgoMQ29udmVyc2F0aW9uEgoKAmlkGAEgASgJEhIKCmFjY291bnRfaWQYAiABKAkSEQoJdGVuYW50X2lkGAMgASgJEg8KB3VzZXJfaWQYBCABKAkSDQoFdGl0bGUYBSABKAkSKwoIbWVzc2FnZXMYBiADKAsyGS5uMHguYXNzaXN0YW50LnYxLk1lc3NhZ2USJAoEdHVybhgHIAEoCzIWLm4weC5hc3Npc3RhbnQudjEuVHVybhIsCghwcm9wb3NhbBgIIAEoCzIaLm4weC5hc3Npc3RhbnQudjEuUHJvcG9zYWwSDwoHdmVyc2lvbhgJIAEoCRIuCgpjcmVhdGVkX2F0GAogASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJ7CgdNZXNzYWdlEgoKAmlkGAEgASgJEgwKBHJvbGUYAiABKAkSDAoEdGV4dBgDIAEoCRIMCgRraW5kGAQgASgJEhIKCnJlcXVlc3RfaWQYBSABKAkSJgoCYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIjEKBFR1cm4SCgoCaWQYASABKAkSDgoGc3RhdHVzGAIgASgJEg0KBWVycm9yGAMgASgJIn4KCFByb3Bvc2FsEgoKAmlkGAEgASgJEhAKCHJldmlzaW9uGAIgASgJEg4KBnN0YXR1cxgDIAEoCRIzCghjb21tYW5kcxgEIAMoCzIhLm4weC5hc3Npc3RhbnQudjEuUHJvcG9zYWxDb21tYW5kEg8KB21pc3NpbmcYBSADKAkiWQoPUHJvcG9zYWxDb21tYW5kEgwKBGtpbmQYASABKAkSJwoGZmllbGRzGAIgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdBIPCgdzdW1tYXJ5GAMgASgJIkwKE0NvbnZlcnNhdGlvbkNvbnRleHQSEQoJdGVuYW50X2lkGAEgASgJEhQKDHNlbGVjdGVkX2lkcxgCIAMoCRIMCgR2aWV3GAMgASgJImUKGUNyZWF0ZUNvbnZlcnNhdGlvblJlcXVlc3QSEgoKYWNjb3VudF9pZBgBIAEoCRIRCgl0ZW5hbnRfaWQYAiABKAkSEgoKcmVxdWVzdF9pZBgDIAEoCRINCgV0aXRsZRgEIAEoCSJSChpDcmVhdGVDb252ZXJzYXRpb25SZXNwb25zZRI0Cgxjb252ZXJzYXRpb24YASABKAsyHi5uMHguYXNzaXN0YW50LnYxLkNvbnZlcnNhdGlvbiJBChhMaXN0Q29udmVyc2F0aW9uc1JlcXVlc3QSEgoKYWNjb3VudF9pZBgBIAEoCRIRCgl0ZW5hbnRfaWQYAiABKAkiUgoZTGlzdENvbnZlcnNhdGlvbnNSZXNwb25zZRI1Cg1jb252ZXJzYXRpb25zGAEgAygLMh4ubjB4LmFzc2lzdGFudC52MS5Db252ZXJzYXRpb24iMQoWR2V0Q29udmVyc2F0aW9uUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAkiTwoXR2V0Q29udmVyc2F0aW9uUmVzcG9uc2USNAoMY29udmVyc2F0aW9uGAEgASgLMh4ubjB4LmFzc2lzdGFudC52MS5Db252ZXJzYXRpb24ioQEKElNlbmRNZXNzYWdlUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAkSGAoQZXhwZWN0ZWRfdmVyc2lvbhgCIAEoCRISCgpyZXF1ZXN0X2lkGAMgASgJEgwKBHRleHQYBCABKAkSNgoHY29udGV4dBgFIAEoCzIlLm4weC5hc3Npc3RhbnQudjEuQ29udmVyc2F0aW9uQ29udGV4dCJLChNTZW5kTWVzc2FnZVJlc3BvbnNlEjQKDGNvbnZlcnNhdGlvbhgBIAEoCzIeLm4weC5hc3Npc3RhbnQudjEuQ29udmVyc2F0aW9uIk4KGURlbGV0ZUNvbnZlcnNhdGlvblJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgJEhgKEGV4cGVjdGVkX3ZlcnNpb24YAiABKAkiHAoaRGVsZXRlQ29udmVyc2F0aW9uUmVzcG9uc2UidAoWRGlzbWlzc1Byb3Bvc2FsUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAkSEwoLcHJvcG9zYWxfaWQYAiABKAkSGAoQZXhwZWN0ZWRfdmVyc2lvbhgDIAEoCRISCgpyZXF1ZXN0X2lkGAQgASgJIk8KF0Rpc21pc3NQcm9wb3NhbFJlc3BvbnNlEjQKDGNvbnZlcnNhdGlvbhgBIAEoCzIeLm4weC5hc3Npc3RhbnQudjEuQ29udmVyc2F0aW9uMo4FChBBc3Npc3RhbnRTZXJ2aWNlEm8KEkNyZWF0ZUNvbnZlcnNhdGlvbhIrLm4weC5hc3Npc3RhbnQudjEuQ3JlYXRlQ29udmVyc2F0aW9uUmVxdWVzdBosLm4weC5hc3Npc3RhbnQudjEuQ3JlYXRlQ29udmVyc2F0aW9uUmVzcG9uc2USbAoRTGlzdENvbnZlcnNhdGlvbnMSKi5uMHguYXNzaXN0YW50LnYxLkxpc3RDb252ZXJzYXRpb25zUmVxdWVzdBorLm4weC5hc3Npc3RhbnQudjEuTGlzdENvbnZlcnNhdGlvbnNSZXNwb25zZRJmCg9HZXRDb252ZXJzYXRpb24SKC5uMHguYXNzaXN0YW50LnYxLkdldENvbnZlcnNhdGlvblJlcXVlc3QaKS5uMHguYXNzaXN0YW50LnYxLkdldENvbnZlcnNhdGlvblJlc3BvbnNlEloKC1NlbmRNZXNzYWdlEiQubjB4LmFzc2lzdGFudC52MS5TZW5kTWVzc2FnZVJlcXVlc3QaJS5uMHguYXNzaXN0YW50LnYxLlNlbmRNZXNzYWdlUmVzcG9uc2USZgoPRGlzbWlzc1Byb3Bvc2FsEigubjB4LmFzc2lzdGFudC52MS5EaXNtaXNzUHJvcG9zYWxSZXF1ZXN0GikubjB4LmFzc2lzdGFudC52MS5EaXNtaXNzUHJvcG9zYWxSZXNwb25zZRJvChJEZWxldGVDb252ZXJzYXRpb24SKy5uMHguYXNzaXN0YW50LnYxLkRlbGV0ZUNvbnZlcnNhdGlvblJlcXVlc3QaLC5uMHguYXNzaXN0YW50LnYxLkRlbGV0ZUNvbnZlcnNhdGlvblJlc3BvbnNlQjNaMWdpdGh1Yi5jb20vbi0weC94LWFwaS1nby9hc3Npc3RhbnQvdjE7YXNzaXN0YW50djFiBnByb3RvMw", [file_google_protobuf_struct, file_google_protobuf_timestamp]);
+  fileDesc("CiBuMHgvYXNzaXN0YW50L3YxL2Fzc2lzdGFudC5wcm90bxIQbjB4LmFzc2lzdGFudC52MSKGAwoMQ29udmVyc2F0aW9uEgoKAmlkGAEgASgJEhIKCmFjY291bnRfaWQYAiABKAkSEQoJdGVuYW50X2lkGAMgASgJEg8KB3VzZXJfaWQYBCABKAkSDQoFdGl0bGUYBSABKAkSKwoIbWVzc2FnZXMYBiADKAsyGS5uMHguYXNzaXN0YW50LnYxLk1lc3NhZ2USJAoEdHVybhgHIAEoCzIWLm4weC5hc3Npc3RhbnQudjEuVHVybhIsCghwcm9wb3NhbBgIIAEoCzIaLm4weC5hc3Npc3RhbnQudjEuUHJvcG9zYWwSDwoHdmVyc2lvbhgJIAEoCRIuCgpjcmVhdGVkX2F0GAogASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIxCgdjaGFuZ2VzGAwgAygLMiAubjB4LmFzc2lzdGFudC52MS5Qcm9wb3NlZENoYW5nZSKtAQoHTWVzc2FnZRIKCgJpZBgBIAEoCRIMCgRyb2xlGAIgASgJEgwKBHRleHQYAyABKAkSDAoEa2luZBgEIAEoCRISCgpyZXF1ZXN0X2lkGAUgASgJEiYKAmF0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIwCghhY3Rpdml0eRgHIAMoCzIeLm4weC5hc3Npc3RhbnQudjEuVG9vbEFjdGl2aXR5ImMKBFR1cm4SCgoCaWQYASABKAkSDgoGc3RhdHVzGAIgASgJEg0KBWVycm9yGAMgASgJEjAKCGFjdGl2aXR5GAQgAygLMh4ubjB4LmFzc2lzdGFudC52MS5Ub29sQWN0aXZpdHkifgoIUHJvcG9zYWwSCgoCaWQYASABKAkSEAoIcmV2aXNpb24YAiABKAkSDgoGc3RhdHVzGAMgASgJEjMKCGNvbW1hbmRzGAQgAygLMiEubjB4LmFzc2lzdGFudC52MS5Qcm9wb3NhbENvbW1hbmQSDwoHbWlzc2luZxgFIAMoCSJZCg9Qcm9wb3NhbENvbW1hbmQSDAoEa2luZBgBIAEoCRInCgZmaWVsZHMYAiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0Eg8KB3N1bW1hcnkYAyABKAkidAoTQ29udmVyc2F0aW9uQ29udGV4dBIRCgl0ZW5hbnRfaWQYASABKAkSFAoMc2VsZWN0ZWRfaWRzGAIgAygJEgwKBHZpZXcYAyABKAkSEwoLb2JqZWN0X3R5cGUYBCABKAkSEQoJb2JqZWN0X2lkGAUgASgJIpECCgxUb29sQWN0aXZpdHkSLQoEdG9vbBgBIAEoDjIfLm4weC5hc3Npc3RhbnQudjEuQXNzaXN0YW50VG9vbBIPCgdzdW1tYXJ5GAIgASgJEhEKCW9wZXJhdGlvbhgDIAEoCRIrCgRraW5kGAQgASgOMh0ubjB4LmNhdGFsb2cudjEuT3BlcmF0aW9uS2luZBIuCgdvdXRjb21lGAUgASgOMh0ubjB4LmFzc2lzdGFudC52MS5Ub29sT3V0Y29tZRIvCgtvY2N1cnJlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEQoJY2hhbmdlX2lkGAcgASgJEg0KBWVycm9yGAggASgJIuQCCg5Qcm9wb3NlZENoYW5nZRIRCgljaGFuZ2VfaWQYASABKAkSEQoJb3BlcmF0aW9uGAIgASgJEisKBGtpbmQYAyABKA4yHS5uMHguY2F0YWxvZy52MS5PcGVyYXRpb25LaW5kEhQKDHJlcXVlc3RfanNvbhgEIAEoCRIPCgdzdW1tYXJ5GAUgASgJEjYKBnN0YXR1cxgGIAEoDjImLm4weC5hc3Npc3RhbnQudjEuUHJvcG9zZWRDaGFuZ2VTdGF0dXMSDQoFZXJyb3IYByABKAkSLwoLcHJvcG9zZWRfYXQYCCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCmFwcGxpZWRfYXQYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhwKD3JldmlzaW9uX251bWJlchgKIAEoBEgAiAEBQhIKEF9yZXZpc2lvbl9udW1iZXIiowEKFVByb3Bvc2VkQ2hhbmdlT3V0Y29tZRIRCgljaGFuZ2VfaWQYASABKAkSNgoGc3RhdHVzGAIgASgOMiYubjB4LmFzc2lzdGFudC52MS5Qcm9wb3NlZENoYW5nZVN0YXR1cxINCgVlcnJvchgDIAEoCRIcCg9yZXZpc2lvbl9udW1iZXIYBCABKARIAIgBAUISChBfcmV2aXNpb25fbnVtYmVyImUKGUNyZWF0ZUNvbnZlcnNhdGlvblJlcXVlc3QSEgoKYWNjb3VudF9pZBgBIAEoCRIRCgl0ZW5hbnRfaWQYAiABKAkSEgoKcmVxdWVzdF9pZBgDIAEoCRINCgV0aXRsZRgEIAEoCSJSChpDcmVhdGVDb252ZXJzYXRpb25SZXNwb25zZRI0Cgxjb252ZXJzYXRpb24YASABKAsyHi5uMHguYXNzaXN0YW50LnYxLkNvbnZlcnNhdGlvbiJBChhMaXN0Q29udmVyc2F0aW9uc1JlcXVlc3QSEgoKYWNjb3VudF9pZBgBIAEoCRIRCgl0ZW5hbnRfaWQYAiABKAkiUgoZTGlzdENvbnZlcnNhdGlvbnNSZXNwb25zZRI1Cg1jb252ZXJzYXRpb25zGAEgAygLMh4ubjB4LmFzc2lzdGFudC52MS5Db252ZXJzYXRpb24iMQoWR2V0Q29udmVyc2F0aW9uUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAkiTwoXR2V0Q29udmVyc2F0aW9uUmVzcG9uc2USNAoMY29udmVyc2F0aW9uGAEgASgLMh4ubjB4LmFzc2lzdGFudC52MS5Db252ZXJzYXRpb24ioQEKElNlbmRNZXNzYWdlUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAkSGAoQZXhwZWN0ZWRfdmVyc2lvbhgCIAEoCRISCgpyZXF1ZXN0X2lkGAMgASgJEgwKBHRleHQYBCABKAkSNgoHY29udGV4dBgFIAEoCzIlLm4weC5hc3Npc3RhbnQudjEuQ29udmVyc2F0aW9uQ29udGV4dCJLChNTZW5kTWVzc2FnZVJlc3BvbnNlEjQKDGNvbnZlcnNhdGlvbhgBIAEoCzIeLm4weC5hc3Npc3RhbnQudjEuQ29udmVyc2F0aW9uIk4KGURlbGV0ZUNvbnZlcnNhdGlvblJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgJEhgKEGV4cGVjdGVkX3ZlcnNpb24YAiABKAkiHAoaRGVsZXRlQ29udmVyc2F0aW9uUmVzcG9uc2UidAoWRGlzbWlzc1Byb3Bvc2FsUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAkSEwoLcHJvcG9zYWxfaWQYAiABKAkSGAoQZXhwZWN0ZWRfdmVyc2lvbhgDIAEoCRISCgpyZXF1ZXN0X2lkGAQgASgJIk8KF0Rpc21pc3NQcm9wb3NhbFJlc3BvbnNlEjQKDGNvbnZlcnNhdGlvbhgBIAEoCzIeLm4weC5hc3Npc3RhbnQudjEuQ29udmVyc2F0aW9uIoYBChxSZXBvcnRQcm9wb3NhbE91dGNvbWVSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoCRISCgpyZXF1ZXN0X2lkGAIgASgJEjkKCG91dGNvbWVzGAMgAygLMicubjB4LmFzc2lzdGFudC52MS5Qcm9wb3NlZENoYW5nZU91dGNvbWUiVQodUmVwb3J0UHJvcG9zYWxPdXRjb21lUmVzcG9uc2USNAoMY29udmVyc2F0aW9uGAEgASgLMh4ubjB4LmFzc2lzdGFudC52MS5Db252ZXJzYXRpb24qYwoNQXNzaXN0YW50VG9vbBIeChpBU1NJU1RBTlRfVE9PTF9VTlNQRUNJRklFRBAAEhkKFUFTU0lTVEFOVF9UT09MX1NFQVJDSBABEhcKE0FTU0lTVEFOVF9UT09MX0NBTEwQAiqjAQoLVG9vbE91dGNvbWUSHAoYVE9PTF9PVVRDT01FX1VOU1BFQ0lGSUVEEAASGQoVVE9PTF9PVVRDT01FX0VYRUNVVEVEEAESGQoVVE9PTF9PVVRDT01FX1BST1BPU0VEEAISJQohVE9PTF9PVVRDT01FX1BFTkRJTkdfQ09ORklSTUFUSU9OEAMSGQoVVE9PTF9PVVRDT01FX1JFSkVDVEVEEAQq0AEKFFByb3Bvc2VkQ2hhbmdlU3RhdHVzEiYKIlBST1BPU0VEX0NIQU5HRV9TVEFUVVNfVU5TUEVDSUZJRUQQABIjCh9QUk9QT1NFRF9DSEFOR0VfU1RBVFVTX1BST1BPU0VEEAESIgoeUFJPUE9TRURfQ0hBTkdFX1NUQVRVU19BUFBMSUVEEAISIQodUFJPUE9TRURfQ0hBTkdFX1NUQVRVU19GQUlMRUQQAxIkCiBQUk9QT1NFRF9DSEFOR0VfU1RBVFVTX0RJU0NBUkRFRBAEMogGChBBc3Npc3RhbnRTZXJ2aWNlEm8KEkNyZWF0ZUNvbnZlcnNhdGlvbhIrLm4weC5hc3Npc3RhbnQudjEuQ3JlYXRlQ29udmVyc2F0aW9uUmVxdWVzdBosLm4weC5hc3Npc3RhbnQudjEuQ3JlYXRlQ29udmVyc2F0aW9uUmVzcG9uc2USbAoRTGlzdENvbnZlcnNhdGlvbnMSKi5uMHguYXNzaXN0YW50LnYxLkxpc3RDb252ZXJzYXRpb25zUmVxdWVzdBorLm4weC5hc3Npc3RhbnQudjEuTGlzdENvbnZlcnNhdGlvbnNSZXNwb25zZRJmCg9HZXRDb252ZXJzYXRpb24SKC5uMHguYXNzaXN0YW50LnYxLkdldENvbnZlcnNhdGlvblJlcXVlc3QaKS5uMHguYXNzaXN0YW50LnYxLkdldENvbnZlcnNhdGlvblJlc3BvbnNlEloKC1NlbmRNZXNzYWdlEiQubjB4LmFzc2lzdGFudC52MS5TZW5kTWVzc2FnZVJlcXVlc3QaJS5uMHguYXNzaXN0YW50LnYxLlNlbmRNZXNzYWdlUmVzcG9uc2USZgoPRGlzbWlzc1Byb3Bvc2FsEigubjB4LmFzc2lzdGFudC52MS5EaXNtaXNzUHJvcG9zYWxSZXF1ZXN0GikubjB4LmFzc2lzdGFudC52MS5EaXNtaXNzUHJvcG9zYWxSZXNwb25zZRJvChJEZWxldGVDb252ZXJzYXRpb24SKy5uMHguYXNzaXN0YW50LnYxLkRlbGV0ZUNvbnZlcnNhdGlvblJlcXVlc3QaLC5uMHguYXNzaXN0YW50LnYxLkRlbGV0ZUNvbnZlcnNhdGlvblJlc3BvbnNlEngKFVJlcG9ydFByb3Bvc2FsT3V0Y29tZRIuLm4weC5hc3Npc3RhbnQudjEuUmVwb3J0UHJvcG9zYWxPdXRjb21lUmVxdWVzdBovLm4weC5hc3Npc3RhbnQudjEuUmVwb3J0UHJvcG9zYWxPdXRjb21lUmVzcG9uc2VCM1oxZ2l0aHViLmNvbS9uLTB4L3gtYXBpLWdvL2Fzc2lzdGFudC92MTthc3Npc3RhbnR2MWIGcHJvdG8z", [file_google_protobuf_struct, file_google_protobuf_timestamp, file_n0x_catalog_v1_catalog]);
 
 /**
  * Describes the message n0x.assistant.v1.Conversation.
@@ -54,88 +55,159 @@ export const ConversationContextSchema = /*@__PURE__*/
   messageDesc(file_n0x_assistant_v1_assistant, 5);
 
 /**
+ * Describes the message n0x.assistant.v1.ToolActivity.
+ * Use `create(ToolActivitySchema)` to create a new message.
+ */
+export const ToolActivitySchema = /*@__PURE__*/
+  messageDesc(file_n0x_assistant_v1_assistant, 6);
+
+/**
+ * Describes the message n0x.assistant.v1.ProposedChange.
+ * Use `create(ProposedChangeSchema)` to create a new message.
+ */
+export const ProposedChangeSchema = /*@__PURE__*/
+  messageDesc(file_n0x_assistant_v1_assistant, 7);
+
+/**
+ * Describes the message n0x.assistant.v1.ProposedChangeOutcome.
+ * Use `create(ProposedChangeOutcomeSchema)` to create a new message.
+ */
+export const ProposedChangeOutcomeSchema = /*@__PURE__*/
+  messageDesc(file_n0x_assistant_v1_assistant, 8);
+
+/**
  * Describes the message n0x.assistant.v1.CreateConversationRequest.
  * Use `create(CreateConversationRequestSchema)` to create a new message.
  */
 export const CreateConversationRequestSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 6);
+  messageDesc(file_n0x_assistant_v1_assistant, 9);
 
 /**
  * Describes the message n0x.assistant.v1.CreateConversationResponse.
  * Use `create(CreateConversationResponseSchema)` to create a new message.
  */
 export const CreateConversationResponseSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 7);
+  messageDesc(file_n0x_assistant_v1_assistant, 10);
 
 /**
  * Describes the message n0x.assistant.v1.ListConversationsRequest.
  * Use `create(ListConversationsRequestSchema)` to create a new message.
  */
 export const ListConversationsRequestSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 8);
+  messageDesc(file_n0x_assistant_v1_assistant, 11);
 
 /**
  * Describes the message n0x.assistant.v1.ListConversationsResponse.
  * Use `create(ListConversationsResponseSchema)` to create a new message.
  */
 export const ListConversationsResponseSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 9);
+  messageDesc(file_n0x_assistant_v1_assistant, 12);
 
 /**
  * Describes the message n0x.assistant.v1.GetConversationRequest.
  * Use `create(GetConversationRequestSchema)` to create a new message.
  */
 export const GetConversationRequestSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 10);
+  messageDesc(file_n0x_assistant_v1_assistant, 13);
 
 /**
  * Describes the message n0x.assistant.v1.GetConversationResponse.
  * Use `create(GetConversationResponseSchema)` to create a new message.
  */
 export const GetConversationResponseSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 11);
+  messageDesc(file_n0x_assistant_v1_assistant, 14);
 
 /**
  * Describes the message n0x.assistant.v1.SendMessageRequest.
  * Use `create(SendMessageRequestSchema)` to create a new message.
  */
 export const SendMessageRequestSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 12);
+  messageDesc(file_n0x_assistant_v1_assistant, 15);
 
 /**
  * Describes the message n0x.assistant.v1.SendMessageResponse.
  * Use `create(SendMessageResponseSchema)` to create a new message.
  */
 export const SendMessageResponseSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 13);
+  messageDesc(file_n0x_assistant_v1_assistant, 16);
 
 /**
  * Describes the message n0x.assistant.v1.DeleteConversationRequest.
  * Use `create(DeleteConversationRequestSchema)` to create a new message.
  */
 export const DeleteConversationRequestSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 14);
+  messageDesc(file_n0x_assistant_v1_assistant, 17);
 
 /**
  * Describes the message n0x.assistant.v1.DeleteConversationResponse.
  * Use `create(DeleteConversationResponseSchema)` to create a new message.
  */
 export const DeleteConversationResponseSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 15);
+  messageDesc(file_n0x_assistant_v1_assistant, 18);
 
 /**
  * Describes the message n0x.assistant.v1.DismissProposalRequest.
  * Use `create(DismissProposalRequestSchema)` to create a new message.
  */
 export const DismissProposalRequestSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 16);
+  messageDesc(file_n0x_assistant_v1_assistant, 19);
 
 /**
  * Describes the message n0x.assistant.v1.DismissProposalResponse.
  * Use `create(DismissProposalResponseSchema)` to create a new message.
  */
 export const DismissProposalResponseSchema = /*@__PURE__*/
-  messageDesc(file_n0x_assistant_v1_assistant, 17);
+  messageDesc(file_n0x_assistant_v1_assistant, 20);
+
+/**
+ * Describes the message n0x.assistant.v1.ReportProposalOutcomeRequest.
+ * Use `create(ReportProposalOutcomeRequestSchema)` to create a new message.
+ */
+export const ReportProposalOutcomeRequestSchema = /*@__PURE__*/
+  messageDesc(file_n0x_assistant_v1_assistant, 21);
+
+/**
+ * Describes the message n0x.assistant.v1.ReportProposalOutcomeResponse.
+ * Use `create(ReportProposalOutcomeResponseSchema)` to create a new message.
+ */
+export const ReportProposalOutcomeResponseSchema = /*@__PURE__*/
+  messageDesc(file_n0x_assistant_v1_assistant, 22);
+
+/**
+ * Describes the enum n0x.assistant.v1.AssistantTool.
+ */
+export const AssistantToolSchema = /*@__PURE__*/
+  enumDesc(file_n0x_assistant_v1_assistant, 0);
+
+/**
+ * @generated from enum n0x.assistant.v1.AssistantTool
+ */
+export const AssistantTool = /*@__PURE__*/
+  tsEnum(AssistantToolSchema);
+
+/**
+ * Describes the enum n0x.assistant.v1.ToolOutcome.
+ */
+export const ToolOutcomeSchema = /*@__PURE__*/
+  enumDesc(file_n0x_assistant_v1_assistant, 1);
+
+/**
+ * @generated from enum n0x.assistant.v1.ToolOutcome
+ */
+export const ToolOutcome = /*@__PURE__*/
+  tsEnum(ToolOutcomeSchema);
+
+/**
+ * Describes the enum n0x.assistant.v1.ProposedChangeStatus.
+ */
+export const ProposedChangeStatusSchema = /*@__PURE__*/
+  enumDesc(file_n0x_assistant_v1_assistant, 2);
+
+/**
+ * @generated from enum n0x.assistant.v1.ProposedChangeStatus
+ */
+export const ProposedChangeStatus = /*@__PURE__*/
+  tsEnum(ProposedChangeStatusSchema);
 
 /**
  * @generated from service n0x.assistant.v1.AssistantService

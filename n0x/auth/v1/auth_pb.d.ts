@@ -330,6 +330,24 @@ export declare type DelegatedActor = Message<"n0x.auth.v1.DelegatedActor"> & {
    * @generated from field: string run_id = 3;
    */
   runId: string;
+
+  /**
+   * Actor de conversacion del asistente (kind "assistant", el mismo que usan
+   * las rutinas): la conversacion y el turno que pidieron el token. Van
+   * juntos y excluyen routine_id y run_id; un actor lleva una pareja o la
+   * otra, nunca las dos ni ninguna. Con conversation_id, resources solo
+   * admite metodos con (n0x.catalog.v1.operation).kind = OPERATION_KIND_READ
+   * en servicios expuestos; cualquier otro, incluido uno sin la opcion,
+   * devuelve PermissionDenied aunque el techo de permisos lo cubra.
+   *
+   * @generated from field: string conversation_id = 4;
+   */
+  conversationId: string;
+
+  /**
+   * @generated from field: string turn_id = 5;
+   */
+  turnId: string;
 };
 
 /**

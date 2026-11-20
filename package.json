@@ -1,6 +1,6 @@
 {
   "name": "@n-0x/x-api-ts",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "module",
   "exports": {
     "./n0x/*": {
