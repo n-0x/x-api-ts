@@ -2,9 +2,9 @@
 // @generated from file n0x/control/v1/control.proto (package n0x.control.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
-import type { NodeReport } from "../../signed/v1/signed_pb.js";
+import type { NodeMetricsQuery, NodeReport } from "../../signed/v1/signed_pb.js";
 import type { ListeningPort, RegisterWorkloadFromHostRequest as RegisterWorkloadFromHostRequest$1, RegisterWorkloadFromHostResponse as RegisterWorkloadFromHostResponse$1 } from "../../workloads/v1/workloads_pb.js";
 import type { AdmitResult, AdmitWorkloadOfferRequest as AdmitWorkloadOfferRequest$1, AdmitWorkloadOfferResponse as AdmitWorkloadOfferResponse$1, RenewWorkloadOfferRequest as RenewWorkloadOfferRequest$1, RenewWorkloadOfferResponse as RenewWorkloadOfferResponse$1 } from "../../connectivity/v1/connectivity_pb.js";
 import type { Alert, Rule } from "../../alerts/v1/alerts_pb.js";
@@ -1068,6 +1068,20 @@ export declare type HostTelemetry = Message<"n0x.control.v1.HostTelemetry"> & {
    * @generated from field: optional uint64 n2x_tx_bytes = 13;
    */
   n2xTxBytes?: bigint | undefined;
+
+  /**
+   * Contadores monotonos de bytes del host desde system_boot_id: suma de
+   * /proc/net/dev de todas las interfaces salvo lo y la interfaz n2x.
+   * Ausente: el agente no lo mide; no equivale a cero.
+   *
+   * @generated from field: optional uint64 net_rx_bytes = 14;
+   */
+  netRxBytes?: bigint | undefined;
+
+  /**
+   * @generated from field: optional uint64 net_tx_bytes = 15;
+   */
+  netTxBytes?: bigint | undefined;
 };
 
 /**
@@ -1151,6 +1165,16 @@ export declare type FlowTelemetry = Message<"n0x.control.v1.FlowTelemetry"> & {
    * @generated from field: n0x.control.v1.FlowCounters counters = 9;
    */
   counters?: FlowCounters | undefined;
+
+  /**
+   * Funciones opcionales que el agente atiende en este informe, por ejemplo
+   * node-query-metrics-v1 cuando atiende NodeQuery, aunque su almacen no este
+   * abierto (entonces responde STORE_UNAVAILABLE).
+   * Lista vacia: agente anterior o sin funciones opcionales.
+   *
+   * @generated from field: repeated string capabilities = 10;
+   */
+  capabilities: string[];
 };
 
 /**
@@ -1256,6 +1280,201 @@ export declare type ReportFlowsResponse = Message<"n0x.control.v1.ReportFlowsRes
  * Use `create(ReportFlowsResponseSchema)` to create a new message.
  */
 export declare const ReportFlowsResponseSchema: GenMessage<ReportFlowsResponse>;
+
+/**
+ * Agregado de un bucket guardado en el nodo (ADR 0028). Sin IPs, puertos ni
+ * filas por flujo. Una clave ausente en gauges o counters significa sin dato,
+ * nunca cero.
+ *
+ * @generated from message n0x.control.v1.MetricsDocument
+ */
+export declare type MetricsDocument = Message<"n0x.control.v1.MetricsDocument"> & {
+  /**
+   * Inicio del bucket en Unix segundos UTC, alineado a su duracion: minuto u
+   * hora en el almacen, step_seconds en una respuesta.
+   *
+   * @generated from field: int64 t = 1;
+   */
+  t: bigint;
+
+  /**
+   * @generated from field: map<string, n0x.control.v1.GaugeAggregate> gauges = 2;
+   */
+  gauges: { [key: string]: GaugeAggregate };
+
+  /**
+   * Deltas del bucket; cero solo si se midio cero.
+   *
+   * @generated from field: map<string, uint64> counters = 3;
+   */
+  counters: { [key: string]: bigint };
+
+  /**
+   * Ausente: sin histograma en el bucket.
+   *
+   * @generated from field: n0x.control.v1.LatencyHistogram latency = 4;
+   */
+  latency?: LatencyHistogram | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.MetricsDocument.
+ * Use `create(MetricsDocumentSchema)` to create a new message.
+ */
+export declare const MetricsDocumentSchema: GenMessage<MetricsDocument>;
+
+/**
+ * Muestras de un gauge en el bucket; la media es sum / count.
+ *
+ * @generated from message n0x.control.v1.GaugeAggregate
+ */
+export declare type GaugeAggregate = Message<"n0x.control.v1.GaugeAggregate"> & {
+  /**
+   * @generated from field: double sum = 1;
+   */
+  sum: number;
+
+  /**
+   * @generated from field: uint64 count = 2;
+   */
+  count: bigint;
+
+  /**
+   * @generated from field: double max = 3;
+   */
+  max: number;
+};
+
+/**
+ * Describes the message n0x.control.v1.GaugeAggregate.
+ * Use `create(GaugeAggregateSchema)` to create a new message.
+ */
+export declare const GaugeAggregateSchema: GenMessage<GaugeAggregate>;
+
+/**
+ * Histograma de latencia de conexion con la misma forma que FlowCounters:
+ * len(counts) = len(bounds_ms) + 1, intervalos no acumulativos y el ultimo
+ * es el desbordamiento. En una carga mide en su nodo los dials del tunel al
+ * backend local y el establecimiento TCP del overlay hacia su puerto.
+ *
+ * @generated from message n0x.control.v1.LatencyHistogram
+ */
+export declare type LatencyHistogram = Message<"n0x.control.v1.LatencyHistogram"> & {
+  /**
+   * @generated from field: repeated double bounds_ms = 1;
+   */
+  boundsMs: number[];
+
+  /**
+   * @generated from field: repeated uint64 counts = 2;
+   */
+  counts: bigint[];
+
+  /**
+   * Suma de latencias en ms; ausente si no se mide.
+   *
+   * @generated from field: optional double sum = 3;
+   */
+  sum?: number | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.LatencyHistogram.
+ * Use `create(LatencyHistogramSchema)` to create a new message.
+ */
+export declare const LatencyHistogramSchema: GenMessage<LatencyHistogram>;
+
+/**
+ * Respuesta del agente a un signed.v1.NodeQuery. Se verifican el SVID de nodo
+ * y, de session, scope, incarnation_id, boot_id, session_generation y
+ * binding_generation contra los de la consulta pendiente; config_revision,
+ * config_hash, session.request_id y client_nonce se ignoran. request_id (campo
+ * 2) debe coincidir con una consulta pendiente de la misma encarnacion o se
+ * descarta con NotFound.
+ *
+ * @generated from message n0x.control.v1.AnswerNodeQueryRequest
+ */
+export declare type AnswerNodeQueryRequest = Message<"n0x.control.v1.AnswerNodeQueryRequest"> & {
+  /**
+   * @generated from field: n0x.control.v1.RenewLeaseRequest session = 1;
+   */
+  session?: RenewLeaseRequest | undefined;
+
+  /**
+   * @generated from field: string request_id = 2;
+   */
+  requestId: string;
+
+  /**
+   * @generated from oneof n0x.control.v1.AnswerNodeQueryRequest.result
+   */
+  result: {
+    /**
+     * @generated from field: n0x.control.v1.NodeMetricsAnswer metrics = 3;
+     */
+    value: NodeMetricsAnswer;
+    case: "metrics";
+  } | {
+    /**
+     * @generated from field: n0x.control.v1.NodeQueryError error = 4;
+     */
+    value: NodeQueryError;
+    case: "error";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message n0x.control.v1.AnswerNodeQueryRequest.
+ * Use `create(AnswerNodeQueryRequestSchema)` to create a new message.
+ */
+export declare const AnswerNodeQueryRequestSchema: GenMessage<AnswerNodeQueryRequest>;
+
+/**
+ * @generated from message n0x.control.v1.AnswerNodeQueryResponse
+ */
+export declare type AnswerNodeQueryResponse = Message<"n0x.control.v1.AnswerNodeQueryResponse"> & {
+};
+
+/**
+ * Describes the message n0x.control.v1.AnswerNodeQueryResponse.
+ * Use `create(AnswerNodeQueryResponseSchema)` to create a new message.
+ */
+export declare const AnswerNodeQueryResponseSchema: GenMessage<AnswerNodeQueryResponse>;
+
+/**
+ * Documentos alineados a step_seconds dentro de [start, end); un bucket sin
+ * datos no aparece.
+ *
+ * @generated from message n0x.control.v1.NodeMetricsAnswer
+ */
+export declare type NodeMetricsAnswer = Message<"n0x.control.v1.NodeMetricsAnswer"> & {
+  /**
+   * @generated from field: repeated n0x.control.v1.MetricsDocument documents = 1;
+   */
+  documents: MetricsDocument[];
+};
+
+/**
+ * Describes the message n0x.control.v1.NodeMetricsAnswer.
+ * Use `create(NodeMetricsAnswerSchema)` to create a new message.
+ */
+export declare const NodeMetricsAnswerSchema: GenMessage<NodeMetricsAnswer>;
+
+/**
+ * @generated from message n0x.control.v1.NodeQueryError
+ */
+export declare type NodeQueryError = Message<"n0x.control.v1.NodeQueryError"> & {
+  /**
+   * @generated from field: n0x.control.v1.NodeQueryErrorCode code = 1;
+   */
+  code: NodeQueryErrorCode;
+};
+
+/**
+ * Describes the message n0x.control.v1.NodeQueryError.
+ * Use `create(NodeQueryErrorSchema)` to create a new message.
+ */
+export declare const NodeQueryErrorSchema: GenMessage<NodeQueryError>;
 
 /**
  * @generated from message n0x.control.v1.PublishConfigurationRequest
@@ -2009,6 +2228,64 @@ export declare type ReadProjectionResponse = Message<"n0x.control.v1.ReadProject
  * Use `create(ReadProjectionResponseSchema)` to create a new message.
  */
 export declare const ReadProjectionResponseSchema: GenMessage<ReadProjectionResponse>;
+
+/**
+ * El scope se autoriza igual que en ReadProjection.
+ *
+ * @generated from message n0x.control.v1.QueryNodeMetricsRequest
+ */
+export declare type QueryNodeMetricsRequest = Message<"n0x.control.v1.QueryNodeMetricsRequest"> & {
+  /**
+   * @generated from field: n0x.control.v1.Scope scope = 1;
+   */
+  scope?: Scope | undefined;
+
+  /**
+   * @generated from field: string incarnation_id = 2;
+   */
+  incarnationId: string;
+
+  /**
+   * @generated from field: n0x.signed.v1.NodeMetricsQuery query = 3;
+   */
+  query?: NodeMetricsQuery | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.QueryNodeMetricsRequest.
+ * Use `create(QueryNodeMetricsRequestSchema)` to create a new message.
+ */
+export declare const QueryNodeMetricsRequestSchema: GenMessage<QueryNodeMetricsRequest>;
+
+/**
+ * documents solo lleva datos con status OK; con otro estado va vacio.
+ *
+ * @generated from message n0x.control.v1.QueryNodeMetricsResponse
+ */
+export declare type QueryNodeMetricsResponse = Message<"n0x.control.v1.QueryNodeMetricsResponse"> & {
+  /**
+   * @generated from field: n0x.control.v1.NodeQueryStatus status = 1;
+   */
+  status: NodeQueryStatus;
+
+  /**
+   * @generated from field: repeated n0x.control.v1.MetricsDocument documents = 2;
+   */
+  documents: MetricsDocument[];
+
+  /**
+   * Con NODE_ERROR, el codigo que devolvio el agente; UNSPECIFIED en otro caso.
+   *
+   * @generated from field: n0x.control.v1.NodeQueryErrorCode error = 3;
+   */
+  error: NodeQueryErrorCode;
+};
+
+/**
+ * Describes the message n0x.control.v1.QueryNodeMetricsResponse.
+ * Use `create(QueryNodeMetricsResponseSchema)` to create a new message.
+ */
+export declare const QueryNodeMetricsResponseSchema: GenMessage<QueryNodeMetricsResponse>;
 
 /**
  * @generated from message n0x.control.v1.ClaimOwnerRequest
@@ -2816,6 +3093,90 @@ export declare type RegisterWorkloadFromHostResponse = Message<"n0x.control.v1.R
 export declare const RegisterWorkloadFromHostResponseSchema: GenMessage<RegisterWorkloadFromHostResponse>;
 
 /**
+ * @generated from enum n0x.control.v1.NodeQueryErrorCode
+ */
+export enum NodeQueryErrorCode {
+  /**
+   * @generated from enum value: NODE_QUERY_ERROR_CODE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * Intervalo o step_seconds no validos.
+   *
+   * @generated from enum value: NODE_QUERY_ERROR_CODE_INVALID_QUERY = 1;
+   */
+  INVALID_QUERY = 1,
+
+  /**
+   * workload_id no esta publicado ni registrado en este nodo.
+   *
+   * @generated from enum value: NODE_QUERY_ERROR_CODE_UNKNOWN_WORKLOAD = 2;
+   */
+  UNKNOWN_WORKLOAD = 2,
+
+  /**
+   * El almacen local no esta abierto o no se pudo leer.
+   *
+   * @generated from enum value: NODE_QUERY_ERROR_CODE_STORE_UNAVAILABLE = 3;
+   */
+  STORE_UNAVAILABLE = 3,
+}
+
+/**
+ * Describes the enum n0x.control.v1.NodeQueryErrorCode.
+ */
+export declare const NodeQueryErrorCodeSchema: GenEnum<NodeQueryErrorCode>;
+
+/**
+ * @generated from enum n0x.control.v1.NodeQueryStatus
+ */
+export enum NodeQueryStatus {
+  /**
+   * @generated from enum value: NODE_QUERY_STATUS_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: NODE_QUERY_STATUS_OK = 1;
+   */
+  OK = 1,
+
+  /**
+   * Encarnacion inactiva, sin informe de flujos en 60 s o sin presencia.
+   *
+   * @generated from enum value: NODE_QUERY_STATUS_NODE_OFFLINE = 2;
+   */
+  NODE_OFFLINE = 2,
+
+  /**
+   * El ultimo informe no declara node-query-metrics-v1.
+   *
+   * @generated from enum value: NODE_QUERY_STATUS_AGENT_UNSUPPORTED = 3;
+   */
+  AGENT_UNSUPPORTED = 3,
+
+  /**
+   * El nodo no respondio en el plazo del controller.
+   *
+   * @generated from enum value: NODE_QUERY_STATUS_TIMEOUT = 4;
+   */
+  TIMEOUT = 4,
+
+  /**
+   * El nodo respondio con NodeQueryError.
+   *
+   * @generated from enum value: NODE_QUERY_STATUS_NODE_ERROR = 5;
+   */
+  NODE_ERROR = 5,
+}
+
+/**
+ * Describes the enum n0x.control.v1.NodeQueryStatus.
+ */
+export declare const NodeQueryStatusSchema: GenEnum<NodeQueryStatus>;
+
+/**
  * @generated from service n0x.control.v1.NodeControlService
  */
 export declare const NodeControlService: GenService<{
@@ -2885,6 +3246,17 @@ export declare const NodeControlService: GenService<{
     methodKind: "unary";
     input: typeof RegisterWorkloadFromHostRequestSchema;
     output: typeof RegisterWorkloadFromHostResponseSchema;
+  },
+  /**
+   * Solo el nodo de la consulta, con su sesion y SVID; en malla se reenvia
+   * al owner como ReportFlows.
+   *
+   * @generated from rpc n0x.control.v1.NodeControlService.AnswerNodeQuery
+   */
+  answerNodeQuery: {
+    methodKind: "unary";
+    input: typeof AnswerNodeQueryRequestSchema;
+    output: typeof AnswerNodeQueryResponseSchema;
   },
 }>;
 
@@ -3068,6 +3440,17 @@ export declare const ControlObservationsService: GenService<{
     methodKind: "unary";
     input: typeof ReadFlowEventsRequestSchema;
     output: typeof ReadFlowEventsResponseSchema;
+  },
+  /**
+   * Solo resources autenticado por mTLS, como ReadProjection. Lo atiende el
+   * owner de la encarnacion; los demas controllers no lo reenvian.
+   *
+   * @generated from rpc n0x.control.v1.ControlObservationsService.QueryNodeMetrics
+   */
+  queryNodeMetrics: {
+    methodKind: "unary";
+    input: typeof QueryNodeMetricsRequestSchema;
+    output: typeof QueryNodeMetricsResponseSchema;
   },
 }>;
 

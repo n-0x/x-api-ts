@@ -6,7 +6,7 @@ import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobu
 import type { Message } from "@bufbuild/protobuf";
 import type { Scope } from "../../signed/v1/signed_pb.js";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import type { ActivateNodeRequest, AdmitRequest, AdmitWorkloadOfferRequest, BeginActivationRequest, RecoverSessionRequest, RegisterWorkloadFromHostRequest, RenewLeaseRequest, RenewWorkloadOfferRequest, ReportFlowsRequest, ReportStateRequest } from "../../control/v1/control_pb.js";
+import type { ActivateNodeRequest, AdmitRequest, AdmitWorkloadOfferRequest, AnswerNodeQueryRequest, BeginActivationRequest, RecoverSessionRequest, RegisterWorkloadFromHostRequest, RenewLeaseRequest, RenewWorkloadOfferRequest, ReportFlowsRequest, ReportStateRequest } from "../../control/v1/control_pb.js";
 
 /**
  * Describes the file n0x/mesh/v1/mesh.proto.
@@ -386,6 +386,31 @@ export declare type MqttReport = Message<"n0x.mesh.v1.MqttReport"> & {
 export declare const MqttReportSchema: GenMessage<MqttReport>;
 
 /**
+ * Consulta firmada (n0x.signed.v1.NodeQuery) que el owner reenvia al
+ * controller con la sesion MQTT del nodo; este la entrega por Inject, igual
+ * que MqttLease.
+ *
+ * @generated from message n0x.mesh.v1.MqttQuery
+ */
+export declare type MqttQuery = Message<"n0x.mesh.v1.MqttQuery"> & {
+  /**
+   * @generated from field: string topic = 1;
+   */
+  topic: string;
+
+  /**
+   * @generated from field: bytes payload = 2;
+   */
+  payload: Uint8Array;
+};
+
+/**
+ * Describes the message n0x.mesh.v1.MqttQuery.
+ * Use `create(MqttQuerySchema)` to create a new message.
+ */
+export declare const MqttQuerySchema: GenMessage<MqttQuery>;
+
+/**
  * @generated from message n0x.mesh.v1.ForwardRequest
  */
 export declare type ForwardRequest = Message<"n0x.mesh.v1.ForwardRequest"> & {
@@ -499,6 +524,22 @@ export declare type ForwardRequest = Message<"n0x.mesh.v1.ForwardRequest"> & {
      */
     value: RegisterWorkloadFromHostRequest;
     case: "registerWorkloadFromHost";
+  } | {
+    /**
+     * @generated from field: n0x.mesh.v1.MqttQuery mqtt_query = 23;
+     */
+    value: MqttQuery;
+    case: "mqttQuery";
+  } | {
+    /**
+     * Forward entre controladores hacia el owner, igual que report_flows; la
+     * respuesta va en ForwardResponse.response como bytes de
+     * n0x.control.v1.AnswerNodeQueryResponse.
+     *
+     * @generated from field: n0x.control.v1.AnswerNodeQueryRequest answer_node_query = 24;
+     */
+    value: AnswerNodeQueryRequest;
+    case: "answerNodeQuery";
   } | { case: undefined; value?: undefined };
 };
 

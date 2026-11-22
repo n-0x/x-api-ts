@@ -98,6 +98,21 @@ export declare type GetSeriesResponse = Message<"n0x.metrics.v1.GetSeriesRespons
    * @generated from field: repeated n0x.metrics.v1.Series series = 4;
    */
   series: Series[];
+
+  /**
+   * UNSPECIFIED: servidor anterior a v0.8.0. Con un valor distinto de
+   * UNSPECIFIED, COMPLETE o PARTIAL no hay datos: ningun bucket lleva value.
+   *
+   * @generated from field: n0x.metrics.v1.Availability availability = 5;
+   */
+  availability: Availability;
+
+  /**
+   * Con PARTIAL, los nodos que no respondieron; vacio en los demas casos.
+   *
+   * @generated from field: repeated string missing_node_ids = 6;
+   */
+  missingNodeIds: string[];
 };
 
 /**
@@ -227,6 +242,12 @@ export enum Range {
 export declare const RangeSchema: GenEnum<Range>;
 
 /**
+ * Sujetos: node_id y tenant aceptan NODE_*, FLOWS_* y CONNECT_LATENCY_*;
+ * tenant combina por bucket los nodos activos del tenant. workload_id acepta
+ * WORKLOAD_* y tambien FLOWS_* y CONNECT_LATENCY_*, con el mismo significado
+ * pero medidos en el nodo de la carga sobre su puerto. Otra combinacion
+ * devuelve InvalidArgument.
+ *
  * @generated from enum n0x.metrics.v1.Metric
  */
 export enum Metric {
@@ -332,18 +353,128 @@ export enum Metric {
   WORKLOAD_CONNECTIONS = 12,
 
   /**
-   * Unidad: UNIT_COUNT.
+   * Unidad: UNIT_COUNT. Sin fuente desde v0.8.0: devuelve buckets sin value.
    * buf:lint:ignore ENUM_VALUE_PREFIX
    *
    * @generated from enum value: WORKLOAD_REQUESTS = 13;
    */
   WORKLOAD_REQUESTS = 13,
+
+  /**
+   * Unidad: UNIT_BYTES. Interfaces del host salvo lo y la interfaz n2x.
+   * buf:lint:ignore ENUM_VALUE_PREFIX
+   *
+   * @generated from enum value: NODE_NET_RX_BYTES = 14;
+   */
+  NODE_NET_RX_BYTES = 14,
+
+  /**
+   * Unidad: UNIT_BYTES. Interfaces del host salvo lo y la interfaz n2x.
+   * buf:lint:ignore ENUM_VALUE_PREFIX
+   *
+   * @generated from enum value: NODE_NET_TX_BYTES = 15;
+   */
+  NODE_NET_TX_BYTES = 15,
+
+  /**
+   * Unidad: UNIT_BYTES. Bytes hacia la carga por el tunel de su nodo.
+   * buf:lint:ignore ENUM_VALUE_PREFIX
+   *
+   * @generated from enum value: WORKLOAD_BYTES_IN = 16;
+   */
+  WORKLOAD_BYTES_IN = 16,
+
+  /**
+   * Unidad: UNIT_BYTES. Bytes desde la carga por el tunel de su nodo.
+   * buf:lint:ignore ENUM_VALUE_PREFIX
+   *
+   * @generated from enum value: WORKLOAD_BYTES_OUT = 17;
+   */
+  WORKLOAD_BYTES_OUT = 17,
+
+  /**
+   * Unidad: UNIT_COUNT. Dials fallidos del tunel al backend local.
+   * buf:lint:ignore ENUM_VALUE_PREFIX
+   *
+   * @generated from enum value: WORKLOAD_DIAL_ERRORS = 18;
+   */
+  WORKLOAD_DIAL_ERRORS = 18,
 }
 
 /**
  * Describes the enum n0x.metrics.v1.Metric.
  */
 export declare const MetricSchema: GenEnum<Metric>;
+
+/**
+ * Estado de la lectura bajo demanda en los nodos del sujeto. Un tenant y una
+ * carga con varios nodos solo usan COMPLETE o PARTIAL (PARTIAL con todos los
+ * nodos en missing_node_ids si no responde ninguno); los demas valores son
+ * para un nodo o una carga con un solo nodo. Un nodo que responde que la
+ * carga no esta publicada en el cuenta como respuesta sin datos.
+ *
+ * @generated from enum n0x.metrics.v1.Availability
+ */
+export enum Availability {
+  /**
+   * @generated from enum value: AVAILABILITY_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * Respondieron todos los nodos del sujeto.
+   *
+   * @generated from enum value: AVAILABILITY_COMPLETE = 1;
+   */
+  COMPLETE = 1,
+
+  /**
+   * Faltan los nodos de missing_node_ids; los totales cubren los demas.
+   *
+   * @generated from enum value: AVAILABILITY_PARTIAL = 2;
+   */
+  PARTIAL = 2,
+
+  /**
+   * El nodo no esta conectado; sus metricas siguen guardadas en el nodo.
+   *
+   * @generated from enum value: AVAILABILITY_NODE_OFFLINE = 3;
+   */
+  NODE_OFFLINE = 3,
+
+  /**
+   * El agente del nodo no atiende consultas de metricas.
+   *
+   * @generated from enum value: AVAILABILITY_AGENT_UNSUPPORTED = 4;
+   */
+  AGENT_UNSUPPORTED = 4,
+
+  /**
+   * El nodo no respondio a tiempo.
+   *
+   * @generated from enum value: AVAILABILITY_NODE_UNREACHABLE = 5;
+   */
+  NODE_UNREACHABLE = 5,
+
+  /**
+   * El nodo no pudo leer su almacen de metricas.
+   *
+   * @generated from enum value: AVAILABILITY_NODE_ERROR = 6;
+   */
+  NODE_ERROR = 6,
+
+  /**
+   * La carga no tiene nodo que la sirva, por ejemplo direct_destination.
+   *
+   * @generated from enum value: AVAILABILITY_NO_NODE = 7;
+   */
+  NO_NODE = 7,
+}
+
+/**
+ * Describes the enum n0x.metrics.v1.Availability.
+ */
+export declare const AvailabilitySchema: GenEnum<Availability>;
 
 /**
  * @generated from enum n0x.metrics.v1.Unit
@@ -391,8 +522,9 @@ export enum Unit {
 export declare const UnitSchema: GenEnum<Unit>;
 
 /**
- * Historico servido por resources desde agregados por minuto, sin IPs,
- * puertos ni filas por flujo (ADR 0026).
+ * Historico servido por resources. Los agregados por minuto y por hora viven
+ * en cada nodo y resources los pide al nodo bajo demanda (ADR 0028); no hay
+ * copia central. Sin IPs, puertos ni filas por flujo (ADR 0026, punto 1).
  *
  * @generated from service n0x.metrics.v1.MetricsService
  */

@@ -589,6 +589,133 @@ export declare type NodeLease = Message<"n0x.signed.v1.NodeLease"> & {
 export declare const NodeLeaseSchema: GenMessage<NodeLease>;
 
 /**
+ * Consulta firmada por el controller owner (kind n2x-node-query-v2) y
+ * publicada en n2x/v1/nodes/<incarnation_id>/query. El nodo la verifica como
+ * un NodeLease: firmante = owner del grant, ventana issued_at/not_before/
+ * expires_at (Unix segundos) y encarnacion, boot, sesion y binding iguales a
+ * los suyos. request_id identifica la respuesta en AnswerNodeQuery.
+ *
+ * @generated from message n0x.signed.v1.NodeQuery
+ */
+export declare type NodeQuery = Message<"n0x.signed.v1.NodeQuery"> & {
+  /**
+   * @generated from field: int32 schema_version = 1;
+   */
+  schemaVersion: number;
+
+  /**
+   * @generated from field: n0x.signed.v1.Scope scope = 2;
+   */
+  scope?: Scope | undefined;
+
+  /**
+   * @generated from field: string incarnation_id = 3;
+   */
+  incarnationId: string;
+
+  /**
+   * @generated from field: string boot_id = 4;
+   */
+  bootId: string;
+
+  /**
+   * @generated from field: string session_generation = 5;
+   */
+  sessionGeneration: string;
+
+  /**
+   * @generated from field: string binding_generation = 6;
+   */
+  bindingGeneration: string;
+
+  /**
+   * @generated from field: string request_id = 7;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string grant = 8;
+   */
+  grant: string;
+
+  /**
+   * @generated from field: int64 issued_at = 9;
+   */
+  issuedAt: bigint;
+
+  /**
+   * @generated from field: int64 not_before = 10;
+   */
+  notBefore: bigint;
+
+  /**
+   * @generated from field: int64 expires_at = 11;
+   */
+  expiresAt: bigint;
+
+  /**
+   * @generated from oneof n0x.signed.v1.NodeQuery.body
+   */
+  body: {
+    /**
+     * @generated from field: n0x.signed.v1.NodeMetricsQuery metrics = 12;
+     */
+    value: NodeMetricsQuery;
+    case: "metrics";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message n0x.signed.v1.NodeQuery.
+ * Use `create(NodeQuerySchema)` to create a new message.
+ */
+export declare const NodeQuerySchema: GenMessage<NodeQuery>;
+
+/**
+ * Lectura del almacen local de metricas del nodo; no admite otras lecturas.
+ * Vive en signed/v1 porque este fichero no importa otros; control/v1 la usa
+ * como n0x.signed.v1.NodeMetricsQuery.
+ *
+ * @generated from message n0x.signed.v1.NodeMetricsQuery
+ */
+export declare type NodeMetricsQuery = Message<"n0x.signed.v1.NodeMetricsQuery"> & {
+  /**
+   * Vacio selecciona el nodo; si no, una carga publicada en este nodo.
+   *
+   * @generated from field: string workload_id = 1;
+   */
+  workloadId: string;
+
+  /**
+   * Intervalo [start, end) en Unix segundos, como los demas tiempos firmados.
+   *
+   * @generated from field: int64 start = 2;
+   */
+  start: bigint;
+
+  /**
+   * @generated from field: int64 end = 3;
+   */
+  end: bigint;
+
+  /**
+   * Duracion de cada bucket devuelto: 60, 300, 900, 3600 o 14400; menor de
+   * 3600 lee minutos, si no horas. start y end son multiplos de step_seconds
+   * y (end - start) / step_seconds es como mucho 512. Otro valor responde
+   * INVALID_QUERY.
+   *
+   * @generated from field: uint32 step_seconds = 4;
+   */
+  stepSeconds: number;
+};
+
+/**
+ * Describes the message n0x.signed.v1.NodeMetricsQuery.
+ * Use `create(NodeMetricsQuerySchema)` to create a new message.
+ */
+export declare const NodeMetricsQuerySchema: GenMessage<NodeMetricsQuery>;
+
+/**
  * @generated from message n0x.signed.v1.NodeReport
  */
 export declare type NodeReport = Message<"n0x.signed.v1.NodeReport"> & {
