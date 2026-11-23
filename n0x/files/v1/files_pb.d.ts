@@ -2276,7 +2276,15 @@ export declare type CatalogCounts = Message<"n0x.files.v1.CatalogCounts"> & {
 export declare const CatalogCountsSchema: GenMessage<CatalogCounts>;
 
 /**
- * Both fields must be present, including a measured zero uncertainty.
+ * measured_at and uncertainty_ms must both be present, including a measured
+ * zero uncertainty. A kernel measurement (servers) carries only those two.
+ *
+ * A corrected measurement (nodes, authenticated NTS) also carries offset_ns,
+ * anchor_boottime_ns and anchor_raw_ns, all three or none. The corrected time
+ * is CLOCK_BOOTTIME + offset_ns. uncertainty_ms is the bound at the anchor;
+ * readers add the drift allowance for the age measured on CLOCK_BOOTTIME and
+ * the CLOCK_BOOTTIME/CLOCK_MONOTONIC_RAW divergence since the anchor, so a
+ * slewed or suspended clock widens the bound instead of hiding an error.
  *
  * @generated from message n0x.files.v1.ClockHealth
  */
@@ -2290,6 +2298,34 @@ export declare type ClockHealth = Message<"n0x.files.v1.ClockHealth"> & {
    * @generated from field: optional uint32 uncertainty_ms = 2;
    */
   uncertaintyMs?: number | undefined;
+
+  /**
+   * UTC minus CLOCK_BOOTTIME, in nanoseconds, at the anchor.
+   *
+   * @generated from field: optional sint64 offset_ns = 3;
+   */
+  offsetNs?: bigint | undefined;
+
+  /**
+   * CLOCK_BOOTTIME, in nanoseconds, at the anchor.
+   *
+   * @generated from field: optional uint64 anchor_boottime_ns = 4;
+   */
+  anchorBoottimeNs?: bigint | undefined;
+
+  /**
+   * Diagnostic only: the sources that agreed, for example "nts:a,b".
+   *
+   * @generated from field: optional string source = 5;
+   */
+  source?: string | undefined;
+
+  /**
+   * CLOCK_MONOTONIC_RAW, in nanoseconds, at the anchor.
+   *
+   * @generated from field: optional uint64 anchor_raw_ns = 6;
+   */
+  anchorRawNs?: bigint | undefined;
 };
 
 /**
