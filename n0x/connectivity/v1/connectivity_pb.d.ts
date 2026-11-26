@@ -922,6 +922,30 @@ export declare type ProxyWorkloadTarget = Message<"n0x.connectivity.v1.ProxyWork
 export declare const ProxyWorkloadTargetSchema: GenMessage<ProxyWorkloadTarget>;
 
 /**
+ * HTTP methods and normalized, segment-boundary path prefixes for HTTPS.
+ * One empty list matches any value of that dimension.
+ *
+ * @generated from message n0x.connectivity.v1.ProxyHttpMatch
+ */
+export declare type ProxyHttpMatch = Message<"n0x.connectivity.v1.ProxyHttpMatch"> & {
+  /**
+   * @generated from field: repeated string methods = 1;
+   */
+  methods: string[];
+
+  /**
+   * @generated from field: repeated string path_prefixes = 2;
+   */
+  pathPrefixes: string[];
+};
+
+/**
+ * Describes the message n0x.connectivity.v1.ProxyHttpMatch.
+ * Use `create(ProxyHttpMatchSchema)` to create a new message.
+ */
+export declare const ProxyHttpMatchSchema: GenMessage<ProxyHttpMatch>;
+
+/**
  * A compiled application grant, with groups expanded to concrete identities.
  * Absence of a matching grant means deny; quarantine overrides every grant.
  *
@@ -962,6 +986,14 @@ export declare type ProxyApplicationGrant = Message<"n0x.connectivity.v1.ProxyAp
    * @generated from field: string ssh_host_user = 7;
    */
   sshHostUser: string;
+
+  /**
+   * Required in ProxyTable.restricted_http_grants, with at least one nonempty
+   * matcher list. Must be absent in ProxyTable.application_grants.
+   *
+   * @generated from field: n0x.connectivity.v1.ProxyHttpMatch http_match = 8;
+   */
+  httpMatch?: ProxyHttpMatch | undefined;
 };
 
 /**
@@ -995,6 +1027,10 @@ export declare type ProxyTable = Message<"n0x.connectivity.v1.ProxyTable"> & {
   workloads: ProxyWorkloadTarget[];
 
   /**
+   * Grants whose effective permissions require no HTTP filtering. The
+   * publisher must never place an HTTP-restricted grant here. Updated
+   * receivers reject a replacement with http_match set in this field.
+   *
    * @generated from field: repeated n0x.connectivity.v1.ProxyApplicationGrant application_grants = 4;
    */
   applicationGrants: ProxyApplicationGrant[];
@@ -1036,6 +1072,18 @@ export declare type ProxyTable = Message<"n0x.connectivity.v1.ProxyTable"> & {
    * @generated from field: repeated string ssh_ca_public_keys = 10;
    */
   sshCaPublicKeys: string[];
+
+  /**
+   * Restricted grants are wholly invisible to receivers using the old wire
+   * schema. Never copy them to application_grants or strip their matchers.
+   * A receiver must enforce the matcher before forwarding every request.
+   * Fence affected traffic while staging a restriction. Resume it only
+   * after commit and confirmation of the replacement and session eviction.
+   * A legacy ack only confirms application of ordinary grants.
+   *
+   * @generated from field: repeated n0x.connectivity.v1.ProxyApplicationGrant restricted_http_grants = 11;
+   */
+  restrictedHttpGrants: ProxyApplicationGrant[];
 };
 
 /**

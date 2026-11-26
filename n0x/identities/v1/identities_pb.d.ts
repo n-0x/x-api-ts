@@ -241,6 +241,11 @@ export declare type Identity = Message<"n0x.identities.v1.Identity"> & {
     value: ServiceAccountDetails;
     case: "serviceAccount";
   } | { case: undefined; value?: undefined };
+
+  /**
+   * @generated from field: map<string, string> labels = 15;
+   */
+  labels: { [key: string]: string };
 };
 
 /**
@@ -480,6 +485,11 @@ export declare type CreatePersonRequest = Message<"n0x.identities.v1.CreatePerso
    * @generated from field: optional uint64 draft_revision_number = 8;
    */
   draftRevisionNumber?: bigint | undefined;
+
+  /**
+   * @generated from field: map<string, string> labels = 9;
+   */
+  labels: { [key: string]: string };
 };
 
 /**
@@ -562,6 +572,11 @@ export declare type CreateServiceAccountRequest = Message<"n0x.identities.v1.Cre
    * @generated from field: optional uint64 draft_revision_number = 10;
    */
   draftRevisionNumber?: bigint | undefined;
+
+  /**
+   * @generated from field: map<string, string> labels = 11;
+   */
+  labels: { [key: string]: string };
 };
 
 /**
@@ -656,6 +671,11 @@ export declare type CreateNodeEnrollmentRequest = Message<"n0x.identities.v1.Cre
    * @generated from field: optional bool expose_only = 9;
    */
   exposeOnly?: boolean | undefined;
+
+  /**
+   * @generated from field: map<string, string> labels = 10;
+   */
+  labels: { [key: string]: string };
 };
 
 /**
@@ -1365,6 +1385,11 @@ export declare type CreateGroupRequest = Message<"n0x.identities.v1.CreateGroupR
    * @generated from field: optional uint64 draft_revision_number = 8;
    */
   draftRevisionNumber?: bigint | undefined;
+
+  /**
+   * @generated from field: map<string, string> labels = 9;
+   */
+  labels: { [key: string]: string };
 };
 
 /**
@@ -1372,6 +1397,78 @@ export declare type CreateGroupRequest = Message<"n0x.identities.v1.CreateGroupR
  * Use `create(CreateGroupRequestSchema)` to create a new message.
  */
 export declare const CreateGroupRequestSchema: GenMessage<CreateGroupRequest>;
+
+/**
+ * Replaces the full label map. Keys and values use the policy label grammar;
+ * a resource may have at most 32 labels. Direct changes recompile and run the
+ * active policy test suite atomically. A failure leaves the active state intact.
+ * Staged changes run through the gate at PublishDraft.
+ *
+ * @generated from message n0x.identities.v1.SetIdentityLabelsRequest
+ */
+export declare type SetIdentityLabelsRequest = Message<"n0x.identities.v1.SetIdentityLabelsRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string identity_id = 3;
+   */
+  identityId: string;
+
+  /**
+   * @generated from field: map<string, string> labels = 4;
+   */
+  labels: { [key: string]: string };
+
+  /**
+   * @generated from field: string request_id = 5;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string reason = 6;
+   */
+  reason: string;
+
+  /**
+   * @generated from field: optional uint64 draft_revision_number = 7;
+   */
+  draftRevisionNumber?: bigint | undefined;
+};
+
+/**
+ * Describes the message n0x.identities.v1.SetIdentityLabelsRequest.
+ * Use `create(SetIdentityLabelsRequestSchema)` to create a new message.
+ */
+export declare const SetIdentityLabelsRequestSchema: GenMessage<SetIdentityLabelsRequest>;
+
+/**
+ * @generated from message n0x.identities.v1.SetIdentityLabelsResponse
+ */
+export declare type SetIdentityLabelsResponse = Message<"n0x.identities.v1.SetIdentityLabelsResponse"> & {
+  /**
+   * @generated from field: n0x.identities.v1.Identity identity = 1;
+   */
+  identity?: Identity | undefined;
+
+  /**
+   * @generated from field: uint64 revision_number = 2;
+   */
+  revisionNumber: bigint;
+};
+
+/**
+ * Describes the message n0x.identities.v1.SetIdentityLabelsResponse.
+ * Use `create(SetIdentityLabelsResponseSchema)` to create a new message.
+ */
+export declare const SetIdentityLabelsResponseSchema: GenMessage<SetIdentityLabelsResponse>;
 
 /**
  * @generated from message n0x.identities.v1.CreateGroupResponse
@@ -1665,7 +1762,7 @@ export declare const IdentityStateSchema: GenEnum<IdentityState>;
 /**
  * Governed mutations require nonempty reason and request_id. With a draft they
  * stage changes only; otherwise they publish a new tenant revision. Responses
- * return the staged or published revision_number owned by PermissionsService.
+ * return the staged or published revision_number owned by NetworkPolicyService.
  * Operational credential exchange/renewal and quarantine are not revisions.
  *
  * @generated from service n0x.identities.v1.IdentitiesService
@@ -1753,6 +1850,18 @@ export declare const IdentitiesService: GenService<{
     methodKind: "unary";
     input: typeof UpdateIdentityRequestSchema;
     output: typeof UpdateIdentityResponseSchema;
+  },
+  /**
+   * Requires iam.write on the target. Also requires policies.write in the
+   * tenant when the change alters any policy selector match. Check against
+   * active and applicable draft policies in the mutation transaction.
+   *
+   * @generated from rpc n0x.identities.v1.IdentitiesService.SetIdentityLabels
+   */
+  setIdentityLabels: {
+    methodKind: "unary";
+    input: typeof SetIdentityLabelsRequestSchema;
+    output: typeof SetIdentityLabelsResponseSchema;
   },
   /**
    * @generated from rpc n0x.identities.v1.IdentitiesService.SetIdentityProtection

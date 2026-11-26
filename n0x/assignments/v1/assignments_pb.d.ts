@@ -534,7 +534,7 @@ export declare type AssignmentAction = Message<"n0x.assignments.v1.AssignmentAct
   platformAction: string;
 
   /**
-   * Fully qualified method, e.g. n0x.permissions.v1.PermissionsService.CreatePermission.
+   * Fully qualified method, e.g. n0x.policy.v1.NetworkPolicyService.CreatePolicy.
    *
    * @generated from field: string rpc_method = 2;
    */

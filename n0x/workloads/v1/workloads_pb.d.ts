@@ -230,6 +230,11 @@ export declare type Workload = Message<"n0x.workloads.v1.Workload"> & {
    * @generated from field: optional string origin_server_name = 18;
    */
   originServerName?: string | undefined;
+
+  /**
+   * @generated from field: map<string, string> labels = 19;
+   */
+  labels: { [key: string]: string };
 };
 
 /**
@@ -753,6 +758,11 @@ export declare type CreateWorkloadRequest = Message<"n0x.workloads.v1.CreateWork
    * @generated from field: optional string origin_server_name = 15;
    */
   originServerName?: string | undefined;
+
+  /**
+   * @generated from field: map<string, string> labels = 16;
+   */
+  labels: { [key: string]: string };
 };
 
 /**
@@ -1103,6 +1113,78 @@ export declare type SetWorkloadProtectionResponse = Message<"n0x.workloads.v1.Se
  * Use `create(SetWorkloadProtectionResponseSchema)` to create a new message.
  */
 export declare const SetWorkloadProtectionResponseSchema: GenMessage<SetWorkloadProtectionResponse>;
+
+/**
+ * Replaces the full label map. Keys and values use the policy label grammar;
+ * a resource may have at most 32 labels. Direct changes recompile and run the
+ * active policy test suite atomically. A failure leaves the active state intact.
+ * Staged changes run through the gate at PublishDraft.
+ *
+ * @generated from message n0x.workloads.v1.SetWorkloadLabelsRequest
+ */
+export declare type SetWorkloadLabelsRequest = Message<"n0x.workloads.v1.SetWorkloadLabelsRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string workload_id = 3;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: map<string, string> labels = 4;
+   */
+  labels: { [key: string]: string };
+
+  /**
+   * @generated from field: string request_id = 5;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: string reason = 6;
+   */
+  reason: string;
+
+  /**
+   * @generated from field: optional uint64 draft_revision_number = 7;
+   */
+  draftRevisionNumber?: bigint | undefined;
+};
+
+/**
+ * Describes the message n0x.workloads.v1.SetWorkloadLabelsRequest.
+ * Use `create(SetWorkloadLabelsRequestSchema)` to create a new message.
+ */
+export declare const SetWorkloadLabelsRequestSchema: GenMessage<SetWorkloadLabelsRequest>;
+
+/**
+ * @generated from message n0x.workloads.v1.SetWorkloadLabelsResponse
+ */
+export declare type SetWorkloadLabelsResponse = Message<"n0x.workloads.v1.SetWorkloadLabelsResponse"> & {
+  /**
+   * @generated from field: n0x.workloads.v1.Workload workload = 1;
+   */
+  workload?: Workload | undefined;
+
+  /**
+   * @generated from field: uint64 revision_number = 2;
+   */
+  revisionNumber: bigint;
+};
+
+/**
+ * Describes the message n0x.workloads.v1.SetWorkloadLabelsResponse.
+ * Use `create(SetWorkloadLabelsResponseSchema)` to create a new message.
+ */
+export declare const SetWorkloadLabelsResponseSchema: GenMessage<SetWorkloadLabelsResponse>;
 
 /**
  * Detection is advisory; publishing does not require a matching observation.
@@ -1597,6 +1679,18 @@ export declare const WorkloadsService: GenService<{
     methodKind: "unary";
     input: typeof SetWorkloadProtectionRequestSchema;
     output: typeof SetWorkloadProtectionResponseSchema;
+  },
+  /**
+   * Requires nodes.write on the target. Also requires policies.write in the
+   * tenant when the change alters any policy selector match. Check against
+   * active and applicable draft policies in the mutation transaction.
+   *
+   * @generated from rpc n0x.workloads.v1.WorkloadsService.SetWorkloadLabels
+   */
+  setWorkloadLabels: {
+    methodKind: "unary";
+    input: typeof SetWorkloadLabelsRequestSchema;
+    output: typeof SetWorkloadLabelsResponseSchema;
   },
   /**
    * @generated from rpc n0x.workloads.v1.WorkloadsService.ListListeningPorts

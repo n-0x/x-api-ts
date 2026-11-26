@@ -312,7 +312,7 @@ export declare type ToolActivity = Message$1<"n0x.assistant.v1.ToolActivity"> & 
 
   /**
    * Con call, el metodo pedido. Vacio con search. Nombre completo protobuf
-   * del metodo, p. ej. n0x.permissions.v1.PermissionsService.CreatePermission.
+   * del metodo, p. ej. n0x.policy.v1.NetworkPolicyService.CreatePolicy.
    *
    * @generated from field: string operation = 3;
    */
@@ -373,7 +373,7 @@ export declare type ProposedChange = Message$1<"n0x.assistant.v1.ProposedChange"
 
   /**
    * Nombre completo protobuf del metodo, p. ej.
-   * n0x.permissions.v1.PermissionsService.CreatePermission.
+   * n0x.policy.v1.NetworkPolicyService.CreatePolicy.
    *
    * @generated from field: string operation = 2;
    */
