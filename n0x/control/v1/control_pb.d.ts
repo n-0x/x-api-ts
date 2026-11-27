@@ -4,7 +4,7 @@
 
 import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
-import type { NodeMetricsQuery, NodeReport } from "../../signed/v1/signed_pb.js";
+import type { NodeFlowTapQuery, NodeMetricsQuery, NodeProbeQuery, NodeReport } from "../../signed/v1/signed_pb.js";
 import type { ListeningPort, RegisterWorkloadFromHostRequest as RegisterWorkloadFromHostRequest$1, RegisterWorkloadFromHostResponse as RegisterWorkloadFromHostResponse$1 } from "../../workloads/v1/workloads_pb.js";
 import type { AdmitResult, AdmitWorkloadOfferRequest as AdmitWorkloadOfferRequest$1, AdmitWorkloadOfferResponse as AdmitWorkloadOfferResponse$1, RenewWorkloadOfferRequest as RenewWorkloadOfferRequest$1, RenewWorkloadOfferResponse as RenewWorkloadOfferResponse$1 } from "../../connectivity/v1/connectivity_pb.js";
 import type { Alert, Rule } from "../../alerts/v1/alerts_pb.js";
@@ -1420,6 +1420,18 @@ export declare type AnswerNodeQueryRequest = Message<"n0x.control.v1.AnswerNodeQ
      */
     value: NodeQueryError;
     case: "error";
+  } | {
+    /**
+     * @generated from field: n0x.control.v1.NodeProbeAnswer probe = 5;
+     */
+    value: NodeProbeAnswer;
+    case: "probe";
+  } | {
+    /**
+     * @generated from field: n0x.control.v1.NodeFlowTapAnswer flow_tap = 6;
+     */
+    value: NodeFlowTapAnswer;
+    case: "flowTap";
   } | { case: undefined; value?: undefined };
 };
 
@@ -3093,6 +3105,208 @@ export declare type RegisterWorkloadFromHostResponse = Message<"n0x.control.v1.R
 export declare const RegisterWorkloadFromHostResponseSchema: GenMessage<RegisterWorkloadFromHostResponse>;
 
 /**
+ * @generated from message n0x.control.v1.NodeProbeAnswer
+ */
+export declare type NodeProbeAnswer = Message<"n0x.control.v1.NodeProbeAnswer"> & {
+  /**
+   * @generated from field: string probe_id = 1;
+   */
+  probeId: string;
+
+  /**
+   * @generated from field: n0x.control.v1.NodeProbeVerdict verdict = 2;
+   */
+  verdict: NodeProbeVerdict;
+
+  /**
+   * @generated from field: uint32 rtt_ms = 3;
+   */
+  rttMs: number;
+
+  /**
+   * @generated from field: int64 completed_at_unix_ms = 4;
+   */
+  completedAtUnixMs: bigint;
+
+  /**
+   * @generated from field: string detail = 5;
+   */
+  detail: string;
+
+  /**
+   * @generated from field: string applied_revision = 6;
+   */
+  appliedRevision: string;
+
+  /**
+   * @generated from field: string firewall_reason = 7;
+   */
+  firewallReason: string;
+};
+
+/**
+ * Describes the message n0x.control.v1.NodeProbeAnswer.
+ * Use `create(NodeProbeAnswerSchema)` to create a new message.
+ */
+export declare const NodeProbeAnswerSchema: GenMessage<NodeProbeAnswer>;
+
+/**
+ * @generated from message n0x.control.v1.PairFlowSample
+ */
+export declare type PairFlowSample = Message<"n0x.control.v1.PairFlowSample"> & {
+  /**
+   * @generated from field: int64 observed_at_unix_ms = 1;
+   */
+  observedAtUnixMs: bigint;
+
+  /**
+   * @generated from field: uint64 allowed_packets = 2;
+   */
+  allowedPackets: bigint;
+
+  /**
+   * @generated from field: uint64 denied_packets = 3;
+   */
+  deniedPackets: bigint;
+
+  /**
+   * @generated from field: uint64 bytes = 4;
+   */
+  bytes: bigint;
+};
+
+/**
+ * Describes the message n0x.control.v1.PairFlowSample.
+ * Use `create(PairFlowSampleSchema)` to create a new message.
+ */
+export declare const PairFlowSampleSchema: GenMessage<PairFlowSample>;
+
+/**
+ * @generated from message n0x.control.v1.NodeFlowTapAnswer
+ */
+export declare type NodeFlowTapAnswer = Message<"n0x.control.v1.NodeFlowTapAnswer"> & {
+  /**
+   * @generated from field: repeated n0x.control.v1.PairFlowSample samples = 1;
+   */
+  samples: PairFlowSample[];
+
+  /**
+   * @generated from field: int64 cursor_unix_ms = 2;
+   */
+  cursorUnixMs: bigint;
+};
+
+/**
+ * Describes the message n0x.control.v1.NodeFlowTapAnswer.
+ * Use `create(NodeFlowTapAnswerSchema)` to create a new message.
+ */
+export declare const NodeFlowTapAnswerSchema: GenMessage<NodeFlowTapAnswer>;
+
+/**
+ * @generated from message n0x.control.v1.QueryNodeProbeRequest
+ */
+export declare type QueryNodeProbeRequest = Message<"n0x.control.v1.QueryNodeProbeRequest"> & {
+  /**
+   * @generated from field: n0x.control.v1.Scope scope = 1;
+   */
+  scope?: Scope | undefined;
+
+  /**
+   * @generated from field: string incarnation_id = 2;
+   */
+  incarnationId: string;
+
+  /**
+   * @generated from field: n0x.signed.v1.NodeProbeQuery query = 3;
+   */
+  query?: NodeProbeQuery | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.QueryNodeProbeRequest.
+ * Use `create(QueryNodeProbeRequestSchema)` to create a new message.
+ */
+export declare const QueryNodeProbeRequestSchema: GenMessage<QueryNodeProbeRequest>;
+
+/**
+ * @generated from message n0x.control.v1.QueryNodeProbeResponse
+ */
+export declare type QueryNodeProbeResponse = Message<"n0x.control.v1.QueryNodeProbeResponse"> & {
+  /**
+   * @generated from field: n0x.control.v1.NodeQueryStatus status = 1;
+   */
+  status: NodeQueryStatus;
+
+  /**
+   * @generated from field: n0x.control.v1.NodeProbeAnswer answer = 2;
+   */
+  answer?: NodeProbeAnswer | undefined;
+
+  /**
+   * @generated from field: n0x.control.v1.NodeQueryErrorCode error = 3;
+   */
+  error: NodeQueryErrorCode;
+};
+
+/**
+ * Describes the message n0x.control.v1.QueryNodeProbeResponse.
+ * Use `create(QueryNodeProbeResponseSchema)` to create a new message.
+ */
+export declare const QueryNodeProbeResponseSchema: GenMessage<QueryNodeProbeResponse>;
+
+/**
+ * @generated from message n0x.control.v1.QueryNodeFlowTapRequest
+ */
+export declare type QueryNodeFlowTapRequest = Message<"n0x.control.v1.QueryNodeFlowTapRequest"> & {
+  /**
+   * @generated from field: n0x.control.v1.Scope scope = 1;
+   */
+  scope?: Scope | undefined;
+
+  /**
+   * @generated from field: string incarnation_id = 2;
+   */
+  incarnationId: string;
+
+  /**
+   * @generated from field: n0x.signed.v1.NodeFlowTapQuery query = 3;
+   */
+  query?: NodeFlowTapQuery | undefined;
+};
+
+/**
+ * Describes the message n0x.control.v1.QueryNodeFlowTapRequest.
+ * Use `create(QueryNodeFlowTapRequestSchema)` to create a new message.
+ */
+export declare const QueryNodeFlowTapRequestSchema: GenMessage<QueryNodeFlowTapRequest>;
+
+/**
+ * @generated from message n0x.control.v1.QueryNodeFlowTapResponse
+ */
+export declare type QueryNodeFlowTapResponse = Message<"n0x.control.v1.QueryNodeFlowTapResponse"> & {
+  /**
+   * @generated from field: n0x.control.v1.NodeQueryStatus status = 1;
+   */
+  status: NodeQueryStatus;
+
+  /**
+   * @generated from field: n0x.control.v1.NodeFlowTapAnswer answer = 2;
+   */
+  answer?: NodeFlowTapAnswer | undefined;
+
+  /**
+   * @generated from field: n0x.control.v1.NodeQueryErrorCode error = 3;
+   */
+  error: NodeQueryErrorCode;
+};
+
+/**
+ * Describes the message n0x.control.v1.QueryNodeFlowTapResponse.
+ * Use `create(QueryNodeFlowTapResponseSchema)` to create a new message.
+ */
+export declare const QueryNodeFlowTapResponseSchema: GenMessage<QueryNodeFlowTapResponse>;
+
+/**
  * @generated from enum n0x.control.v1.NodeQueryErrorCode
  */
 export enum NodeQueryErrorCode {
@@ -3121,6 +3335,16 @@ export enum NodeQueryErrorCode {
    * @generated from enum value: NODE_QUERY_ERROR_CODE_STORE_UNAVAILABLE = 3;
    */
   STORE_UNAVAILABLE = 3,
+
+  /**
+   * @generated from enum value: NODE_QUERY_ERROR_CODE_TARGET_NOT_IN_SCOPE = 4;
+   */
+  TARGET_NOT_IN_SCOPE = 4,
+
+  /**
+   * @generated from enum value: NODE_QUERY_ERROR_CODE_PROBE_UNSUPPORTED = 5;
+   */
+  PROBE_UNSUPPORTED = 5,
 }
 
 /**
@@ -3175,6 +3399,41 @@ export enum NodeQueryStatus {
  * Describes the enum n0x.control.v1.NodeQueryStatus.
  */
 export declare const NodeQueryStatusSchema: GenEnum<NodeQueryStatus>;
+
+/**
+ * @generated from enum n0x.control.v1.NodeProbeVerdict
+ */
+export enum NodeProbeVerdict {
+  /**
+   * @generated from enum value: NODE_PROBE_VERDICT_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: NODE_PROBE_VERDICT_REACHABLE = 1;
+   */
+  REACHABLE = 1,
+
+  /**
+   * @generated from enum value: NODE_PROBE_VERDICT_BLOCKED = 2;
+   */
+  BLOCKED = 2,
+
+  /**
+   * @generated from enum value: NODE_PROBE_VERDICT_TIMEOUT = 3;
+   */
+  TIMEOUT = 3,
+
+  /**
+   * @generated from enum value: NODE_PROBE_VERDICT_ERROR = 4;
+   */
+  ERROR = 4,
+}
+
+/**
+ * Describes the enum n0x.control.v1.NodeProbeVerdict.
+ */
+export declare const NodeProbeVerdictSchema: GenEnum<NodeProbeVerdict>;
 
 /**
  * @generated from service n0x.control.v1.NodeControlService
@@ -3451,6 +3710,22 @@ export declare const ControlObservationsService: GenService<{
     methodKind: "unary";
     input: typeof QueryNodeMetricsRequestSchema;
     output: typeof QueryNodeMetricsResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.control.v1.ControlObservationsService.QueryNodeProbe
+   */
+  queryNodeProbe: {
+    methodKind: "unary";
+    input: typeof QueryNodeProbeRequestSchema;
+    output: typeof QueryNodeProbeResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.control.v1.ControlObservationsService.QueryNodeFlowTap
+   */
+  queryNodeFlowTap: {
+    methodKind: "unary";
+    input: typeof QueryNodeFlowTapRequestSchema;
+    output: typeof QueryNodeFlowTapResponseSchema;
   },
 }>;
 

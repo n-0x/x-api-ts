@@ -348,6 +348,11 @@ export declare type DelegatedActor = Message<"n0x.auth.v1.DelegatedActor"> & {
    * @generated from field: string turn_id = 5;
    */
   turnId: string;
+
+  /**
+   * @generated from field: string autonomy_grant_id = 6;
+   */
+  autonomyGrantId: string;
 };
 
 /**

@@ -442,6 +442,21 @@ export declare type RevisionOrigin = Message<"n0x.policy.v1.RevisionOrigin"> & {
    * @generated from field: string recommendation_id = 4;
    */
   recommendationId: string;
+
+  /**
+   * @generated from field: string conversation_id = 5;
+   */
+  conversationId: string;
+
+  /**
+   * @generated from field: string turn_id = 6;
+   */
+  turnId: string;
+
+  /**
+   * @generated from field: string autonomy_grant_id = 7;
+   */
+  autonomyGrantId: string;
 };
 
 /**
@@ -2509,6 +2524,226 @@ export declare type RemovePolicyTestResponse = Message<"n0x.policy.v1.RemovePoli
 export declare const RemovePolicyTestResponseSchema: GenMessage<RemovePolicyTestResponse>;
 
 /**
+ * @generated from message n0x.policy.v1.RunConnectivityProbeRequest
+ */
+export declare type RunConnectivityProbeRequest = Message<"n0x.policy.v1.RunConnectivityProbeRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string source_identity_id = 3;
+   */
+  sourceIdentityId: string;
+
+  /**
+   * @generated from field: string target_identity_id = 4;
+   */
+  targetIdentityId: string;
+
+  /**
+   * @generated from field: n0x.policy.v1.NetworkProtocol protocol = 5;
+   */
+  protocol: NetworkProtocol;
+
+  /**
+   * @generated from field: uint32 port = 6;
+   */
+  port: number;
+
+  /**
+   * @generated from field: uint32 timeout_ms = 7;
+   */
+  timeoutMs: number;
+};
+
+/**
+ * Describes the message n0x.policy.v1.RunConnectivityProbeRequest.
+ * Use `create(RunConnectivityProbeRequestSchema)` to create a new message.
+ */
+export declare const RunConnectivityProbeRequestSchema: GenMessage<RunConnectivityProbeRequest>;
+
+/**
+ * @generated from message n0x.policy.v1.RunConnectivityProbeResponse
+ */
+export declare type RunConnectivityProbeResponse = Message<"n0x.policy.v1.RunConnectivityProbeResponse"> & {
+  /**
+   * @generated from field: string probe_id = 1;
+   */
+  probeId: string;
+
+  /**
+   * @generated from field: n0x.policy.v1.ConnectivityProbeVerdict verdict = 2;
+   */
+  verdict: ConnectivityProbeVerdict;
+
+  /**
+   * @generated from field: uint32 rtt_ms = 3;
+   */
+  rttMs: number;
+
+  /**
+   * @generated from field: string denial_event_id = 4;
+   */
+  denialEventId: string;
+
+  /**
+   * @generated from field: repeated n0x.policy.v1.EnforcementPoint enforcement_points = 5;
+   */
+  enforcementPoints: EnforcementPoint[];
+
+  /**
+   * @generated from field: google.protobuf.Timestamp completed_at = 6;
+   */
+  completedAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: string detail = 7;
+   */
+  detail: string;
+
+  /**
+   * @generated from field: string applied_revision = 8;
+   */
+  appliedRevision: string;
+
+  /**
+   * @generated from field: string firewall_reason = 9;
+   */
+  firewallReason: string;
+};
+
+/**
+ * Describes the message n0x.policy.v1.RunConnectivityProbeResponse.
+ * Use `create(RunConnectivityProbeResponseSchema)` to create a new message.
+ */
+export declare const RunConnectivityProbeResponseSchema: GenMessage<RunConnectivityProbeResponse>;
+
+/**
+ * @generated from message n0x.policy.v1.WatchPairFlowRequest
+ */
+export declare type WatchPairFlowRequest = Message<"n0x.policy.v1.WatchPairFlowRequest"> & {
+  /**
+   * @generated from field: string account_id = 1;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string source_identity_id = 3;
+   */
+  sourceIdentityId: string;
+
+  /**
+   * @generated from field: string target_identity_id = 4;
+   */
+  targetIdentityId: string;
+
+  /**
+   * @generated from field: n0x.policy.v1.NetworkProtocol protocol = 5;
+   */
+  protocol: NetworkProtocol;
+
+  /**
+   * @generated from field: uint32 port = 6;
+   */
+  port: number;
+
+  /**
+   * @generated from field: string cursor = 7;
+   */
+  cursor: string;
+
+  /**
+   * @generated from field: uint32 ttl_seconds = 8;
+   */
+  ttlSeconds: number;
+};
+
+/**
+ * Describes the message n0x.policy.v1.WatchPairFlowRequest.
+ * Use `create(WatchPairFlowRequestSchema)` to create a new message.
+ */
+export declare const WatchPairFlowRequestSchema: GenMessage<WatchPairFlowRequest>;
+
+/**
+ * @generated from message n0x.policy.v1.LivePairFlowSample
+ */
+export declare type LivePairFlowSample = Message<"n0x.policy.v1.LivePairFlowSample"> & {
+  /**
+   * @generated from field: google.protobuf.Timestamp observed_at = 1;
+   */
+  observedAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: uint64 allowed_packets = 2;
+   */
+  allowedPackets: bigint;
+
+  /**
+   * @generated from field: uint64 denied_packets = 3;
+   */
+  deniedPackets: bigint;
+
+  /**
+   * @generated from field: uint64 bytes = 4;
+   */
+  bytes: bigint;
+
+  /**
+   * @generated from field: n0x.policy.v1.PairFlowVerdict verdict = 5;
+   */
+  verdict: PairFlowVerdict;
+
+  /**
+   * @generated from field: string correlated_event_id = 6;
+   */
+  correlatedEventId: string;
+};
+
+/**
+ * Describes the message n0x.policy.v1.LivePairFlowSample.
+ * Use `create(LivePairFlowSampleSchema)` to create a new message.
+ */
+export declare const LivePairFlowSampleSchema: GenMessage<LivePairFlowSample>;
+
+/**
+ * @generated from message n0x.policy.v1.WatchPairFlowResponse
+ */
+export declare type WatchPairFlowResponse = Message<"n0x.policy.v1.WatchPairFlowResponse"> & {
+  /**
+   * @generated from field: repeated n0x.policy.v1.LivePairFlowSample samples = 1;
+   */
+  samples: LivePairFlowSample[];
+
+  /**
+   * @generated from field: string cursor = 2;
+   */
+  cursor: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp checkpoint_at = 3;
+   */
+  checkpointAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.policy.v1.WatchPairFlowResponse.
+ * Use `create(WatchPairFlowResponseSchema)` to create a new message.
+ */
+export declare const WatchPairFlowResponseSchema: GenMessage<WatchPairFlowResponse>;
+
+/**
  * @generated from enum n0x.policy.v1.PolicyEffect
  */
 export enum PolicyEffect {
@@ -3066,6 +3301,66 @@ export enum SynthesisConflictCode {
 export declare const SynthesisConflictCodeSchema: GenEnum<SynthesisConflictCode>;
 
 /**
+ * @generated from enum n0x.policy.v1.ConnectivityProbeVerdict
+ */
+export enum ConnectivityProbeVerdict {
+  /**
+   * @generated from enum value: CONNECTIVITY_PROBE_VERDICT_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: CONNECTIVITY_PROBE_VERDICT_REACHABLE = 1;
+   */
+  REACHABLE = 1,
+
+  /**
+   * @generated from enum value: CONNECTIVITY_PROBE_VERDICT_BLOCKED = 2;
+   */
+  BLOCKED = 2,
+
+  /**
+   * @generated from enum value: CONNECTIVITY_PROBE_VERDICT_INCONCLUSIVE = 3;
+   */
+  INCONCLUSIVE = 3,
+}
+
+/**
+ * Describes the enum n0x.policy.v1.ConnectivityProbeVerdict.
+ */
+export declare const ConnectivityProbeVerdictSchema: GenEnum<ConnectivityProbeVerdict>;
+
+/**
+ * @generated from enum n0x.policy.v1.PairFlowVerdict
+ */
+export enum PairFlowVerdict {
+  /**
+   * @generated from enum value: PAIR_FLOW_VERDICT_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: PAIR_FLOW_VERDICT_ALLOWED = 1;
+   */
+  ALLOWED = 1,
+
+  /**
+   * @generated from enum value: PAIR_FLOW_VERDICT_DENIED = 2;
+   */
+  DENIED = 2,
+
+  /**
+   * @generated from enum value: PAIR_FLOW_VERDICT_NO_BASELINE_TRAFFIC = 3;
+   */
+  NO_BASELINE_TRAFFIC = 3,
+}
+
+/**
+ * Describes the enum n0x.policy.v1.PairFlowVerdict.
+ */
+export declare const PairFlowVerdictSchema: GenEnum<PairFlowVerdict>;
+
+/**
  * NetworkPolicyService manages Model B network and application connectivity
  * policies (Quarantine > Guardrail DENY > NetworkPolicy ALLOW > Default DENY),
  * governed revisions/drafts, simulation, deterministic synthesis, and test suites.
@@ -3228,6 +3523,22 @@ export declare const NetworkPolicyService: GenService<{
     methodKind: "unary";
     input: typeof RemovePolicyTestRequestSchema;
     output: typeof RemovePolicyTestResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.policy.v1.NetworkPolicyService.RunConnectivityProbe
+   */
+  runConnectivityProbe: {
+    methodKind: "unary";
+    input: typeof RunConnectivityProbeRequestSchema;
+    output: typeof RunConnectivityProbeResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.policy.v1.NetworkPolicyService.WatchPairFlow
+   */
+  watchPairFlow: {
+    methodKind: "server_streaming";
+    input: typeof WatchPairFlowRequestSchema;
+    output: typeof WatchPairFlowResponseSchema;
   },
 }>;
 

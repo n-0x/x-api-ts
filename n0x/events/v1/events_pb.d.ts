@@ -35,6 +35,16 @@ export declare type EventActor = Message<"n0x.events.v1.EventActor"> & {
    * @generated from field: string instance_id = 3;
    */
   instanceId: string;
+
+  /**
+   * @generated from field: string conversation_id = 4;
+   */
+  conversationId: string;
+
+  /**
+   * @generated from field: string turn_id = 5;
+   */
+  turnId: string;
 };
 
 /**

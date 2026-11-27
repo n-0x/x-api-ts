@@ -1495,6 +1495,89 @@ export declare type RenewAssignmentInstanceTokenResponse = Message<"n0x.internal
 export declare const RenewAssignmentInstanceTokenResponseSchema: GenMessage<RenewAssignmentInstanceTokenResponse>;
 
 /**
+ * @generated from message n0x.internal.v1.AutonomyGrantRecord
+ */
+export declare type AutonomyGrantRecord = Message<"n0x.internal.v1.AutonomyGrantRecord"> & {
+  /**
+   * @generated from field: string grant_id = 1;
+   */
+  grantId: string;
+
+  /**
+   * @generated from field: string account_id = 2;
+   */
+  accountId: string;
+
+  /**
+   * @generated from field: string tenant_id = 3;
+   */
+  tenantId: string;
+
+  /**
+   * @generated from field: string user_id = 4;
+   */
+  userId: string;
+
+  /**
+   * @generated from field: string conversation_id = 5;
+   */
+  conversationId: string;
+
+  /**
+   * @generated from field: bool active = 6;
+   */
+  active: boolean;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 7;
+   */
+  expiresAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp revoked_at = 8;
+   */
+  revokedAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.internal.v1.AutonomyGrantRecord.
+ * Use `create(AutonomyGrantRecordSchema)` to create a new message.
+ */
+export declare const AutonomyGrantRecordSchema: GenMessage<AutonomyGrantRecord>;
+
+/**
+ * @generated from message n0x.internal.v1.SyncAutonomyGrantRequest
+ */
+export declare type SyncAutonomyGrantRequest = Message<"n0x.internal.v1.SyncAutonomyGrantRequest"> & {
+  /**
+   * @generated from field: n0x.internal.v1.AutonomyGrantRecord grant = 1;
+   */
+  grant?: AutonomyGrantRecord | undefined;
+};
+
+/**
+ * Describes the message n0x.internal.v1.SyncAutonomyGrantRequest.
+ * Use `create(SyncAutonomyGrantRequestSchema)` to create a new message.
+ */
+export declare const SyncAutonomyGrantRequestSchema: GenMessage<SyncAutonomyGrantRequest>;
+
+/**
+ * @generated from message n0x.internal.v1.SyncAutonomyGrantResponse
+ */
+export declare type SyncAutonomyGrantResponse = Message<"n0x.internal.v1.SyncAutonomyGrantResponse"> & {
+  /**
+   * @generated from field: n0x.internal.v1.AutonomyGrantRecord grant = 1;
+   */
+  grant?: AutonomyGrantRecord | undefined;
+};
+
+/**
+ * Describes the message n0x.internal.v1.SyncAutonomyGrantResponse.
+ * Use `create(SyncAutonomyGrantResponseSchema)` to create a new message.
+ */
+export declare const SyncAutonomyGrantResponseSchema: GenMessage<SyncAutonomyGrantResponse>;
+
+/**
  * Selecciona la prueba persistida que el emisor debe verificar por si mismo.
  *
  * @generated from enum n0x.internal.v1.ServiceAccountBootstrapSource
@@ -1572,6 +1655,14 @@ export declare const AuthorityService: GenService<{
     methodKind: "unary";
     input: typeof UpdateCommercialRequestSchema;
     output: typeof UpdateCommercialResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.internal.v1.AuthorityService.SyncAutonomyGrant
+   */
+  syncAutonomyGrant: {
+    methodKind: "unary";
+    input: typeof SyncAutonomyGrantRequestSchema;
+    output: typeof SyncAutonomyGrantResponseSchema;
   },
 }>;
 

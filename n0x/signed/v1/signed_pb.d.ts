@@ -662,6 +662,18 @@ export declare type NodeQuery = Message<"n0x.signed.v1.NodeQuery"> & {
      */
     value: NodeMetricsQuery;
     case: "metrics";
+  } | {
+    /**
+     * @generated from field: n0x.signed.v1.NodeProbeQuery probe = 13;
+     */
+    value: NodeProbeQuery;
+    case: "probe";
+  } | {
+    /**
+     * @generated from field: n0x.signed.v1.NodeFlowTapQuery flow_tap = 14;
+     */
+    value: NodeFlowTapQuery;
+    case: "flowTap";
   } | { case: undefined; value?: undefined };
 };
 
@@ -859,4 +871,71 @@ export declare type FingerprintValue = Message<"n0x.signed.v1.FingerprintValue">
  * Use `create(FingerprintValueSchema)` to create a new message.
  */
 export declare const FingerprintValueSchema: GenMessage<FingerprintValue>;
+
+/**
+ * @generated from message n0x.signed.v1.NodeProbeQuery
+ */
+export declare type NodeProbeQuery = Message<"n0x.signed.v1.NodeProbeQuery"> & {
+  /**
+   * @generated from field: string probe_id = 1;
+   */
+  probeId: string;
+
+  /**
+   * @generated from field: string target_ip = 2;
+   */
+  targetIp: string;
+
+  /**
+   * @generated from field: string protocol = 3;
+   */
+  protocol: string;
+
+  /**
+   * @generated from field: uint32 port = 4;
+   */
+  port: number;
+
+  /**
+   * @generated from field: uint32 timeout_ms = 5;
+   */
+  timeoutMs: number;
+};
+
+/**
+ * Describes the message n0x.signed.v1.NodeProbeQuery.
+ * Use `create(NodeProbeQuerySchema)` to create a new message.
+ */
+export declare const NodeProbeQuerySchema: GenMessage<NodeProbeQuery>;
+
+/**
+ * @generated from message n0x.signed.v1.NodeFlowTapQuery
+ */
+export declare type NodeFlowTapQuery = Message<"n0x.signed.v1.NodeFlowTapQuery"> & {
+  /**
+   * @generated from field: string peer_identity_id = 1;
+   */
+  peerIdentityId: string;
+
+  /**
+   * @generated from field: string workload_id = 2;
+   */
+  workloadId: string;
+
+  /**
+   * @generated from field: int64 since_unix_ms = 3;
+   */
+  sinceUnixMs: bigint;
+
+  /**
+   * @generated from field: uint32 limit = 4;
+   */
+  limit: number;
+};
+
+/**
+ * Describes the message n0x.signed.v1.NodeFlowTapQuery.
+ * Use `create(NodeFlowTapQuerySchema)` to create a new message.
+ */
+export declare const NodeFlowTapQuerySchema: GenMessage<NodeFlowTapQuery>;
 

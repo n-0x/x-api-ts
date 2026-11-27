@@ -81,6 +81,21 @@ export declare type Conversation = Message$1<"n0x.assistant.v1.Conversation"> & 
    * @generated from field: repeated n0x.assistant.v1.ProposedChange changes = 12;
    */
   changes: ProposedChange[];
+
+  /**
+   * @generated from field: n0x.assistant.v1.AutonomyMode autonomy_mode = 13;
+   */
+  autonomyMode: AutonomyMode;
+
+  /**
+   * @generated from field: string autonomy_grant_id = 14;
+   */
+  autonomyGrantId: string;
+
+  /**
+   * @generated from field: repeated n0x.assistant.v1.VerificationRecord verifications = 15;
+   */
+  verifications: VerificationRecord[];
 };
 
 /**
@@ -439,6 +454,16 @@ export declare type ProposedChange = Message$1<"n0x.assistant.v1.ProposedChange"
    * @generated from field: optional uint64 revision_number = 10;
    */
   revisionNumber?: bigint | undefined;
+
+  /**
+   * @generated from field: bool executed_autonomously = 11;
+   */
+  executedAutonomously: boolean;
+
+  /**
+   * @generated from field: string autonomy_grant_id = 12;
+   */
+  autonomyGrantId: string;
 };
 
 /**
@@ -785,6 +810,237 @@ export declare type ReportProposalOutcomeResponse = Message$1<"n0x.assistant.v1.
 export declare const ReportProposalOutcomeResponseSchema: GenMessage<ReportProposalOutcomeResponse>;
 
 /**
+ * @generated from message n0x.assistant.v1.VerificationSpec
+ */
+export declare type VerificationSpec = Message$1<"n0x.assistant.v1.VerificationSpec"> & {
+  /**
+   * @generated from field: string spec_id = 1;
+   */
+  specId: string;
+
+  /**
+   * @generated from field: string source_identity_id = 2;
+   */
+  sourceIdentityId: string;
+
+  /**
+   * @generated from field: string target_identity_id = 3;
+   */
+  targetIdentityId: string;
+
+  /**
+   * @generated from field: string target_object_type = 4;
+   */
+  targetObjectType: string;
+
+  /**
+   * @generated from field: string target_object_id = 5;
+   */
+  targetObjectId: string;
+
+  /**
+   * @generated from field: string protocol = 6;
+   */
+  protocol: string;
+
+  /**
+   * @generated from field: uint32 port = 7;
+   */
+  port: number;
+
+  /**
+   * @generated from field: n0x.assistant.v1.VerificationExpectedVerdict expected_verdict = 8;
+   */
+  expectedVerdict: VerificationExpectedVerdict;
+
+  /**
+   * @generated from field: repeated n0x.assistant.v1.VerificationCheckKind checks = 9;
+   */
+  checks: VerificationCheckKind[];
+};
+
+/**
+ * Describes the message n0x.assistant.v1.VerificationSpec.
+ * Use `create(VerificationSpecSchema)` to create a new message.
+ */
+export declare const VerificationSpecSchema: GenMessage<VerificationSpec>;
+
+/**
+ * @generated from message n0x.assistant.v1.VerificationRecord
+ */
+export declare type VerificationRecord = Message$1<"n0x.assistant.v1.VerificationRecord"> & {
+  /**
+   * @generated from field: string verification_id = 1;
+   */
+  verificationId: string;
+
+  /**
+   * @generated from field: string change_id = 2;
+   */
+  changeId: string;
+
+  /**
+   * @generated from field: string spec_id = 3;
+   */
+  specId: string;
+
+  /**
+   * @generated from field: n0x.assistant.v1.VerificationStatus status = 4;
+   */
+  status: VerificationStatus;
+
+  /**
+   * @generated from field: n0x.assistant.v1.VerificationExpectedVerdict expected_verdict = 5;
+   */
+  expectedVerdict: VerificationExpectedVerdict;
+
+  /**
+   * @generated from field: n0x.assistant.v1.VerificationStatus convergence_status = 6;
+   */
+  convergenceStatus: VerificationStatus;
+
+  /**
+   * @generated from field: n0x.assistant.v1.VerificationStatus probe_status = 7;
+   */
+  probeStatus: VerificationStatus;
+
+  /**
+   * @generated from field: n0x.assistant.v1.VerificationStatus flow_status = 8;
+   */
+  flowStatus: VerificationStatus;
+
+  /**
+   * @generated from field: optional uint64 revision_number = 9;
+   */
+  revisionNumber?: bigint | undefined;
+
+  /**
+   * @generated from field: string summary = 10;
+   */
+  summary: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp verified_at = 11;
+   */
+  verifiedAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: n0x.assistant.v1.VerificationSpec spec = 12;
+   */
+  spec?: VerificationSpec | undefined;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.VerificationRecord.
+ * Use `create(VerificationRecordSchema)` to create a new message.
+ */
+export declare const VerificationRecordSchema: GenMessage<VerificationRecord>;
+
+/**
+ * @generated from message n0x.assistant.v1.SetAutonomyModeRequest
+ */
+export declare type SetAutonomyModeRequest = Message$1<"n0x.assistant.v1.SetAutonomyModeRequest"> & {
+  /**
+   * @generated from field: string conversation_id = 1;
+   */
+  conversationId: string;
+
+  /**
+   * @generated from field: string expected_version = 2;
+   */
+  expectedVersion: string;
+
+  /**
+   * @generated from field: string request_id = 3;
+   */
+  requestId: string;
+
+  /**
+   * @generated from field: n0x.assistant.v1.AutonomyMode mode = 4;
+   */
+  mode: AutonomyMode;
+
+  /**
+   * @generated from field: optional uint32 ttl_seconds = 5;
+   */
+  ttlSeconds?: number | undefined;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.SetAutonomyModeRequest.
+ * Use `create(SetAutonomyModeRequestSchema)` to create a new message.
+ */
+export declare const SetAutonomyModeRequestSchema: GenMessage<SetAutonomyModeRequest>;
+
+/**
+ * @generated from message n0x.assistant.v1.SetAutonomyModeResponse
+ */
+export declare type SetAutonomyModeResponse = Message$1<"n0x.assistant.v1.SetAutonomyModeResponse"> & {
+  /**
+   * @generated from field: n0x.assistant.v1.Conversation conversation = 1;
+   */
+  conversation?: Conversation | undefined;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.SetAutonomyModeResponse.
+ * Use `create(SetAutonomyModeResponseSchema)` to create a new message.
+ */
+export declare const SetAutonomyModeResponseSchema: GenMessage<SetAutonomyModeResponse>;
+
+/**
+ * @generated from message n0x.assistant.v1.WatchConversationRequest
+ */
+export declare type WatchConversationRequest = Message$1<"n0x.assistant.v1.WatchConversationRequest"> & {
+  /**
+   * @generated from field: string conversation_id = 1;
+   */
+  conversationId: string;
+
+  /**
+   * @generated from field: string cursor = 2;
+   */
+  cursor: string;
+
+  /**
+   * @generated from field: string from_version = 3;
+   */
+  fromVersion: string;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.WatchConversationRequest.
+ * Use `create(WatchConversationRequestSchema)` to create a new message.
+ */
+export declare const WatchConversationRequestSchema: GenMessage<WatchConversationRequest>;
+
+/**
+ * @generated from message n0x.assistant.v1.WatchConversationResponse
+ */
+export declare type WatchConversationResponse = Message$1<"n0x.assistant.v1.WatchConversationResponse"> & {
+  /**
+   * @generated from field: n0x.assistant.v1.Conversation conversation = 1;
+   */
+  conversation?: Conversation | undefined;
+
+  /**
+   * @generated from field: string cursor = 2;
+   */
+  cursor: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp checkpoint_at = 3;
+   */
+  checkpointAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.WatchConversationResponse.
+ * Use `create(WatchConversationResponseSchema)` to create a new message.
+ */
+export declare const WatchConversationResponseSchema: GenMessage<WatchConversationResponse>;
+
+/**
  * @generated from enum n0x.assistant.v1.AssistantTool
  */
 export enum AssistantTool {
@@ -896,6 +1152,136 @@ export enum ProposedChangeStatus {
 export declare const ProposedChangeStatusSchema: GenEnum<ProposedChangeStatus>;
 
 /**
+ * @generated from enum n0x.assistant.v1.AutonomyMode
+ */
+export enum AutonomyMode {
+  /**
+   * @generated from enum value: AUTONOMY_MODE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: AUTONOMY_MODE_CONFIRM = 1;
+   */
+  CONFIRM = 1,
+
+  /**
+   * @generated from enum value: AUTONOMY_MODE_AUTOMATE = 2;
+   */
+  AUTOMATE = 2,
+}
+
+/**
+ * Describes the enum n0x.assistant.v1.AutonomyMode.
+ */
+export declare const AutonomyModeSchema: GenEnum<AutonomyMode>;
+
+/**
+ * @generated from enum n0x.assistant.v1.VerificationCheckKind
+ */
+export enum VerificationCheckKind {
+  /**
+   * @generated from enum value: VERIFICATION_CHECK_KIND_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: VERIFICATION_CHECK_KIND_ENFORCEMENT_CONVERGENCE = 1;
+   */
+  ENFORCEMENT_CONVERGENCE = 1,
+
+  /**
+   * @generated from enum value: VERIFICATION_CHECK_KIND_LIVE_PAIR_FLOW = 2;
+   */
+  LIVE_PAIR_FLOW = 2,
+
+  /**
+   * @generated from enum value: VERIFICATION_CHECK_KIND_ACTIVE_PROBE = 3;
+   */
+  ACTIVE_PROBE = 3,
+
+  /**
+   * @generated from enum value: VERIFICATION_CHECK_KIND_POLICY_SIMULATION = 4;
+   */
+  POLICY_SIMULATION = 4,
+
+  /**
+   * @generated from enum value: VERIFICATION_CHECK_KIND_OBJECT_STATE = 5;
+   */
+  OBJECT_STATE = 5,
+}
+
+/**
+ * Describes the enum n0x.assistant.v1.VerificationCheckKind.
+ */
+export declare const VerificationCheckKindSchema: GenEnum<VerificationCheckKind>;
+
+/**
+ * @generated from enum n0x.assistant.v1.VerificationExpectedVerdict
+ */
+export enum VerificationExpectedVerdict {
+  /**
+   * @generated from enum value: VERIFICATION_EXPECTED_VERDICT_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: VERIFICATION_EXPECTED_VERDICT_ALLOW = 1;
+   */
+  ALLOW = 1,
+
+  /**
+   * @generated from enum value: VERIFICATION_EXPECTED_VERDICT_DENY = 2;
+   */
+  DENY = 2,
+
+  /**
+   * @generated from enum value: VERIFICATION_EXPECTED_VERDICT_APPLIED = 3;
+   */
+  APPLIED = 3,
+}
+
+/**
+ * Describes the enum n0x.assistant.v1.VerificationExpectedVerdict.
+ */
+export declare const VerificationExpectedVerdictSchema: GenEnum<VerificationExpectedVerdict>;
+
+/**
+ * @generated from enum n0x.assistant.v1.VerificationStatus
+ */
+export enum VerificationStatus {
+  /**
+   * @generated from enum value: VERIFICATION_STATUS_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: VERIFICATION_STATUS_PENDING = 1;
+   */
+  PENDING = 1,
+
+  /**
+   * @generated from enum value: VERIFICATION_STATUS_VERIFIED = 2;
+   */
+  VERIFIED = 2,
+
+  /**
+   * @generated from enum value: VERIFICATION_STATUS_FAILED = 3;
+   */
+  FAILED = 3,
+
+  /**
+   * @generated from enum value: VERIFICATION_STATUS_INCONCLUSIVE = 4;
+   */
+  INCONCLUSIVE = 4,
+}
+
+/**
+ * Describes the enum n0x.assistant.v1.VerificationStatus.
+ */
+export declare const VerificationStatusSchema: GenEnum<VerificationStatus>;
+
+/**
  * @generated from service n0x.assistant.v1.AssistantService
  */
 export declare const AssistantService: GenService<{
@@ -968,6 +1354,22 @@ export declare const AssistantService: GenService<{
     methodKind: "unary";
     input: typeof ReportProposalOutcomeRequestSchema;
     output: typeof ReportProposalOutcomeResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.assistant.v1.AssistantService.SetAutonomyMode
+   */
+  setAutonomyMode: {
+    methodKind: "unary";
+    input: typeof SetAutonomyModeRequestSchema;
+    output: typeof SetAutonomyModeResponseSchema;
+  },
+  /**
+   * @generated from rpc n0x.assistant.v1.AssistantService.WatchConversation
+   */
+  watchConversation: {
+    methodKind: "server_streaming";
+    input: typeof WatchConversationRequestSchema;
+    output: typeof WatchConversationResponseSchema;
   },
 }>;
 
