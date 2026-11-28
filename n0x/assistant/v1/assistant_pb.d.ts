@@ -146,6 +146,14 @@ export declare type Message = Message$1<"n0x.assistant.v1.Message"> & {
    * @generated from field: repeated n0x.assistant.v1.ToolActivity activity = 7;
    */
   activity: ToolActivity[];
+
+  /**
+   * Como activity: solo en el mensaje del asistente que cierra un turno
+   * completado, en orden.
+   *
+   * @generated from field: repeated n0x.assistant.v1.CanvasArtifact canvas = 8;
+   */
+  canvas: CanvasArtifact[];
 };
 
 /**
@@ -180,6 +188,14 @@ export declare type Turn = Message$1<"n0x.assistant.v1.Turn"> & {
    * @generated from field: repeated n0x.assistant.v1.ToolActivity activity = 4;
    */
   activity: ToolActivity[];
+
+  /**
+   * Los del turno en curso o fallido; vacio cuando el turno se completo
+   * (estan en el mensaje).
+   *
+   * @generated from field: repeated n0x.assistant.v1.CanvasArtifact canvas = 5;
+   */
+  canvas: CanvasArtifact[];
 };
 
 /**
@@ -374,6 +390,78 @@ export declare type ToolActivity = Message$1<"n0x.assistant.v1.ToolActivity"> & 
  * Use `create(ToolActivitySchema)` to create a new message.
  */
 export declare const ToolActivitySchema: GenMessage<ToolActivity>;
+
+/**
+ * Un artefacto del lienzo de Ask AI. Lo compone el manager; nunca lleva
+ * valores leidos ni valores del modelo que el navegador deba creer.
+ *
+ * @generated from message n0x.assistant.v1.CanvasArtifact
+ */
+export declare type CanvasArtifact = Message$1<"n0x.assistant.v1.CanvasArtifact"> & {
+  /**
+   * "<turn_id>/<n>", unico en la conversacion.
+   *
+   * @generated from field: string artifact_id = 1;
+   */
+  artifactId: string;
+
+  /**
+   * @generated from field: string turn_id = 2;
+   */
+  turnId: string;
+
+  /**
+   * @generated from field: n0x.assistant.v1.CanvasArtifactKind kind = 3;
+   */
+  kind: CanvasArtifactKind;
+
+  /**
+   * @generated from field: n0x.assistant.v1.CanvasArtifactRole role = 4;
+   */
+  role: CanvasArtifactRole;
+
+  /**
+   * Texto plano, hasta 80 code points Unicode.
+   *
+   * @generated from field: string title = 5;
+   */
+  title: string;
+
+  /**
+   * Texto plano, hasta 200 code points: por que se muestra.
+   *
+   * @generated from field: string rationale = 6;
+   */
+  rationale: string;
+
+  /**
+   * Objeto JSON con la forma de kind, hasta 4096 bytes; lo valida el
+   * manager. El navegador lo vuelve a validar y lee todos los valores de x-api
+   * por si mismo: no confia en ningun valor del modelo.
+   *
+   * @generated from field: string spec_json = 7;
+   */
+  specJson: string;
+
+  /**
+   * Nombres completos protobuf de las lecturas que lo fundamentan, como
+   * mucho 8.
+   *
+   * @generated from field: repeated string source_operations = 8;
+   */
+  sourceOperations: string[];
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 9;
+   */
+  createdAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message n0x.assistant.v1.CanvasArtifact.
+ * Use `create(CanvasArtifactSchema)` to create a new message.
+ */
+export declare const CanvasArtifactSchema: GenMessage<CanvasArtifact>;
 
 /**
  * @generated from message n0x.assistant.v1.ProposedChange
@@ -1107,6 +1195,145 @@ export enum ToolOutcome {
  * Describes the enum n0x.assistant.v1.ToolOutcome.
  */
 export declare const ToolOutcomeSchema: GenEnum<ToolOutcome>;
+
+/**
+ * Forma de spec_json para cada tipo. Los nombres de metric y range son los de
+ * n0x.metrics.v1.Metric y n0x.metrics.v1.Range.
+ *
+ * @generated from enum n0x.assistant.v1.CanvasArtifactKind
+ */
+export enum CanvasArtifactKind {
+  /**
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * {"node_ids":[...],"metric":"NODE_CPU_PERCENT|...(n0x.metrics.v1.Metric name)","range":"RANGE_1H|RANGE_6H|RANGE_24H|RANGE_7D|RANGE_30D"}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_METRIC_SERIES = 1;
+   */
+  METRIC_SERIES = 1,
+
+  /**
+   * {"node_ids":[],"metric":"...","range":"..."}; node_ids vacio: todos los
+   * nodos.
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_METRIC_COMPARISON = 2;
+   */
+  METRIC_COMPARISON = 2,
+
+  /**
+   * {"node_id":"..."}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_NODE_DETAIL = 3;
+   */
+  NODE_DETAIL = 3,
+
+  /**
+   * {"node_ids":[],"range":"...","protocol":"udp|tcp|icmp|any"}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_TRAFFIC_FLOWS = 4;
+   */
+  TRAFFIC_FLOWS = 4,
+
+  /**
+   * {"source_identity_id":"...","target_identity_id":"...","protocol":"udp|tcp|icmp","port":0}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_CONNECTIVITY_PROBE = 5;
+   */
+  CONNECTIVITY_PROBE = 5,
+
+  /**
+   * {"change_id":"..."}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_POLICY_DIFF = 6;
+   */
+  POLICY_DIFF = 6,
+
+  /**
+   * {"source_identity_id":"...","target_identity_id":"...","protocol":"...","port":0,"action":"deny|allow"}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_POLICY_SIMULATION = 7;
+   */
+  POLICY_SIMULATION = 7,
+
+  /**
+   * {"node_ids":[...]}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_TOPOLOGY = 8;
+   */
+  TOPOLOGY = 8,
+
+  /**
+   * {"node_ids":[...],"from":"RFC3339 or empty","kinds":[...]}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_EVENT_LOG = 9;
+   */
+  EVENT_LOG = 9,
+
+  /**
+   * {"node_ids":[...],"metric":"... or empty"}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_ALERTS = 10;
+   */
+  ALERTS = 10,
+
+  /**
+   * {"operation":"full method name of a READ operation","request":{...},"columns":["dotted.field.path",...]}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_QUERY_VIEW = 11;
+   */
+  QUERY_VIEW = 11,
+
+  /**
+   * {"text":"plain text, at most 400 code points","tone":"info|warning"}
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_KIND_NOTE = 12;
+   */
+  NOTE = 12,
+}
+
+/**
+ * Describes the enum n0x.assistant.v1.CanvasArtifactKind.
+ */
+export declare const CanvasArtifactKindSchema: GenEnum<CanvasArtifactKind>;
+
+/**
+ * @generated from enum n0x.assistant.v1.CanvasArtifactRole
+ */
+export enum CanvasArtifactRole {
+  /**
+   * @generated from enum value: CANVAS_ARTIFACT_ROLE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * Responde directamente a lo que pidio el usuario.
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_ROLE_ANSWER = 1;
+   */
+  ANSWER = 1,
+
+  /**
+   * Prueba un cambio o una verificacion.
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_ROLE_EVIDENCE = 2;
+   */
+  EVIDENCE = 2,
+
+  /**
+   * Lo sugiere el asistente; rationale dice por que.
+   *
+   * @generated from enum value: CANVAS_ARTIFACT_ROLE_PROACTIVE = 3;
+   */
+  PROACTIVE = 3,
+}
+
+/**
+ * Describes the enum n0x.assistant.v1.CanvasArtifactRole.
+ */
+export declare const CanvasArtifactRoleSchema: GenEnum<CanvasArtifactRole>;
 
 /**
  * @generated from enum n0x.assistant.v1.ProposedChangeStatus
